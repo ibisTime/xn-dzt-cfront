@@ -86,6 +86,15 @@ define([
             first = false;
             return this;
         },
+        refreshOption: function(option){
+            option = option || {};
+            defaultOpt = $.extend(defaultOpt, option);
+            if(defaultOpt.disabled){
+                $("#authentication-identity-btn").parent().hide();
+                $("#identityRealName").val(defaultOpt.realName || "").attr("disabled", "disabled");
+                $("#identityIdNo").val(defaultOpt.idNo || "").attr("disabled", "disabled");
+            }
+        },
         hasIdentity: function(){
             if(!$("#authentication-identity").length)
                 return false
@@ -111,9 +120,16 @@ define([
                     left: "100%"
                 }, 200, function () {
                     wrap.hide();
-                    func && func();
-                    $("#identityRealName").val("");
-                    $("#identityIdNo").val("");
+                    if(func){
+                        var realName = $("#identityRealName").val(), idNo = $("#identityIdNo").val();
+                        if(realName && idNo){
+                            func(realName, idNo);
+                        }
+                    }
+                    if(!defaultOpt.disabled){
+                        $("#identityRealName").val("");
+                        $("#identityIdNo").val("");
+                    }
                     wrap.find("label.error").remove();
                 });
             }

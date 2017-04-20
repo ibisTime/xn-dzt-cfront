@@ -2,23 +2,12 @@ define([
     'app/controller/base',
     'app/util/ajax',
     'app/module/loading/loading',
-    'app/module/bindMobile/bindMobile'
-], function(base, Ajax, loading, BindMobile) {
+    'app/module/judgeBindMobile/judgeBindMobile'
+], function(base, Ajax, loading, JudgeBindMobile) {
     init();
 
     function init() {
         var code = base.getUrlParam("code");
-        BindMobile.addMobileCont({
-            success: function(res) {
-                base.goBackUrl("../user/user.html", true);
-            },
-            hideFn: function() {
-                base.goBackUrl("../user/user.html", true);
-            },
-            error: function(msg) {
-                base.showMsg(msg);
-            }
-        });
         // 第一次没登录进入的页面
         if (!code) {
             loading.createLoading();
@@ -33,7 +22,7 @@ define([
             });
         } else {    // 已登陆
             setTimeout(function() {
-                base.goBackUrl("../user/user.html", true);
+                base.goBackUrl("/", true);
             }, 1000);
         }
     }
@@ -76,13 +65,18 @@ define([
                             if (res.success) {
                                 // 如果未绑定手机号，则绑定
                                 if (!res.data.mobile) {
-                                    BindMobile.showMobileCont();
+                                    JudgeBindMobile.addCont({
+                                        avatar: res.data.userExt.photo,
+                                        nickname: res.data.nickname
+                                    }).showCont();
                                 } else {
-                                    base.goBackUrl("../user/user.html", true);
+                                    base.goBackUrl("/", true);
                                 }
                             } else {
-                                base.goBackUrl("../user/user.html", true);
+                                base.goBackUrl("/", true);
                             }
+                        }, function(){
+                            base.goBackUrl("/", true);
                         });
                 } else {
                     loading.hideLoading();

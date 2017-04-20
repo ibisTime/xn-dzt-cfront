@@ -6,7 +6,7 @@ define([
     'app/module/changeMobile/changeMobile',
     'app/module/identity/identity',
     'app/module/setTradePwd/setTradePwd',
-    'app/module/changeTradePwd/changeTradePwd'
+    'app/module/changeTradePwd/changeTradePwd',
 ], function(base, Ajax, loading, BindMobile, ChangeMobile, Identity, SetTradePwd, ChangeTradePwd) {
     var mobile, identityFlag, bankFlag, tradepwdFlag;
 
@@ -126,9 +126,14 @@ define([
 					});
 				}else{
 					Identity.addIdentity({
-						success: function(){
+						success: function(realName, idNo){
 							identityFlag = true;
 							$("#identityFlag").text("已绑定");
+                            Identity.refreshOption({
+                                realName: realName,
+                                idNo: idNo,
+                                disabled: 1
+                            });
 						},
 						error: function(msg){
 							base.showMsg(msg);

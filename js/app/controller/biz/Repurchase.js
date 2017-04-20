@@ -17,7 +17,7 @@ define([
         }).then(function(res){
             loading.hideLoading();
             if(res.success){
-                $("#content").html('<img src="'+res.data.note+'"/>');
+                $("#content").html('<img src="'+base.getImg1(res.data.note)+'"/>');
             }else{
                 base.showMsg(res.msg);
             }

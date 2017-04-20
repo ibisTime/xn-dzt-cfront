@@ -4,6 +4,11 @@
 <head>
 	<link rel="import" href="../head.html?__inline">
 	<title>充值</title>
+	<style>
+		label.error{
+		    top: 0.2rem;
+		}
+	</style>
 </head>
 
 <body class="bc">
@@ -18,8 +23,8 @@
 		<div class="ba plr30 ptb30 bb">
 			<div class="fs30 pb20">充值金额</div>
 			<div class="fs60 p-r">
-				<div class="inline_block ">¥</div>
-				<input type="text" id="transAmount" name="transAmount" class="fs60" />
+				<div class="inline_block charge-unit">¥</div>
+				<input type="number" placeholder="请输入充值金额" id="transAmount" name="transAmount" class="fs60 pl1em wp100" />
 			</div>
 		</div>
 		<input type="hidden" id="bizType" name="bizType" value="11"/>

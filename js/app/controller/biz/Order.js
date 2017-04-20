@@ -29,11 +29,15 @@ define([
                 $("#applyName").html(data.applyName);
                 $("#applyMobile").html(data.applyMobile);
                 $("#address").html(getAddress(data));
-                $("#ltDatetime").html(base.formatDate(data.ltDatetime, "yyyy-MM-dd hh:mm"));
+                $("#ltDatetime").html(base.formatDate(data.ltDatetime, "yyyy-MM-dd"));
                 $("#applyNote").html(data.applyNote || "无");
                 $("#createDatetime").html(base.formatDate(data.createDatetime, "yyyy-MM-dd hh:mm"));
                 $("#status").html(orderStatus[data.status]);
-
+                if(data.ltUserDO){
+                    $("#ltMobileWrap, #ltRealNameWrap").removeClass("hidden");
+                    $("#ltRealName").html(data.ltUserDO.realName);
+                    $("#ltMobile").html(data.ltUserDO.mobile);
+                }
             }else{
                 base.showMsg(res.msg);
             }

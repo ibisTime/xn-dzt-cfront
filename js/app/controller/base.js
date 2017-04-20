@@ -90,6 +90,16 @@ define([
             }
             return pic;
         },
+        getImg1: function(pic){
+            if(!pic){
+                return "";
+            }
+            pic = pic.split(/\|\|/)[0];
+            if(!/^http/i.test(pic)){
+                pic = PIC_PREFIX + pic;
+            }
+            return pic;
+        },
         getUrlParam: function(name, locat) {
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
             var r = (locat || window.location.search).substr(1).match(reg);
@@ -237,7 +247,6 @@ define([
             var rUrl = Base.getUrlParam("return");
             if(isLoginBack){
                 var returnUrl = sessionStorage.getItem("l-return");
-                // sessionStorage.removeItem("l-return");
                 location.href = returnUrl || url || "../user/user.html";
             }else{
                 if (rUrl) {

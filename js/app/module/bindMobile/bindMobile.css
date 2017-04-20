@@ -8,6 +8,9 @@
     z-index: 1024;
     background-color: #f0f0f0;
 }
+.right-left-cont.bind-mobile-module-wrap{
+    z-index: 1111;
+}
 .right-left-cont-title {
     height: 40px;
     line-height: 40px;

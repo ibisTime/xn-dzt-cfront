@@ -2,9 +2,7 @@ define([
     'js/app/controller/base',
     'js/app/util/ajax',
     'js/app/module/loading/loading',
-    'js/app/module/validate/validate',
-    // 'jquery-weui',
-    // 'city-picker'
+    'js/app/module/validate/validate'
 ], function(base, Ajax, loading, Validate) {
     var code = base.getUrlParam("code");
     init();
@@ -21,7 +19,7 @@ define([
         }).then(function(res){
             loading.hideLoading();
             if(res.success){
-                $("#content").html('<img src="'+res.data.note+'"/>');
+                $("#content").html('<img src="'+base.getImg1(res.data.note)+'"/>');
             }else{
                 base.showMsg(res.msg);
             }
@@ -29,13 +27,18 @@ define([
     }
 
     function addListeners() {
+        var bookForm = $("#bookForm");
         $("#address").cityPicker({
             title: "选择省市县"
         });
-        $("#ltDatetime").datetimePicker({
-            title:"选择日期时间"
+        $("#ltDatetime").calendar();
+        $("#ltDatetime").on("click", function(){
+            $("#ltDatetime").focus().blur();
         });
-        var bookForm = $("#bookForm");
+        $("#address").on("click", function(){
+            $("#address").focus().blur();
+        });
+
         bookForm.validate({
             'rules': {
                 applyName: {
@@ -67,20 +70,31 @@ define([
         });
 
         $("#sbtn").on("click", function(){
-            if(bookForm.valid()){
-                var param = bookForm.serializeObject();
-                var addr = param.address.split(/\s/);
-                var province = addr[0], city = addr[1], area = addr[2];
-                if( province + "市" == city ){
-                    province = city;
+            if(isVisibile()){
+                if(bookForm.valid()){
+                    var param = bookForm.serializeObject();
+                    var addr = param.address.split(/\s/);
+                    var province = addr[0], city = addr[1], area = addr[2];
+                    if( province + "市" == city ){
+                        province = city;
+                    }
+                    param.ltProvince = province;
+                    param.ltCity = city;
+                    param.ltArea = area;
+                    param.applyUser = param.updater = base.getUserId();
+                    book(param);
                 }
-                param.ltProvince = province;
-                param.ltCity = city;
-                param.ltArea = area;
-                param.applyUser = param.updater = base.getUserId();
-                book(param);
+            }else{
+                $("#nameWrap")[0].scrollIntoView();
             }
         });
+    }
+    function isVisibile(){
+        var $win = $(window), $wrap = $("#nameWrap");
+        if($win.height() + $win.scrollTop() - $wrap.offset().top - $wrap.innerHeight() <= 0){
+            return false;
+        }
+        return true;
     }
 
     function book(param){

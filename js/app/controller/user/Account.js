@@ -11,7 +11,7 @@ define([
     var config = {
         start: 1,
         limit: 20,
-        currency: "CNY",
+        currency: "CNY"
     };
 
     init();
@@ -78,7 +78,7 @@ define([
             isLoading = true;
             base.showPullUp();
 
-            return Ajax.get("802520", config, !refresh).then(function(res) {
+            return Ajax.get("802524", config, !refresh).then(function(res) {
                 if (res.success && res.data.list.length) {
                     var list = res.data.list, html = "";
                     if (list.length < config.limit) {

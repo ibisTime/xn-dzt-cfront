@@ -99,7 +99,7 @@
 
 /*一键复购*/
 
-.button{line-height:0.8rem;background-color:#cf102d;color:#ffffff;line-height:0.9rem;}
+.button{line-height:0.8rem;background-color:#002269;color:#ffffff;line-height:0.9rem;}
 
 /*预约量体*/
 .in-ba{background-color:#f7f7f7;line-height:0.6rem;border-radius:0.1rem;}
@@ -109,7 +109,7 @@
 
 /*绑定手机号码*/
 .delete{width:0.4rem; position: absolute;right: 0.2rempx;top: 50%;margin-top: -0.2rem;}
-.gain{width:1.5rem;height:0.6rem;background:#cf102d;border-radius:0.06rem;line-height: 0.6rem;float: right;margin-top: 0.2rem;
+.gain{width:1.5rem;height:0.6rem;background:#002269;border-radius:0.06rem;line-height: 0.6rem;float: right;margin-top: 0.2rem;
 margin-right: 0.2rem;color:#ffffff;position: absolute;
     right: 0;
     top: 0;}
@@ -118,7 +118,7 @@ margin-right: 0.2rem;color:#ffffff;position: absolute;
 
 
 /*账号管理*/
-.out{line-height:0.9rem;background-color:#ffffff;color:#cf102d;}
+.out{line-height:0.9rem;background-color:#ffffff;color:#002269;}
 
 /*修改手机号码*/
 .pl240{padding-left:2.4rem;}

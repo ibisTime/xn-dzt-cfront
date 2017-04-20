@@ -17,12 +17,12 @@ define([
 
     function init() {
         initIScroll();
+        loading.createLoading();
         getInitData(true);
-
         addListener();
     }
     function getInitData(refresh) {
-        loading.createLoading();
+
         $.when(getAccountList(refresh), getUser(refresh), getPageOrder(refresh)).then(function() {
             loading.hideLoading();
         }, function() {
@@ -100,13 +100,15 @@ define([
                         html += '<div class="mb20 index-order-item" data-code="' + item.code + '">' +
                             '<div class="ba wp100 plr30 fs26 ptb30 bb p-r">' +
                                 '<div class="number co9 mb20">订单编号：' + item.code + '</div>' +
-                                '<span class="fr p-a state fs24 red">' + orderStatus[item.status] + '</span>' +
-                                '<div class="mb20">' +
-                                    '<div class="phone co9  inline_block">联系电话：</div>' +
-                                    '<span class="blue">' + item.applyMobile + '</span>' +
-                                '</div>' +
-                                '<div class="map co9 mb20">地址：' + getAddress(item) + '</div>' +
-                                '<div class="time co9 ">预约时间：' + base.formatDate(item.ltDatetime, "yyyy-MM-dd hh:mm") + '</div>' +
+                                '<span class="fr p-a state fs24 red">' + orderStatus[item.status] + '</span>';
+                        if(item.ltUserDO){
+                            html += '<div class="mb20">' +
+                                '<div class="phone co9  inline_block">联系电话：</div>' +
+                                '<span class="blue">' + item.ltUserDO.mobile + '</span>' +
+                            '</div>';
+                        }
+                        html += '<div class="map co9 mb20">地址：' + getAddress(item) + '</div>' +
+                                '<div class="time co9 ">预约时间：' + base.formatDate(item.ltDatetime, "yyyy-MM-dd") + '</div>' +
                             '</div>' +
                         '<div class="wp100 lh100 hig100 ba plr30  pt18 clearfix">';
                         if (item.status == "1") {

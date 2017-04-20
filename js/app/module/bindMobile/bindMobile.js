@@ -42,6 +42,9 @@ define([
                 $("body").append(tmpl);
             }
             var wrap = $("#bindMobileWrap");
+            if(defaultOpt.hideBack){
+                $("#bind-mobile-back").css("display", "none");
+            }
             defaultOpt.title && wrap.find(".right-left-cont-title-name").html(defaultOpt.title);
             var that = this;
             if(first){
@@ -99,7 +102,7 @@ define([
                 }, 200, function(){
                     defaultOpt.showFun && defaultOpt.showFun();
                 });
-                
+
             }
             return this;
         },
