@@ -1,8 +1,9 @@
 define([
     'jquery',
     'app/module/bindMobile/bindMobile',
-    'app/util/dialog'
-], function ($, BindMobile, dialog) {
+    'app/util/dialog',
+    'app/module/loadImg/loadImg'
+], function ($, BindMobile, dialog, loadImg) {
     var tmpl = __inline("judgeBindMobile.html");
     var css = __inline("judgeBindMobile.css");
     var defaultOpt = {};
@@ -53,7 +54,8 @@ define([
                 $("body").append(tmpl);
             }
             var that = this;
-            $("#login-avatar-module").attr("src", defaultOpt.avatar);
+            var html = '<div class="login-chose-avatar"><img src="'+defaultOpt.avatar+'" /></div>';
+            $("#login-avatar-module").html(loadImg.loadImg(html));
             $("#login-nickname-module").html(defaultOpt.nickname);
             if(first){
                 $("#login-chose-bindmobile").on("click", function(){

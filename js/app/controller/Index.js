@@ -1,5 +1,9 @@
 define([
-    'app/controller/base', 'app/util/ajax', 'app/module/loading/loading', 'app/module/scroll/scroll', 'app/util/dict'
+    'app/controller/base',
+    'app/util/ajax',
+    'app/module/loading/loading',
+    'app/module/scroll/scroll',
+    'app/util/dict'
 ], function(base, Ajax, loading, scroll, Dict) {
 
     var myScroll,

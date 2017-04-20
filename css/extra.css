@@ -213,3 +213,9 @@ label.error {
 .ming1{
     width: 1.6rem;
 }
+
+.index-avatar{
+    width: 1rem;
+    height: 1rem;
+    display: inline-block;
+}

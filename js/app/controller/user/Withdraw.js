@@ -22,7 +22,7 @@ define([
         Ajax.get("802016", {
             userId: base.getUserId(),
             status: "1"
-        }).then(function(res){
+        }, 0).then(function(res){
             if(res.success){
                 if(res.data.length){
                     var html = "";
@@ -49,7 +49,7 @@ define([
     function getAccountList() {
         return Ajax.get("802503", {
             userId: base.getUserId()
-        }).then(function (res) {
+        }, 0).then(function (res) {
             if(res.success && res.data.length){
                 var data = res.data;
                 $.each(data, function (i, d) {

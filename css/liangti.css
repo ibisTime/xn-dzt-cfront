@@ -42,8 +42,8 @@
 .but{line-height:0.8rem;background-color:#002269;color:#ffffff;border-radius:0.1rem;}
 .more{width:0.16rem; position: absolute;right: 0.3rem;top: 50%;margin-top: -0.15rem;}
 
-/*商城订单*/
-.head{width:1rem;border:0.06rem solid #ffffff;border-radius:0.8rem;}
+
+.head{width: 1rem;height: 1rem;border:0.06rem solid #ffffff;border-radius:0.8rem;}
 .ba-img{background:url(../images/%E8%83%8C%E6%99%AFx.png) no-repeat center;background-size:cover;}
 .hig220{height:2.2rem;}
 .hig90{height:0.9rem !important;}
