@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<link rel="import" href="../head.html?__inline">
+	<link rel="stylesheet" href="../../js/lib/j_picker/jquery-weui.min.css">
+	<link rel="stylesheet" href="../../js/lib/j_picker/weui.min.css">
+	<style>
+		.weui-picker-modal{
+		    height: 5.5rem;
+		}
+		.toolbar, .toolbar .title{
+			font-size: .3rem;
+		}
+		.toolbar .toolbar-inner{
+			height: 0.8rem;
+		}
+		.toolbar .picker-button{
+			height: 0.8rem;
+			line-height: 0.8rem;
+		}
+		.toolbar .title{
+		    line-height: 0.8rem;
+		}
+		.weui-picker-modal .picker-items{
+		    font-size: 0.3rem;
+		}
+		.weui-picker-modal .picker-modal-inner{
+		    height: 4.7rem;
+		}
+		label.error{
+		    top: 0.3rem;
+		}
+	</style>
+	<title>预约量体</title>
+</head>
+
+<body class="ba ">
+	<div id="content"></div>
+	<div class="fs36 tc pt30">预约信息</div>
+	<form id="bookForm">
+		<div class="fs28 plr30 pt20 p-r">
+			<div>姓名</div>
+			<input type="text" id="applyName" name="applyName" placeholder="必填，方便量体师与您联系" class="wp100 in-ba plr20 mt20 fs28">
+		</div>
+
+		<div class="fs28 plr30 pt20 p-r">
+			<div>手机号码</div>
+			<input type="text" id="applyMobile" name="applyMobile" placeholder="必填，方便量体师与您联系" class="wp100 in-ba plr20 mt20 fs28">
+		</div>
+		<div class="fs28 plr30 pt20 p-r">
+			<div>量体地址</div>
+			<input type="text" id="address" name="address" placeholder="必填，方便量体师与您联系" class="wp100 in-ba plr20 mt20 fs28">
+		</div>
+		<div class="fs28 plr30 pt20 p-r">
+			<div>详细地址</div>
+			<input type="text" id="ltAddress" name="ltAddress" placeholder="必填，方便量体师与您联系" class="wp100 in-ba plr20 mt20 fs28">
+		</div>
+		<div class="fs28 plr30 pt20 p-r">
+			<div>选择日期</div>
+			<input type="text" id="ltDatetime" name="ltDatetime" placeholder="必填，方便量体师与您联系" class="wp100 in-ba plr20 mt20 fs28">
+		</div>
+
+		<div class="fs28 plr30 pt20 p-r">
+			<div>量体叮嘱</div>
+			<input type="text" placeholder="选填" id="applyNote" name="applyNote" class="wp100 in-ba plr20 mt20 fs28">
+		</div>
+	</form>
+	<div class="plr30 mt40">
+		<input type="button" value="预约量体" id="sbtn" class="but wp100 fs28 ">
+	</div>
+	<link rel="import" href="../footer.html?__inline">
+	<script src="../../js/lib/j_picker/jquery-weui.min.js"></script>
+	<script src="../../js/lib/j_picker/city-picker.min.js"></script>
+	<script data-loader>
+		require(['app/controller/biz/Book']);
+	</script>
+</body>
+
+</html>

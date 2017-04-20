@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<link rel="import" href="../head.html?__inline">
+	<title>充值</title>
+</head>
+
+<body class="bc">
+	<form id="chargeForm">
+		<div class="fs30 ba lh100 wp100 plr30 bb p-r" id="addBankCard">
+			<div class="inline_block">添加银行卡</div>
+			<div class="fr pr28" id="bankCardSpan">请选择</div>
+			<select id="bankcardNumber" name="bankcardNumber" class="over-select"></select>
+			<img src="../images/更多@2x.png" class="more" />
+		</div>
+
+		<div class="ba plr30 ptb30 bb">
+			<div class="fs30 pb20">充值金额</div>
+			<div class="fs60 p-r">
+				<div class="inline_block ">¥</div>
+				<input type="text" id="transAmount" name="transAmount" class="fs60" />
+			</div>
+		</div>
+		<input type="hidden" id="bizType" name="bizType" value="11"/>
+	</form>
+
+	<div class=" plr20 mt100">
+		<input type="button" value="充值" id="sbtn" class="but wp100 fs30">
+	</div>
+	<link rel="import" href="../footer.html?__inline">
+	<script>
+		require(['app/controller/user/Charge']);
+	</script>
+</body>
+
+</html>
