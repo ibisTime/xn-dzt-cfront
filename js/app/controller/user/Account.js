@@ -107,7 +107,7 @@ define([
     }
     function addListener(){
         $("#charge").on("click", function(){
-            location.href = "./charge.html";
+            location.href = "../pay/charge.html";
         });
         $("#withdraw").on("click", function(){
             location.href = "./withdraw.html";

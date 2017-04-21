@@ -16,15 +16,17 @@ define([
             return;
         }
         loading.createLoading();
-        getOrder();
-    }
-    function getOrder(){
-        Ajax.get("620221", {
-            code: code
-        }).then(function(res){
+        $.when(
+            base.getDictList("wl_company"),
+            getOrder()
+        ).then(function(res1, res2){
             loading.hideLoading();
-            if(res.success){
-                var data = res.data;
+            if(res1.success && res2.success){
+                var wl_data = res1.data, wlCompany = {};
+                for(var i = 0; i < wl_data.length; i++){
+                    wlCompany[wl_data[i].dkey] = wl_data[i].dvalue;
+                }
+                var data = res2.data;
                 $("#code").html(data.code);
                 $("#applyName").html(data.applyName);
                 $("#applyMobile").html(data.applyMobile);
@@ -36,14 +38,29 @@ define([
                 if(data.ltUserDO){
                     $("#ltMobileWrap, #ltRealNameWrap").removeClass("hidden");
                     $("#ltRealName").html(data.ltUserDO.realName);
-                    $("#ltMobile").html(data.ltUserDO.mobile);
+                    $("#ltMobile").html('<a href="tel://'+data.ltUserDO.mobile+'">'+data.ltUserDO.mobile+'</a>');
+                }
+                if(data.logisticsCode){
+                    $("#logisticsWrap").removeClass("hidden");
+                    $("#logisticsCode").html(data.logisticsCode);
+                    $("#logisticsCompany").html(wlCompany[data.logisticsCompany]);
+                    $("#deliverer").html(data.deliverer);
+                    $("#deliveryDatetime").html(base.formatDate(data.deliveryDatetime, "yyyy-MM-dd hh:mm"));
+                    $("#reAddress").html(data.reAddress);
                 }
             }else{
-                base.showMsg(res.msg);
+                base.showMsg(res1.msg || res2.msg);
             }
         }, function(){
             loading.hideLoading();
             base.showMsg("订单信息加载失败");
+        });
+        getOrder();
+    }
+
+    function getOrder(){
+        return Ajax.get("620221", {
+            code: code
         });
     }
     function getAddress(addr){

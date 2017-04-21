@@ -7,6 +7,15 @@ define([
     var accountNumber, availableAmount;
     init();
     function init(){
+        // var w = sessionStorage.getItem("w");
+        // if(w == 1){
+        //     sessionStorage.removeItem("w");
+        //     if(!location.replace){
+        //         location.reload(true);
+        //     }else{
+        //         location.replace(location.origin + "/user/withdraw.html?t=" + new Date().getTime());
+        //     }
+        // }
         loading.createLoading();
         addListeners();
         getInitData();
@@ -42,6 +51,7 @@ define([
     }
     function addGoBankCardListener(){
         $("#addBankCard").on('click', function(){
+            sessionStorage.setItem("w", 1);
             location.href = './add_bankcard.html';
         });
     }
@@ -74,7 +84,7 @@ define([
                 },
                 transAmount: {
                     required: true,
-                    "Z+": true
+                    "isPositive": true
                 },
                 tradePwd: {
                     required: true,
