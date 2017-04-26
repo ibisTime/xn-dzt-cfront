@@ -2,20 +2,12 @@ define([
     'js/app/controller/base',
     'js/app/util/ajax',
     'js/app/module/loading/loading',
-    'js/app/module/validate/validate'
-], function(base, Ajax, loading, Validate) {
+    'js/app/module/validate/validate',
+    'app/module/addOrEditBankCard'
+], function(base, Ajax, loading, Validate, AddOrEditBankCard) {
     var accountNumber, availableAmount;
     init();
     function init(){
-        // var w = sessionStorage.getItem("w");
-        // if(w == 1){
-        //     sessionStorage.removeItem("w");
-        //     if(!location.replace){
-        //         location.reload(true);
-        //     }else{
-        //         location.replace(location.origin + "/user/withdraw.html?t=" + new Date().getTime());
-        //     }
-        // }
         loading.createLoading();
         addListeners();
         getInitData();
@@ -28,20 +20,31 @@ define([
     }
     // 获取银行卡列表
     function getBankCardList(){
-        Ajax.get("802016", {
+        return Ajax.get("802016", {
             userId: base.getUserId(),
             status: "1"
-        }, 0).then(function(res){
+        }, false).then(function(res){
             if(res.success){
                 if(res.data.length){
+                    $("#addBankCard").off("click");
+                    $("#bankcardNumber").show();
                     var html = "";
                     $.each(res.data, function(i, item){
                         html += '<option value='+item.bankcardNumber+'>'+item.bankName+' - '+item.bankcardNumber+'</option>';
                     });
                     $("#bankcardNumber").html(html).trigger("change");
                 }else{
-                    $("#bankcardNumber").remove();
+                    $("#bankcardNumber").hide();
                     addGoBankCardListener();
+                    AddOrEditBankCard.addCont({
+                        success: function(bankcardNumber, bankName){
+                            loading.createLoading();
+                            getBankCardList().then(loading.hideLoading);
+                        },
+                        error: function(msg){
+                            base.showMsg(msg);
+                        }
+                    });
                 }
             }else{
                 base.showMsg(res.msg);
@@ -51,8 +54,7 @@ define([
     }
     function addGoBankCardListener(){
         $("#addBankCard").on('click', function(){
-            sessionStorage.setItem("w", 1);
-            location.href = './add_bankcard.html';
+            AddOrEditBankCard.showCont();
         });
     }
     // 获取账户信息
@@ -95,13 +97,13 @@ define([
             },
             onkeyup: false
         });
+        $("#bankcardNumber").on("change", function(){
+            $("#bankCardSpan").html($("#bankcardNumber").val());
+        });
         $("#sbtn").on("click", function(){
             if($("#withdrawForm").valid()){
                 withdraw();
             }
-        });
-        $("#bankcardNumber").on("change", function(){
-            $("#bankCardSpan").html($("#bankcardNumber").val());
         });
     }
     // 取现

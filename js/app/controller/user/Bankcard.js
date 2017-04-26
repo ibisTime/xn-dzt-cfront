@@ -1,9 +1,10 @@
 define([
     'js/app/controller/base',
     'js/app/util/ajax',
-    'js/app/module/loading/loading'
-], function (base, Ajax, loading) {
-    var code = "";
+    'js/app/module/loading/loading',
+    'app/module/addOrEditBankCard'
+], function (base, Ajax, loading, AddOrEditBankCard) {
+    var code = "", first = 1;
     init();
     function init(){
         loading.createLoading();
@@ -15,7 +16,7 @@ define([
         Ajax.get("802016", {
             userId: base.getUserId(),
             status: "1"
-        }).then(function(res){
+        }, false).then(function(res){
             loading.hideLoading();
             if(res.success){
                 if(res.data.length){
@@ -28,6 +29,18 @@ define([
                     			'<div class="fs40 pt30">'+base.getBankCard(item.bankcardNumber)+'</div>'+
                     		'</div>';
                     $("#content").html(html);
+                    if(first){
+                        AddOrEditBankCard.addCont({
+                            code: code,
+                            success: function(bankcardNumber, bankName){
+                                loading.createLoading();
+                                getBankCardList();
+                            },
+                            error: function(msg){
+                                base.showMsg(msg);
+                            }
+                        });
+                    }
                 }else{
                     base.showMsg("暂无银行卡");
                 }
@@ -39,7 +52,7 @@ define([
     function addListeners(){
         $("#edit").on("click", function(){
             if(code)
-                location.href = "./add_bankcard.html?code=" + code;
+                AddOrEditBankCard.showCont();
         });
     }
 });

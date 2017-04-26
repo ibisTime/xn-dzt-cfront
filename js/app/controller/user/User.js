@@ -7,7 +7,8 @@ define([
     'app/module/identity/identity',
     'app/module/setTradePwd/setTradePwd',
     'app/module/changeTradePwd/changeTradePwd',
-], function(base, Ajax, loading, BindMobile, ChangeMobile, Identity, SetTradePwd, ChangeTradePwd) {
+    'app/module/addOrEditBankCard'
+], function(base, Ajax, loading, BindMobile, ChangeMobile, Identity, SetTradePwd, ChangeTradePwd, AddOrEditBankCard) {
     var mobile, identityFlag, bankFlag, tradepwdFlag;
 
     init();
@@ -34,6 +35,15 @@ define([
                 bankFlag = 1;
                 $("#bankFlag").html("已绑定");
             }else{
+                AddOrEditBankCard.addCont({
+                    success: function(bankcardNumber, bankName){
+                        bankFlag = 1;
+                        $("#bankFlag").html("已绑定");
+                    },
+                    error: function(msg){
+                        base.showMsg(msg);
+                    }
+                });
                 $("#bankFlag").html("未绑定");
             }
         });
@@ -53,7 +63,7 @@ define([
             if (bankFlag)               //已经绑定银行卡
                 location.href = "./bankcard.html";
             else                        //未绑定银行卡
-                location.href = "./add_bankcard.html";
+                AddOrEditBankCard.showCont();
         });
         $("#tradeWrap").on("click", function(){
             if(!mobile){

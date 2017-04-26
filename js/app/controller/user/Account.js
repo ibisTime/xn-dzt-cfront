@@ -3,8 +3,9 @@ define([
     'app/util/ajax',
     'app/module/loading/loading',
     'app/module/scroll/scroll',
-    'app/util/handlebarsHelpers'
-], function(base, Ajax, loading, scroll, Handlebars) {
+    'app/util/handlebarsHelpers',
+    'app/module/setTradePwd/setTradePwd',
+], function(base, Ajax, loading, scroll, Handlebars, SetTradePwd) {
 
     var myScroll, isEnd = false, isLoading = false;
     var integralTmpl = __inline("../../ui/integral.handlebars");
@@ -12,13 +13,13 @@ define([
         start: 1,
         limit: 20,
         currency: "CNY"
-    };
+    }, tradepwdFlag = false;
 
     init();
 
     function init() {
         initIScroll();
-        getInitData(true);
+        getInitData();
 
         addListener();
     }
@@ -34,14 +35,31 @@ define([
             }
         });
     }
-    function getInitData(refresh) {
+    function getInitData() {
         loading.createLoading();
-        getAccountList(refresh)
-            .then(function(res){
-                getPageintegral().then(loading.hideLoading);
-            }, function () {
-                loading.hideLoading();
-            });
+        $.when(
+            base.getUser(),
+            getAccountList()
+        ).then(function(res){
+            if(res.success && res.data.tradepwdFlag == "1"){
+                tradepwdFlag = true;
+                SetTradePwd.addCont({
+                    success: function(){
+                        tradepwdFlag = true;
+                        $("#tradeName").text("修改交易密码");
+                    },
+                    error: function(msg){
+                        base.showMsg(msg);
+                    },
+                    mobile: res.data.mobile
+                });
+            }else{
+                tradepwdFlag = false;
+            }
+            getPageintegral().then(loading.hideLoading);
+        }, function () {
+            loading.hideLoading();
+        });
         Handlebars.registerHelper('formatAmount', function(num) {
             if (!num && num !== 0)
                 return "--";
@@ -110,7 +128,14 @@ define([
             location.href = "../pay/charge.html";
         });
         $("#withdraw").on("click", function(){
-            location.href = "./withdraw.html";
+            if(tradepwdFlag){
+                location.href = "./withdraw.html";
+            }else{
+                base.confirm("您还未设置交易密码，无法提现。<br/>请先设置交易密码")
+                    .then(function(){
+                        SetTradePwd.showCont();
+                    }, function(){});
+            }
         });
     }
 });
