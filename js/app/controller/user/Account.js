@@ -43,6 +43,8 @@ define([
         ).then(function(res){
             if(res.success && res.data.tradepwdFlag == "1"){
                 tradepwdFlag = true;
+            }else{
+                tradepwdFlag = false;
                 SetTradePwd.addCont({
                     success: function(){
                         tradepwdFlag = true;
@@ -53,8 +55,6 @@ define([
                     },
                     mobile: res.data.mobile
                 });
-            }else{
-                tradepwdFlag = false;
             }
             getPageintegral().then(loading.hideLoading);
         }, function () {
