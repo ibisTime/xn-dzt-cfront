@@ -5,9 +5,12 @@ define([
     'js/app/module/validate/validate'
 ], function(base, Ajax, loading, Validate) {
     var accountNumber;
+    var userId = base.getUserId();
+    var openId = "";
     init();
     function init(){
         addListeners();
+        getOpeanId();
     }
 
     function addListeners(){
@@ -22,17 +25,33 @@ define([
         });
         $("#sbtn").on("click", function(){
             if($("#chargeForm").valid()){
-                charge();
+                if(openId){
+                    charge();
+                }else{
+                    base.showMsg("请用微信登录");
+                }
             }
         });
+    }
+    function getOpeanId(refresh) {
+        return Ajax.get("805056", {
+            userId: userId
+        }, !refresh)
+            .then(function(res){
+                if(res.success){
+                    openId = res.data.openId;
+                }
+            });
     }
     // 充值
     function charge(){
         loading.createLoading("提交中...");
         var param = $("#chargeForm").serializeObject();
-        param.userId = base.getUserId();
+        param.applyUser = userId;
+        param.channelType = "35";
         param.amount = +param.amount * 1000;
-        Ajax.post("802530", {json: param})
+        param.openId = openId;
+        Ajax.post("802710", {json: param})
             .then(wxPay, function() {
                 loading.hideLoading();
                 base.showMsg("非常抱歉，支付请求提交失败");
@@ -83,6 +102,7 @@ define([
             }
         } else {
             loading.hideLoading();
+            console.log(response1.msg)
             base.showMsg(response1.msg || "微信支付失败");
         }
     }

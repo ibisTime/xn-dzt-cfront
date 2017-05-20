@@ -169,16 +169,16 @@ label.error {
 }
 .normal1_002269 {
     font-size: 0.3rem;
-    color: #002269;
+    color: #003A63;
 }
 .big_002269 {
     font-size: 18px;
-    color: #002269;
+    color: #fff;
+    color: #003A63;
 }
 .small-btn-002269 {
-    color: #fff;
     font-size: 0.28rem;
-    background-color: #002269;
+    background-color: #003A63;
     width: 1.88rem;
     height: 0.8rem;
     border-radius: 3px;

@@ -9,7 +9,7 @@ define([
     'app/module/changeTradePwd/changeTradePwd',
     'app/module/addOrEditBankCard'
 ], function(base, Ajax, loading, BindMobile, ChangeMobile, Identity, SetTradePwd, ChangeTradePwd, AddOrEditBankCard) {
-    var mobile, identityFlag, bankFlag, tradepwdFlag;
+    var mobile, identityFlag, bankFlag, tradepwdFlag, addressFlag;
 
     init();
 
@@ -86,6 +86,12 @@ define([
                 SetTradePwd.showCont();
             }
 		});
+        $("#address").on("click", function() {
+            if (addressFlag)               
+                location.href = "./add_address.html";
+            else                        
+                location.href = "./address_list.html";
+        });
     }
 
     function getUser() {

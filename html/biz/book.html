@@ -83,7 +83,7 @@
 	<div id="content"></div>
 	<div class="fs36 tc pt30">预约信息</div>
 	<form id="bookForm">
-		<div class="fs28 plr30 pt20 p-r" id="nameWrap">
+		<!-- <div class="fs28 plr30 pt20 p-r" id="nameWrap">
 			<div>姓名</div>
 			<input type="text" id="applyName" name="applyName" placeholder="必填，方便量体师与您联系" class="wp100 in-ba plr20 mt20 fs28">
 		</div>
@@ -91,14 +91,16 @@
 		<div class="fs28 plr30 pt20 p-r">
 			<div>手机号码</div>
 			<input type="tel" id="applyMobile" name="applyMobile" placeholder="必填，方便量体师与您联系" class="wp100 in-ba plr20 mt20 fs28">
-		</div>
-		<div class="fs28 plr30 pt20 p-r">
+		</div> -->
+		<!-- <div class="fs28 plr30 pt20 p-r">
 			<div>量体地址</div>
 			<input type="text" id="address" name="address" placeholder="必填，方便量体师与您联系" class="wp100 in-ba plr20 mt20 fs28">
-		</div>
-		<div class="fs28 plr30 pt20 p-r">
-			<div>详细地址</div>
-			<input type="text" id="ltAddress" name="ltAddress" placeholder="必填，方便量体师与您联系" class="wp100 in-ba plr20 mt20 fs28">
+		</div> -->
+		<div class="fs28 plr30 pt20 p-r" id="nameWrap">
+			<div>量体地址</div>
+			<div  id= "ltAddressCont" class="wp100 in-ba plr20 mt20 fs28"></div>
+			<!-- <select class="wp100 over-select"  id="ltAddress" name="ltAddress"></select> -->
+			<!-- <a href="../user/add_address.html" class="fs22 yuYAdress">添加收货地址</a> -->
 		</div>
 		<div class="fs28 plr30 pt20 p-r">
 			<div>选择日期</div>
@@ -106,7 +108,7 @@
 		</div>
 
 		<div class="fs28 plr30 pt20 p-r">
-			<div>量体叮嘱</div>
+			<div>特别叮嘱</div>
 			<input type="text" placeholder="选填" id="applyNote" name="applyNote" class="wp100 in-ba plr20 mt20 fs28">
 		</div>
 	</form>

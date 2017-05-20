@@ -1,6 +1,6 @@
 /*设置*/
 .red{color:#cf102d;}
-.blue{color:#002269;}
+.blue{color:#003A63;}
 .fs22{font-size:0.22rem;}
 .fs24{font-size:0.24rem;}
 .fs26{font-size:0.26rem}
@@ -39,9 +39,9 @@
 	content: "";
 }
 .black{color:#000000;}
-.but{line-height:0.8rem;background-color:#002269;color:#ffffff;border-radius:0.1rem;}
+.but{line-height:0.8rem;background-color:#003A63;color:#ffffff;border-radius:0.1rem;}
 .more{width:0.16rem; position: absolute;right: 0.3rem;top: 50%;margin-top: -0.15rem;}
-
+.top_4 {top: 4px;}
 
 .head{width: 1rem;height: 1rem;border:0.06rem solid #ffffff;border-radius:0.8rem;}
 .ba-img{background:url(../images/%E8%83%8C%E6%99%AFx.png) no-repeat center;background-size:cover;}
@@ -99,17 +99,18 @@
 
 /*一键复购*/
 
-.button{line-height:0.8rem;background-color:#002269;color:#ffffff;line-height:0.9rem;}
+.button{line-height:0.8rem;background-color:#003A63;color:#ffffff;line-height:0.9rem;}
 
 /*预约量体*/
 .in-ba{background-color:#f7f7f7;line-height:0.6rem;border-radius:0.1rem;}
 .ad{width:2rem;line-height:0.6rem;background-color:#f7f7f7;border-radius:0.1rem;}
 .dianji{width:0.14rem;right: 0.2rem;top: 50%;margin-top: -0.025rem;}
-
-
+#ltAddress0{z-index: -3;}
+.over-select{top: 0.5rem;height: 50%;}
+.yuYAdress{position: absolute;right: 0.3rem;top: 1.5rem;z-index: 3;}
 /*绑定手机号码*/
-.delete{width:0.4rem; position: absolute;right: 0.2rempx;top: 50%;margin-top: -0.2rem;}
-.gain{width:1.5rem;height:0.6rem;background:#002269;border-radius:0.06rem;line-height: 0.6rem;float: right;margin-top: 0.2rem;
+.delete{width:0.4rem; position: absolute;right: 0.2rem;top: 50%;margin-top: -0.2rem;}
+.gain{width:1.5rem;height:0.6rem;background:#003A63;border-radius:0.06rem;line-height: 0.6rem;float: right;margin-top: 0.2rem;
 margin-right: 0.2rem;color:#ffffff;position: absolute;
     right: 0;
     top: 0;}
@@ -118,7 +119,7 @@ margin-right: 0.2rem;color:#ffffff;position: absolute;
 
 
 /*账号管理*/
-.out{line-height:0.9rem;background-color:#ffffff;color:#002269;}
+.out{line-height:0.9rem;background-color:#ffffff;color:#003A63;}
 
 /*修改手机号码*/
 .pl240{padding-left:2.4rem;}
@@ -145,3 +146,110 @@ margin-right: 0.2rem;color:#ffffff;position: absolute;
 -o-transform:translateY(-50%); 	/* Opera */}
 .mt45{margin-top:0.45rem;}
 .ml45{margin-left:0.45rem;}
+/*地址选择*/
+.choo{width:20px;}
+.hig90{height:90px;}
+.addr-table th {
+    text-align: right;
+}
+
+.addr-table td {
+    text-align: left;
+    padding-left: 20px;
+}
+
+.addr-table tr {
+    height: 50px;
+}
+
+.addr-table th, .addr-table td {
+    border: none;
+    border-bottom: 1px solid #E6E6E6;
+    color: #323232;
+    font-weight: normal;
+}
+
+.addr-table input {
+    line-height: 1rem;
+    font-size:0.30rem;;
+    width: 100%;
+}
+.warning {
+    background: #F64444;
+    position: absolute;
+    right: 10px;
+    display: none;
+    top: 10px;
+    padding: 0 6px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 5px;
+    color: #fff;
+    font-size:0.22rem;
+}
+.mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: .618;
+    z-index: 110;
+}
+.radio-tip {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    border: 1px solid #003A63;
+}
+.radio-tip.active>i, .radio-tip1.active>i {
+    display: inline-block;
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background-color: #003A63;
+    left: 1px;
+    top: 1px;
+}
+.mlr_auto{margin-left: 0.8rem}
+.shadow-box {box-shadow: 0 0 8px rgba(0, 0, 0, 0.1), 0 0 256px rgba(255, 255, 255, .3);border-radius: 0.2rem;}
+.al_addr_del {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: -1;
+    height: 100%;
+    width: 56px;
+    color: #fff;
+    background: #003A63;
+    cursor: pointer;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    -moz-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    -moz-box-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: -moz-box;
+    display: flex;
+    overflow: hidden;
+}
+.z_index0 {
+    z-index: 0;
+}
+/*地址新增*/
+.pl100{padding-left:100px;}
+.mt120{margin-top:120px;}
