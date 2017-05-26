@@ -45,7 +45,7 @@ define([
                     $("#logisticsCode").html(data.logisticsCode);
                     $("#logisticsCompany").html(wlCompany[data.logisticsCompany]);
                     $("#deliverer").html(data.deliverer);
-                    $("#deliveryDatetime").html(base.formatDate(data.deliveryDatetime, "yyyy-MM-dd hh:mm"));
+                    $("#deliveryDatetime").html(base.formatDate(data.deliveryDatetime, "yyyy-MM-dd"));
                     $("#reAddress").html(data.reAddress);
                 }
             }else{
