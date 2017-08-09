@@ -1,9 +1,8 @@
 define([
     'app/controller/base',
     'app/util/ajax',
-    'app/module/loading/loading',
-    'app/module/judgeBindMobile/judgeBindMobile'
-], function(base, Ajax, loading, JudgeBindMobile) {
+    'app/module/loading/loading'
+], function(base, Ajax, loading) {
     init();
 
     function init() {
@@ -59,25 +58,7 @@ define([
             .then(function(res) {
                 if (res.success) {
                     base.setSessionUser(res);
-                    base.getUser()
-                        .then(function(res) {
-                            loading.hideLoading();
-                            if (res.success) {
-                                // 如果未绑定手机号，则绑定
-                                if (!res.data.mobile) {
-                                    JudgeBindMobile.addCont({
-                                        avatar: res.data.userExt.photo,
-                                        nickname: res.data.nickname
-                                    }).showCont();
-                                } else {
-                                    base.goBackUrl("/", true);
-                                }
-                            } else {
-                                base.goBackUrl("/", true);
-                            }
-                        }, function(){
-                            base.goBackUrl("/", true);
-                        });
+                    base.goBackUrl("/", true);
                 } else {
                     loading.hideLoading();
                     base.showMsg(res.msg);
