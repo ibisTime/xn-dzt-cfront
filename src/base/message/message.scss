@@ -1,0 +1,18 @@
+.message-module-cont {
+  min-width: 60px;
+  border-radius: 4px;
+  color: #fff;
+  background-color: rgba(58,58,58,.9);
+  line-height: 1.5;
+  padding: 9px 15px;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  max-width: 50%;
+  display: none;
+
+  .message-module-text{
+    font-size: 14px;
+  }
+}

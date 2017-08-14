@@ -1,0 +1,113 @@
+@import "~common/scss/mixin";
+@import "~common/scss/variable";
+
+.form-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: $color-background;
+
+  .form-item {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 0 15px;
+    min-height: 48px;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+    font-size: 16px;
+    background: #fff;
+
+    &.is-textarea {
+      .item-input-wrapper {
+        padding: 5px 0;
+      }
+    }
+
+    .item-label {
+      width: 75px;
+      -webkit-box-flex: 0;
+      -ms-flex: 0 0 75px;
+      flex: 0 0 75px;
+    }
+
+    .item-input-wrapper {
+      position: relative;
+      -webkit-box-flex: 1;
+      -ms-flex: 1;
+      flex: 1;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+
+      .item-input {
+        -webkit-box-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+        line-height: 1.6;
+      }
+
+      .hide-area {
+        position: absolute;
+        visibility: hidden;
+      }
+
+      textarea {
+        width: 100%;
+      }
+
+      .error-tip {
+        font-size: $font-size-medium;
+        color: #ff0000;
+        white-space: nowrap;
+        position: absolute;
+        right: 0;
+      }
+    }
+    .item-btn {
+      padding-left: 10px;
+
+      button {
+        min-width: 90px;
+        padding: 4px 10px;
+        white-space: nowrap;
+        border-radius: 6px;
+        font-size: $font-size-medium;
+        background: $primary-color;
+        color: #fff;
+
+        &[disabled] {
+          background: $color-disable-background;
+        }
+      }
+    }
+  }
+
+  .form-btn {
+    margin-top: 40px;
+    padding: 0 15px;
+    width: 100%;
+
+    button {
+      display: block;
+      width: 100%;
+      line-height: 40px;
+      border-radius: 6px;
+      font-size: $font-size-large;
+      background: $primary-color;
+      color: #fff;
+
+      &[disabled] {
+        background: $color-disable-background;
+      }
+    }
+  }
+}
