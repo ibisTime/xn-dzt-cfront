@@ -4,7 +4,7 @@
       <slot>
       </slot>
     </div>
-    <div class="dots">
+    <div class="dots" v-if="showDots">
       <span class="dot" v-for="(item, index) in dots" :key="index" :class="{active: currentPageIndex === index}"></span>
     </div>
   </div>
@@ -33,12 +33,18 @@
       interval: {
         type: Number,
         default: 4000
+      },
+      showDots: {
+        type: Boolean,
+        default: true
       }
     },
     mounted() {
       setTimeout(() => {
         this._setSliderWidth();
-        this._initDots();
+        if (this.showDots) {
+          this._initDots();
+        }
         this._initSlider();
 
         if(this.autoPlay) {
@@ -157,7 +163,7 @@
       position: absolute;
       right: 0;
       left: 0;
-      bottom: 12px;
+      bottom: -16px;
       text-align: center;
       font-size: 0;
 
@@ -167,12 +173,10 @@
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background: $color-text-l;
+        background: #cbcbcb;
 
         &.active {
-          width: 20px;
-          border-radius: 5px;
-          background: $color-text-ll;
+          background: #878787;
         }
       }
     }

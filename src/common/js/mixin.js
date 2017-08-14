@@ -1,25 +1,16 @@
-import {mapGetters} from 'vuex';
-
-export const playlistMixin = {
-  computed: {
-    ...mapGetters([
-      'playlist'
-    ])
-  },
-  mounted() {
-    this.handlePlaylist(this.playlist);
-  },
-  activated() {
-    this.handlePlaylist(this.playlist);
-  },
-  watch: {
-    playlist(newVal) {
-      this.handlePlaylist(newVal);
-    }
-  },
-  methods: {
-    handlePlaylist() {
-      throw new Error('component must implement handlePlaylist method');
+export const commonMixin = {
+  filters: {
+    formatImg(imgs, suffix) {
+      if(!imgs) {
+        return '';
+      }
+      let img = imgs.split(/\|\|/)[0];
+      if (!/^http/i.test(img)) {
+        suffix = suffix || '?imageMogr2/auto-orient';
+        // img = PIC_PREFIX + img + suffix;
+        img = img + suffix;
+      }
+      return img;
     }
   }
 };

@@ -16,13 +16,9 @@
               @scrollToEnd="scrollToEnd"
               class="technology-content">
         <div>
-          <ul>
-            <li v-for="(item, index) in techList" ref="techCate" :key="index">
-              <p>ifsfs</p>
-              <p>ifsfs</p>
-              <p>ifsfs</p>
-              <p>ifsfs</p>
-              <p>ifsfs</p>
+          <ul class="tech-content">
+            <li v-for="(item, index) in categorys" class="tech-item" ref="techCate" :key="index">
+              <div class="head">{{item}}</div>
               <hr/>
               <ul>
                 <li>
@@ -60,29 +56,19 @@
   import Loading from 'base/loading/loading';
 
   const CATEGORYS = [{
-    key: 'all',
-    value: '全部订单'
+    value: '衬衫工艺'
   }, {
-    key: '0',
-    value: '待量体'
+    value: '西服工艺'
   }, {
-    key: '1',
-    value: '已定价'
+    value: '西裤工艺'
   }, {
-    key: '2',
-    value: '待提交'
+    value: '马甲工艺'
   }, {
-    key: '3',
-    value: '待复核'
+    value: '大衣工艺'
   }, {
-    key: '4',
-    value: '待生产'
+    value: 'xx工艺'
   }, {
-    key: '5',
-    value: '生产中'
-  }, {
-    key: '6',
-    value: '已发货'
+    value: 'pp工艺'
   }];
 
   export default {
@@ -196,6 +182,10 @@
       left: 0;
       width: 100%;
       bottom: 0;
+
+      .tech-content {
+        .tech-item {}
+      }
 
       li {
         padding: 30px;

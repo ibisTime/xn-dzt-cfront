@@ -14,3 +14,16 @@ body, html {
   background: $color-background;
   color: $color-text;
 }
+
+.clearfix {
+  zoom: 1;
+  
+  &:after {
+    content: "";
+    display: block;
+    height: 0;
+    line-height: 0;
+    clear: both;
+    visibility: hidden;
+  }
+}

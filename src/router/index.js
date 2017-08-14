@@ -1,14 +1,23 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home1 from 'components/home1/home1';
-import ChangeMobile from 'components/change-mobile/change-mobile';
-import BindMobile from 'components/bind-mobile/bind-mobile';
-import TradePwd from 'components/trade-pwd/trade-pwd';
-import AddEditAddress from 'components/add-edit-address/add-edit-address';
-import Orders from 'components/orders/orders';
-import Technology from 'components/technology/technology';
 
 Vue.use(Router);
+
+const Home = () => import('components/home/home');
+// 修改手机号
+const ChangeMobile = () => import('components/change-mobile/change-mobile');
+// 绑定手机号
+const BindMobile = () => import('components/bind-mobile/bind-mobile');
+// 交易密码
+const TradePwd = () => import('components/trade-pwd/trade-pwd');
+// 新增修改地址
+const AddEditAddress = () => import('components/add-edit-address/add-edit-address');
+// 订单列表
+const Orders = () => import('components/orders/orders');
+// 精致工艺列表
+const Technology = () => import('components/technology/technology');
+// 高端面料列表
+const Material = () => import('components/material/material');
 
 export default new Router({
   routes: [
@@ -18,7 +27,7 @@ export default new Router({
     },
     {
       path: '/home',
-      component: Home1,
+      component: Home,
       children: [
         {
           path: 'set-tradepwd',
@@ -41,6 +50,10 @@ export default new Router({
         {
           path: 'technology',
           component: Technology
+        },
+        {
+          path: 'material',
+          component: Material
         }
       ]
     },

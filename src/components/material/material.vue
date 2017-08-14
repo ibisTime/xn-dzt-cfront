@@ -79,7 +79,6 @@
       getTechList() {},
       selectCategory(index) {
         this.currentIndex = index;
-
       }
     },
     components: {
