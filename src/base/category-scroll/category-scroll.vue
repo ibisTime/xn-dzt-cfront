@@ -1,13 +1,14 @@
 <template>
   <div class="category" ref="category">
-    <div class="category-group" ref="categoryGroup">
+    <div class="category-group" :style="_getGroupBgColor()" ref="categoryGroup">
       <div
         v-for="(item, index) in categorys"
         :key="index"
         ref="cate"
         @click="_selectItem(index)"
         class="category-item"
-        :class="{active: index === currentIndex}">
+        :class="{active: index === currentIndex}"
+        :style="_getItemColor(index)">
         {{item.value}}
       </div>
     </div>
@@ -26,12 +27,26 @@
       currentIndex: {
         type: Number,
         default: 0
+      },
+      deColor: {
+        type: String,
+        default: ''
+      },
+      acColor: {
+        type: String,
+        default: ''
+      },
+      bgColor: {
+        type: String,
+        default: ''
       }
     },
     mounted() {
       setTimeout(() => {
         this._setSliderWidth();
         this._initSlider();
+        let ele = this.$refs.cate && this.$refs.cate[this.currentIndex];
+        ele && this.scroll.scrollToElement(ele, 200, true);
       }, 20);
 
       window.addEventListener('resize', () => {
@@ -45,6 +60,35 @@
       _selectItem(index) {
         this.scroll.scrollToElement(this.$refs.cate[index], 200, true);
         this.$emit('select', index);
+      },
+      _getGroupBgColor() {
+        if (this.bgColor) {
+          return {
+            background: this.bgColor
+          };
+        } else {
+          return null;
+        }
+      },
+      _getItemColor(index) {
+        if (this.deColor) {
+          if (index === this.currentIndex) {
+            if (this.acColor) {
+              return {
+                color: this.acColor
+              };
+            } else {
+              return {
+                color: 'rgb(178,160,46)'
+              };
+            }
+          }
+          return {
+            color: this.deColor
+          };
+        } else {
+          return null;
+        }
       },
       scrollToEleByIndex(index) {
         this.scroll.scrollToElement(this.$refs.cate[index], 200, true);
@@ -71,7 +115,9 @@
     },
     watch: {
       categorys() {
-        this._setSliderWidth();
+        setTimeout(() => {
+          this._setSliderWidth();
+        }, 20);
       }
     }
   };

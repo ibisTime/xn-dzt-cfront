@@ -1,0 +1,91 @@
+<template>
+  <transition name="slide">
+    <div class="question-wrapper">
+      <scroll class="question-content">
+        <div>
+          <div ref="description" class="description">
+            <div v-html="content"></div>
+          </div>
+        </div>
+      </scroll>
+    </div>
+  </transition>
+</template>
+<script>
+  import Scroll from 'base/scroll/scroll';
+  import {setTitle} from 'common/js/util';
+  import {getUserSystemConfig} from 'api/general';
+
+  export default {
+    data() {
+      return {
+        content: ''
+      };
+    },
+    created() {
+      setTitle('常见问题');
+      getUserSystemConfig('someQuestions').then((data) => {
+        this.content = data.cvalue;
+      });
+    },
+    methods: {
+      _refreshScroll() {
+        setTimeout(() => {
+          let imgs = this.$refs.description.getElementsByTagName('img');
+          for (let i = 0; i < imgs.length; i++) {
+            let _img = imgs[i];
+            if (_img.complete) {
+              setTimeout(() => {
+                this.$refs.scroll.refresh();
+              }, 20);
+              continue;
+            }
+            _img.onload = () => {
+              setTimeout(() => {
+                this.$refs.scroll.refresh();
+              }, 20);
+            };
+          }
+        }, 20);
+      }
+    },
+    watch: {
+      content() {
+        this._refreshScroll();
+      }
+    },
+    components: {
+      Scroll
+    }
+  };
+</script>
+<style lang="scss" scoped>
+  @import "~common/scss/variable";
+  @import "~common/scss/mixin";
+
+  .question-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0 18px;
+    background: #fff;
+
+    .question-content {
+      height: 100%;
+      overflow: hidden;
+
+      .description {
+        padding: 18px;
+      }
+    }
+  }
+  .slide-enter-active, .slide-leave-active {
+    transition: all 0.3s;
+  }
+
+  .slide-enter, .slide-leave-to {
+    transform: translate3d(100%, 0, 0);
+  }
+</style>

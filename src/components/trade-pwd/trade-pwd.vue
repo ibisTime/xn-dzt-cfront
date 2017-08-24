@@ -4,7 +4,7 @@
       <div class="form-item">
         <div class="item-label">手机号</div>
         <div class="item-input-wrapper">
-          <input type="tel" class="item-input" :value="mobile" disabled>
+          <input type="tel" class="item-input" :value="this.user && this.user.mobile || ''" placeholder="请先绑定手机号" disabled>
         </div>
       </div>
       <div class="form-item">
@@ -73,41 +73,47 @@
       };
     },
     computed: {
-      mobile() {
-        return this.user && this.user.mobile || '';
-      },
       ...mapGetters([
         'user'
       ])
     },
     created() {
-      setTitle('设置交易密码');
       this.fetching = false;
-      this._getUser();
+    },
+    mounted() {
+      if (this.shouldGetData()) {
+        this._getUser();
+      }
     },
     methods: {
+      shouldGetData() {
+        if (/\/set-tradepwd\/?$/.test(this.$route.path)) {
+          setTitle('设置交易密码');
+          return !this.fetching;
+        }
+      },
       _getUser() {
-        if (/\/set-tradepwd\/?$/.test(this.$route.path) && !this.fetching) {
-          if (!this.user) {
-            this.fetching = true;
-            getUser().then((data) => {
-              this.fetching = false;
-              this.setUser(data);
-              if (!data.mobile) {
-                this.showConfirm();
-              }
-            }).catch(() => {
-              this.fetching = false;
-            });
-          } else if (!this.user.mobile) {
+        if (!this.user) {
+          this.fetching = true;
+          getUser().then((data) => {
+            this.fetching = false;
+            this.setUser(data);
+            if (!data.mobile) {
+              this.showConfirm();
+            }
+          }).catch(() => {
+            this.fetching = false;
+          });
+        } else if (!this.user.mobile) {
+          setTimeout(() => {
             this.showConfirm();
-          }
+          });
         }
       },
       sendCaptcha() {
         if (this._mobileValid()) {
           this.sending = true;
-          sendCaptcha(this.mobile, 805045).then(() => {
+          sendCaptcha(this.user.mobile, 805066).then(() => {
             this._setInterval();
           }).catch(() => {
             this._clearInterval();
@@ -123,10 +129,10 @@
       _setTradePwd() {
         if (this._valid()) {
           this.setting = true;
-          setTradePwd(this.mobile, this.captcha)
+          setTradePwd(this.tradePwd, this.captcha)
             .then(() => {
               this.$refs.toast.show();
-              this.setTradeFlag('1');
+              this.setTradeFlag(true);
               setTimeout(() => {
                 this.$router.back();
               }, 1000);
@@ -148,7 +154,7 @@
         }
       },
       _mobileValid() {
-        if (!this.mobile) {
+        if (!this.user || !this.user.mobile) {
           this.showConfirm();
           return false;
         }
@@ -195,8 +201,10 @@
       })
     },
     updated() {
-      if (/\/set-tradepwd$/.test(this.$route.path)) {
-        setTitle('设置交易密码');
+      if (this.shouldGetData()) {
+        if (!this.user) {
+          this._getUser();
+        }
       }
     },
     components: {

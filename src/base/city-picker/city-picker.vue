@@ -1,5 +1,5 @@
 <template>
-  <input type="text" readonly @click="showPicker" :value="address" placeholder="请输入省市区" />
+  <input type="text" :disabled="disabled" readonly @click="showPicker" :value="address" placeholder="请输入省市区" />
 </template>
 <script>
   import Picker from 'better-picker';
@@ -18,6 +18,10 @@
       district: {
         type: String,
         default: ''
+      },
+      disabled: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {

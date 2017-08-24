@@ -3,21 +3,81 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
+// 首页
 const Home = () => import('components/home/home');
-// 修改手机号
-const ChangeMobile = () => import('components/change-mobile/change-mobile');
-// 绑定手机号
-const BindMobile = () => import('components/bind-mobile/bind-mobile');
-// 交易密码
-const TradePwd = () => import('components/trade-pwd/trade-pwd');
-// 新增修改地址
-const AddEditAddress = () => import('components/add-edit-address/add-edit-address');
-// 订单列表
-const Orders = () => import('components/orders/orders');
 // 精致工艺列表
 const Technology = () => import('components/technology/technology');
 // 高端面料列表
 const Material = () => import('components/material/material');
+// 高端面料详情
+const MaterialDetail = () => import('components/material-detail/material-detail');
+// 衬衫详情页
+const ProductDetail = () => import('components/product-detail/product-detail');
+// 合衣衬衫列表
+const Shirts = () => import('components/shirts/shirts');
+// H+列表
+const HClothes = () => import('components/h-clothes/h-clothes');
+
+// 预约
+const Book = () => import('components/book/book');
+
+// 发现
+const Find = () => import('components/find/find');
+// 发现详情页
+const FindDetail = () => import('components/find-detail/find-detail');
+
+// 我的
+const User = () => import('components/user/user');
+// 用户设置
+const Setting = () => import('components/setting/setting');
+// 修改头像
+const EditAvatar = () => import('components/edit-avatar/edit-avatar');
+// 修改昵称
+const Nickname = () => import('components/nickname/nickname');
+// 修改手机号
+const ChangeMobile = () => import('components/change-mobile/change-mobile');
+// 绑定手机号
+const BindMobile = () => import('components/bind-mobile/bind-mobile');
+// 支付密码
+const TradePwd = () => import('components/trade-pwd/trade-pwd');
+// 银行卡列表
+const BankCard = () => import('components/bankcard/bankcard');
+// 新增、修改银行卡
+const BankCardAddEdit = () => import('components/bankcard-addedit/bankcard-addedit');
+// 我的账户
+const Account = () => import('components/account/account');
+// 账户流水
+const CnyFlow = () => import('components/cny-flow/cny-flow');
+// 充值
+const Recharge = () => import('components/recharge/recharge');
+// 提现
+const Withdraw = () => import('components/withdraw/withdraw');
+// 订单列表
+const Orders = () => import('components/orders/orders');
+// 订单详情
+const OrderDetail = () => import('components/order-detail/order-detail');
+// 支付订单
+const Pay = () => import('components/pay/pay');
+// 客服留言
+const Service = () => import('components/service/service');
+// 着装顾问
+const Adviser = () => import('components/adviser/adviser');
+// 常见问题
+const Question = () => import('components/question/question');
+// 我的收藏
+const Collection = () => import('components/collection/collection');
+// 会员中心
+const Member = () => import('components/member/member');
+// 积分流水
+const JfFlow = () => import('components/jf-flow/jf-flow');
+// 会员福利
+const MemberWelfare = () => import('components/member-welfare/member-welfare');
+// 会员介绍
+const MemberIntroduce = () => import('components/member-introduce/member-introduce');
+// 我的推荐
+const Recommend = () => import('components/recommend/recommend');
+// 新增修改地址
+// const AddEditAddress = () => import('components/add-edit-address/add-edit-address');
 
 export default new Router({
   routes: [
@@ -30,48 +90,200 @@ export default new Router({
       component: Home,
       children: [
         {
-          path: 'set-tradepwd',
-          component: TradePwd,
-          children: [
-            {
-              path: 'bind-mobile',
-              component: BindMobile
-            }
-          ]
-        },
-        {
-          path: 'add-edit-addr',
-          component: AddEditAddress
-        },
-        {
-          path: 'orders',
-          component: Orders
-        },
-        {
           path: 'technology',
           component: Technology
         },
         {
           path: 'material',
-          component: Material
+          component: Material,
+          children: [
+            {
+              path: ':id',
+              component: MaterialDetail
+            }
+          ]
+        },
+        {
+          path: 'shirt',
+          component: Shirts,
+          children: [
+            {
+              path: ':id',
+              component: ProductDetail
+            }
+          ]
+        },
+        {
+          path: 'clothes',
+          component: HClothes,
+          children: [
+            {
+              path: ':id',
+              component: ProductDetail
+            }
+          ]
+        },
+        {
+          path: ':id',
+          component: ProductDetail
         }
       ]
     },
     {
-      path: '/change-mobile',
-      component: ChangeMobile
+      path: '/book',
+      component: Book
     },
     {
-      path: '/bind-mobile',
-      component: BindMobile
-    },
-    {
-      path: '/set-tradepwd',
-      component: TradePwd,
+      path: '/find',
+      component: Find,
       children: [
         {
-          path: 'bind-mobile',
-          component: BindMobile
+          path: ':id',
+          component: FindDetail
+        }
+      ]
+    },
+    {
+      path: '/user',
+      component: User,
+      children: [
+        {
+          path: 'setting',
+          component: Setting,
+          children: [
+            {
+              path: 'avatar',
+              component: EditAvatar
+            },
+            {
+              path: 'nickname',
+              component: Nickname
+            },
+            {
+              path: 'bind-mobile',
+              component: BindMobile
+            },
+            {
+              path: 'change-mobile',
+              component: ChangeMobile
+            },
+            {
+              path: 'set-tradepwd',
+              component: TradePwd,
+              children: [
+                {
+                  path: 'bind-mobile',
+                  component: BindMobile
+                }
+              ]
+            },
+            {
+              path: 'bankcard',
+              component: BankCard,
+              children: [
+                {
+                  path: 'add',
+                  component: BankCardAddEdit
+                },
+                {
+                  path: ':id',
+                  component: BankCardAddEdit
+                }
+              ]
+            }
+          ]
+        },
+        {
+          path: 'account',
+          component: Account,
+          children: [
+            {
+              path: 'flow',
+              component: CnyFlow
+            },
+            {
+              path: 'recharge',
+              component: Recharge
+            },
+            {
+              path: 'withdraw',
+              component: Withdraw,
+              children: [
+                {
+                  path: 'add',
+                  component: BankCardAddEdit
+                }
+              ]
+            },
+            {
+              path: 'set-tradepwd',
+              component: TradePwd,
+              children: [
+                {
+                  path: 'bind-mobile',
+                  component: BindMobile
+                }
+              ]
+            }
+          ]
+        },
+        {
+          path: 'order',
+          component: Orders,
+          children: [
+            {
+              path: 'pay',
+              component: Pay
+            },
+            {
+              path: ':code',
+              component: OrderDetail,
+              children: [
+                {
+                  path: 'pay',
+                  component: Pay
+                }
+              ]
+            }
+          ]
+        },
+        {
+          path: 'service',
+          component: Service
+        },
+        {
+          path: 'adviser',
+          component: Adviser
+        },
+        {
+          path: 'question',
+          component: Question
+        },
+        {
+          path: 'collection',
+          component: Collection
+        },
+        {
+          path: 'member',
+          component: Member,
+          children: [
+            {
+              path: 'flow',
+              component: JfFlow
+            },
+            {
+              path: 'welfare',
+              component: MemberWelfare
+            },
+            {
+              path: 'introduce',
+              component: MemberIntroduce
+            }
+          ]
+        },
+        {
+          path: 'recommend',
+          component: Recommend
         }
       ]
     }

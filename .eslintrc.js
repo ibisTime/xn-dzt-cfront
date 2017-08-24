@@ -27,5 +27,10 @@ module.exports = {
     'eol-last': 0,
     'space-before-function-paren': 0,
     'keyword-spacing': 0
+  },
+  'globals': {
+    'wx': true,
+    'WeixinJSBridge': true,
+    'PIC_PREFIX': true
   }
 }

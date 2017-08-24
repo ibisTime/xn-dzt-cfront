@@ -12,6 +12,7 @@ var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = require('./webpack.dev.conf')
 var axios = require('axios')
+var bodyParser = require('body-parser');
 
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
@@ -25,14 +26,15 @@ var app = express()
 
 var apiRoutes = express.Router()
 
-apiRoutes.post('/api', function (req, res) {
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+app.use('/api', function (req, res) {
   var url = 'http://121.43.101.148:8901/forward-service/api'
-  axios.post(url, req.body, {
-    headers: {
-      referer: 'http://121.43.101.148:8901/',
-      host: '121.43.101.148'
-    }
-  }).then((response) => {
+  var _body = req.body;
+  var param = 'code=' + _body.code + '&json=' + encodeURIComponent(_body.json);
+  axios.post(url, param).then((response) => {
     var ret = response.data
     if (typeof ret === 'string') {
       var reg = /^\w+\(({[^()]+})\)$/
@@ -46,8 +48,6 @@ apiRoutes.post('/api', function (req, res) {
     console.log(e)
   })
 })
-
-app.use('/forward', apiRoutes)
 
 var compiler = webpack(webpackConfig)
 

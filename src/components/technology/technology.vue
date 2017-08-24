@@ -11,41 +11,39 @@
               @scroll="scroll"
               :listen-scroll="listenScroll"
               :probe-type="probeType"
-              :data="techList"
+              :data="categorys"
               :scrollEnd="scrollEnd"
               @scrollToEnd="scrollToEnd"
               class="technology-content">
         <div>
           <ul class="tech-content">
             <li v-for="(item, index) in categorys" class="tech-item" ref="techCate" :key="index">
-              <div class="head">{{item}}</div>
-              <hr/>
-              <ul>
-                <li>
-                  <p>aaaaa</p>
-                  <p>aaaaa</p>
-                  <p>aaaaa</p>
-                  <p>aaaaa</p>
-                  <p>aaaaa</p>
-                  <hr/>
-                </li>
-                <li>
-                  <p>aaaaa</p>
-                  <p>aaaaa</p>
-                  <p>aaaaa</p>
-                  <p>aaaaa</p>
-                  <p>aaaaa</p>
-                  <hr/>
+              <div class="head">{{item.value}}</div>
+              <ul class="clearfix">
+                <li v-for="tech in techList[item.key]" :key="tech.code" @click="selectItem(tech)">
+                  <div class="inner">
+                    <div class="inner-content">
+                      <img v-lazy="formatImg(tech.advPic || tech.pic)"/>
+                      <!-- <div class="text">{{tech.name}}</div> -->
+                    </div>
+                  </div>
                 </li>
               </ul>
             </li>
             <loading class="tech-loading" v-show="hasMore" title=""></loading>
           </ul>
         </div>
-        <div v-show="!hasMore && !techList.length" class="no-result-wrapper">
+        <div v-show="!hasMore && !categorys.length" class="no-result-wrapper">
           <no-result title="抱歉，暂无相关工艺"></no-result>
         </div>
       </scroll>
+      <modal ref="modal">
+        <div class="modal-wrap">
+          <img :src="formatImg(currentItem && (currentItem.advPic || currentItem.pic))"/>
+          <!-- <div class="text">{{currentItem && currentItem.name}}</div> -->
+          <div @click="handleCollection" class="icon" :class="{active:currentLike}"></div>
+        </div>
+      </modal>
     </div>
   </transition>
 </template>
@@ -54,43 +52,109 @@
   import Scroll from 'base/scroll/scroll';
   import NoResult from 'base/no-result/no-result';
   import Loading from 'base/loading/loading';
-
-  const CATEGORYS = [{
-    value: '衬衫工艺'
-  }, {
-    value: '西服工艺'
-  }, {
-    value: '西裤工艺'
-  }, {
-    value: '马甲工艺'
-  }, {
-    value: '大衣工艺'
-  }, {
-    value: 'xx工艺'
-  }, {
-    value: 'pp工艺'
-  }];
+  import Modal from 'base/modal/modal';
+  import {formatImg, getShareImg, setTitle} from 'common/js/util';
+  import {initShare} from 'common/js/weixin';
+  import {getTechnologyList, getTechnology, collection, cancelCollection} from 'api/biz';
+  import {getDictList} from 'api/general';
 
   export default {
     data() {
       return {
         currentIndex: 0,
         scrollY: -1,
-        categorys: CATEGORYS,
-        techList: [1, 2, 3, 4, 5, 6, 7, 8],
+        categorys: [],
+        techList: null,
         hasMore: true,
         isScrolling: false,
-        scrollEnd: true
+        scrollEnd: true,
+        currentLike: false,
+        currentItem: null
       };
     },
     created() {
+      setTitle('精致工艺');
       this.probeType = 3;
       this.listenScroll = true;
       this.listHeight = [];
-      this.getTechList();
+      this.getInitData();
+      initShare({
+        title: document.title,
+        desc: '精致工艺',
+        link: location.href,
+        imgUrl: getShareImg()
+      });
     },
     methods: {
-      getTechList() {},
+      getInitData() {
+        Promise.all([
+          this.getTechList(),
+          this.getCraftTypeDict()
+        ]).then(([techList, craftList]) => {
+          let craftObj = {};
+          craftList.forEach((item) => {
+            craftObj[item.dkey] = {
+              use: false,
+              key: item.dkey,
+              value: item.dvalue
+            };
+          });
+          let cateList = [];
+          let techObj = {};
+          techList.forEach((item) => {
+            if (craftObj[item.type]) {
+              if (!craftObj[item.type].use) {
+                craftObj[item.type].use = true;
+                cateList.push(craftObj[item.type]);
+                techObj[item.type] = [];
+              }
+              techObj[item.type].push(item);
+            }
+          });
+          this.categorys = cateList;
+          this.techList = techObj;
+          this.hasMore = false;
+        }).catch(() => {
+          this.hasMore = false;
+        });
+      },
+      // 工艺数据获取
+      getTechList() {
+        return getTechnologyList();
+      },
+      // 工艺类型数据字典
+      getCraftTypeDict() {
+        return getDictList('craftwork_type');
+      },
+      // 详情获取工艺
+      getTechnology(code) {
+        getTechnology(code).then((data) => {
+          if (code === this.currentItem.code) {
+            this.currentLike = data.isSC === '1';
+          }
+        });
+      },
+      handleCollection() {
+        if (this.currentLike) {
+          this.currentLike = false;
+          cancelCollection(this.currentItem.code).catch(() => {
+            this.currentLike = true;
+          });
+        } else {
+          this.currentLike = true;
+          collection(this.currentItem.code).catch(() => {
+            this.currentLike = false;
+          });
+        }
+      },
+      formatImg(img) {
+        return formatImg(img);
+      },
+      selectItem(item) {
+        this.getTechnology(item.code);
+        this.currentItem = item;
+        this.$refs.modal.show();
+      },
       selectCategory(index) {
         this.currentIndex = index;
         this.isScrolling = true;
@@ -116,11 +180,6 @@
         }
       }
     },
-    mounted() {
-      setTimeout(() => {
-        this._calculateHeight();
-      }, 20);
-    },
     watch: {
       scrollY(newY) {
         if (this.isScrolling) {
@@ -143,18 +202,25 @@
       },
       currentIndex(newIndex) {
         this.$refs.categoryScroll.scrollToEleByIndex(newIndex);
+      },
+      techList() {
+        setTimeout(() => {
+          this._calculateHeight();
+        }, 20);
       }
     },
     components: {
       CategoryScroll,
       Scroll,
       NoResult,
-      Loading
+      Loading,
+      Modal
     }
   };
 </script>
 <style lang="scss" scoped>
   @import "~common/scss/variable";
+  @import "~common/scss/mixin";
 
   .technology-wrapper {
     position: fixed;
@@ -182,13 +248,68 @@
       left: 0;
       width: 100%;
       bottom: 0;
+      background-color: #fff;
 
       .tech-content {
-        .tech-item {}
-      }
+        padding: 10px 14px 10px 19px;
 
-      li {
-        padding: 30px;
+        .tech-item {
+          .head {
+            margin-top: 25px;
+            margin-bottom: 4px;
+            padding-left: 7px;
+            font-size: $font-size-medium;
+          }
+          ul {
+            li {
+              position: relative;
+              float: left;
+              width: 25%;
+              height: 0;
+              padding-top: 25%;
+              border-radius: 6px;
+
+              .inner {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                padding-right: 5px;
+                padding-top: 5px;
+
+                .inner-content {
+                  position: relative;
+                  width: 100%;
+                  height: 100%;
+                  border: 1px solid #e5e5e5;
+                  border-radius: 6px;
+                  box-shadow: 1px 1px 1px #e5e5e5;
+
+                  img {
+                    width: 100%;
+                    height: 100%;
+                  }
+
+                  .text {
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    border-bottom-right-radius: 6px;
+                    border-top-left-radius: 6px;
+                    max-width: 100%;
+                    text-align: right;
+                    font-size: $font-size-small-s;
+                    color: #fff;
+                    padding: 4px;
+                    background-color: $primary-color;
+                    @include no-wrap;
+                  }
+                }
+              }
+            }
+          }
+        }
       }
 
       .tech-loading {
@@ -200,6 +321,46 @@
         width: 100%;
         top: 50%;
         transform: translateY(-50%);
+      }
+    }
+
+    .modal-wrap {
+      height: 100%;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+
+      .text {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        border-bottom-right-radius: 13px;
+        border-top-left-radius: 13px;
+        max-width: 100%;
+        text-align: right;
+        font-size: $font-size-large-x;
+        color: #fff;
+        padding: 10px;
+        background-color: $primary-color;
+        @include no-wrap;
+      }
+
+      .icon {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50px;
+        height: 50px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 20px;
+        @include bg-image('like');
+
+        &.active {
+          @include bg-image('like-act');
+        }
       }
     }
   }

@@ -27,7 +27,8 @@
       width: 86px;
       height: 90px;
       margin: 0 auto;
-      @include bg-image('no-result');
+      // @include bg-image('no-result');
+      background-image: url('no-result.png');
       background-size: 86px 90px;
     }
     .no-result-text {

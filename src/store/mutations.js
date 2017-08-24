@@ -15,9 +15,14 @@ const mutations = {
     user.mobile = mobile;
     state.user = user;
   },
-  [types.SET_USER_TRADE_PWD_FLAG](state, pwdStrength) {
+  [types.SET_USER_NICKNAME](state, nickname) {
     let user = state.user || {};
-    user.trade_pwd_strength = pwdStrength;
+    user.nickname = nickname;
+    state.user = user;
+  },
+  [types.SET_USER_TRADE_PWD_FLAG](state, tradepwdFlag) {
+    let user = state.user || {};
+    user.tradepwdFlag = tradepwdFlag;
     state.user = user;
   },
   [types.SET_ADDRESS_LIST](state, list) {
@@ -29,6 +34,27 @@ const mutations = {
   },
   [types.SET_ORDER_LIST](state, list) {
     state.orderList = list;
+  },
+  [types.SET_CURRENT_ORDER](state, order) {
+    state.currentOrder = order;
+  },
+  [types.SET_BANKCARD_LIST](state, list) {
+    state.bankcardList = list;
+  },
+  [types.SET_CNY_ACCOUNT](state, account) {
+    state.cnyAccount = account;
+  },
+  [types.SET_JF_ACCOUNT](state, account) {
+    state.jfAccount = account;
+  },
+  [types.SET_JY_ACCOUNT](state, account) {
+    state.jyAccount = account;
+  },
+  [types.SET_CURRENT_MATERIAL](state, material) {
+    state.currentMaterial = material;
+  },
+  [types.SET_CURRENT_MODEL](state, model) {
+    state.currentModel = model;
   }
 };
 

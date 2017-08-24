@@ -1,26 +1,45 @@
 import fetch from 'common/js/fetch';
-import {getUserId, calculateSecurityLevel} from 'common/js/util';
+import {getUserId} from 'common/js/util';
+
+// 微信登录
+export function wxLogin(code, userReferee) {
+  return fetch(805170, {
+    code,
+    userReferee,
+    isNeedMobile: 0,
+    kind: 'C',
+    type: 'WX_H5'
+  });
+}
 
 // 获取用户详情
 export function getUser() {
-  return fetch('805056', {
+  return fetch('805121', {
+    userId: getUserId()
+  });
+}
+
+// 购买会员
+export function buyVIP() {
+  return fetch(620219, {
+    payType: 2,
     userId: getUserId()
   });
 }
 
 // 绑定手机号
-export function bindMobile(mobile, smsCaptcha, code) {
-  return fetch('805151', {
+export function bindMobile(mobile, smsCaptcha, isSendSms = '0') {
+  return fetch('805060', {
     mobile,
     smsCaptcha,
-    code,
+    isSendSms,
     userId: getUserId()
   });
 }
 
 // 修改手机号
 export function changeMobile(newMobile, smsCaptcha) {
-  return fetch('805047', {
+  return fetch('805061', {
     newMobile,
     smsCaptcha,
     userId: getUserId()
@@ -29,10 +48,25 @@ export function changeMobile(newMobile, smsCaptcha) {
 
 // 设置支付密码
 export function setTradePwd(tradePwd, smsCaptcha) {
-  return fetch('805045', {
+  return fetch('805066', {
     tradePwd,
     smsCaptcha,
-    tradePwdStrength: calculateSecurityLevel(tradePwd),
+    userId: getUserId()
+  });
+}
+
+// 修改昵称
+export function changeNickname(nickname) {
+  return fetch('805082', {
+    nickname,
+    userId: getUserId()
+  });
+}
+
+// 修改用户头像
+export function changeAvatar(photo) {
+  return fetch('805080', {
+    photo,
     userId: getUserId()
   });
 }

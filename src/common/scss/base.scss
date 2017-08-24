@@ -2,8 +2,8 @@
 
 * {
   box-sizing: border-box;
-  -moz-box-sizing: border-box; /* Firefox */
-  -webkit-box-sizing: border-box; /* Safari */
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
 }
 
 body, html {
@@ -13,11 +13,12 @@ body, html {
   -webkit-tap-highlight-color: transparent;
   background: $color-background;
   color: $color-text;
+  -webkit-overflow-scrolling: touch;
 }
 
 .clearfix {
   zoom: 1;
-  
+
   &:after {
     content: "";
     display: block;

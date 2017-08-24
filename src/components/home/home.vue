@@ -1,14 +1,12 @@
 <template>
   <div class="home-wrapper">
-    <scroll ref="scroll" class="home-content">
+    <scroll :data="compData" ref="scroll" class="home-content">
       <div>
         <div class="slider-wrapper">
-          <slider>
-            <div v-for="(item,index) in banners" :key="index" class="slider-item">
-              <!-- <a :href="item.url"> -->
-              <a>
-                <!-- <img class="needsclick" @load="loadImage" :src="item.pic | formatImg"/> -->
-                <img class="needsclick" @load="loadImage" src="./banner@2x.png"/>
+          <slider v-if="banners.length" :showDots="showDots" :loop="loop">
+            <div v-for="(item,index) in banners" :key="index">
+              <a :href="item.url">
+                <img class="needsclick" @load="loadImage" :src="item.pic | formatImg"/>
               </a>
             </div>
           </slider>
@@ -24,114 +22,221 @@
         <div class="home-list">
           <div class="head clearfix">
             <span>合衣衬衫</span>
-            <router-link to="/home/technology">查看全部</router-link>
+            <router-link to="/home/shirt">查看全部</router-link>
           </div>
           <div class="list-content clearfix">
-            <div class="item">
+            <div v-for="(item,index) in modelList" @click="selectItem(item)" :key="item.code" class="item">
               <div class="inner">
                 <div class="inner-content">
-                  <img src="./c1@2x.png" alt="">
-                  <div class="like" @click.stop.prevent></div>
+                  <img v-lazy="formatImg(item.pic)"/>
+                  <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index)"></div>
                 </div>
               </div>
             </div>
-            <div class="item">
-              <div class="inner">
-                <div class="inner-content">
-                  <img src="./c1@2x.png" alt="">
-                  <div class="like" @click.stop.prevent></div>
-                </div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="inner">
-                <div class="inner-content">
-                  <img src="./c1@2x.png" alt="">
-                  <div class="like" @click.stop.prevent></div>
-                </div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="inner">
-                <div class="inner-content">
-                  <img src="./c1@2x.png" alt="">
-                  <div class="like" @click.stop.prevent></div>
-                </div>
-              </div>
-            </div>
+            <loading class="loading-wrapper" v-show="hasMore" title=""></loading>
           </div>
           <div class="head clearfix">
             <span>H+</span>
-            <router-link to="/home/technology">查看全部</router-link>
+            <router-link to="/home/clothes">查看全部</router-link>
           </div>
           <div class="list-content clearfix">
-            <div class="item">
+            <div v-for="(item,index) in hModelList" @click="selectItem(item)" :key="item.code" class="item">
               <div class="inner">
                 <div class="inner-content">
-                  <img src="./c1@2x.png" alt="">
-                  <div class="like" @click.stop.prevent></div>
+                  <img v-lazy="formatImg(item.pic)"/>
+                  <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index,true)"></div>
                 </div>
               </div>
             </div>
-            <div class="item">
-              <div class="inner">
-                <div class="inner-content">
-                  <img src="./c1@2x.png" alt="">
-                  <div class="like" @click.stop.prevent></div>
-                </div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="inner">
-                <div class="inner-content">
-                  <img src="./c1@2x.png" alt="">
-                  <div class="like" @click.stop.prevent></div>
-                </div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="inner">
-                <div class="inner-content">
-                  <img src="./c1@2x.png" alt="">
-                  <div class="like" @click.stop.prevent></div>
-                </div>
-              </div>
-            </div>
+            <loading class="loading-wrapper" v-show="hHasMore" title=""></loading>
           </div>
         </div>
       </div>
     </scroll>
-    <router-view></router-view>
+    <router-view @update="handleUpdate"></router-view>
   </div>
 </template>
 <script>
+  import {mapMutations} from 'vuex';
+  import {SET_CURRENT_MODEL} from 'store/mutation-types';
   import Slider from 'base/slider/slider';
+  import Loading from 'base/loading/loading';
   import Scroll from 'base/scroll/scroll';
   import {commonMixin} from 'common/js/mixin';
+  import {formatImg, getShareImg, setTitle} from 'common/js/util';
+  import {initShare} from 'common/js/weixin';
+  import {getBannerList} from 'api/general';
+  import {getPageModel, collection, cancelCollection} from 'api/biz';
+
+  const START = 1;
+  const LIMIT = 20;
+  const HOT_LOCATION = 1;
+  const TYPE_NORMAL = 0;
+  const TYPE_H = 1;
 
   export default {
     mixins: [commonMixin],
     data() {
       return {
-        banners: [1, 2, 3]
+        banners: [],
+        modelList: [],
+        hasMore: true,
+        hModelList: [],
+        hHasMore: true
       };
     },
-    // mounted() {
-    //   setTimeout(() => {
-    //     this.$refs.scroll.refresh();
-    //   }, 2000);
-    // },
+    computed: {
+      showDots() {
+        return this.banners.length > 1;
+      },
+      loop() {
+        return this.banners.length > 1;
+      },
+      compData() {
+        return this.modelList.concat(this.hModelList);
+      }
+    },
+    created() {
+      this.fetching = false;
+      this.isWxConfiging = false;
+      this.wxData = null;
+      if (this.shouldGetData()) {
+        this.getInitData();
+      }
+    },
+    updated() {
+      if (this.shouldGetData()) {
+        this.getInitData();
+      }
+    },
     methods: {
+      getInitData() {
+        if (!this.fetching) {
+          this.fetching = true;
+          Promise.all([
+            this.getModelList(),
+            this.getHModelList(),
+            this.getBannerList()
+          ]).finally(() => {
+            this.hasMore = false;
+            this.hHasMore = false;
+            this.fetching = false;
+          });
+        }
+      },
+      getModelList() {
+        return getPageModel(START, LIMIT, TYPE_NORMAL, HOT_LOCATION).then((data) => {
+          this.modelList = data.list;
+        });
+      },
+      getHModelList() {
+        return getPageModel(START, LIMIT, TYPE_H, HOT_LOCATION).then((data) => {
+          this.hModelList = data.list;
+        });
+      },
+      getBannerList() {
+        return getBannerList().then((data) => {
+          this.banners = data;
+        });
+      },
+      shouldGetData() {
+        if (this.$route.path === '/home') {
+          setTitle('合衣定制');
+          // 当前页面,并且微信sdk未初始化
+          if(!this.isWxConfiging && !this.wxData) {
+            this.getInitWXSDKConfig();
+          }
+          if (this.hasMore && this.hHasMore && !this.fetching) {
+            return true;
+          }
+          return false;
+        }
+        this.isWxConfiging = false;
+        this.wxData = null;
+        return false;
+      },
+      selectItem(item) {
+        if (!item._advPic) {
+          item._advPic = item.advPic.split('||');
+        }
+        this.setCurModel(item);
+        this.$router.push(`/home/${item.code}`);
+      },
+      handleCollect(item, index, isH) {
+        if (item.isSC === '1') {
+          item.isSC = '0';
+          cancelCollection(item.code).catch(() => {
+            item.isSC = '1';
+          }).finally(() => {
+            if (isH) {
+              this.hModelList.splice(index, 1, item);
+            } else {
+              this.modelList.splice(index, 1, item);
+            }
+          });
+        } else {
+          item.isSC = '1';
+          collection(item.code).catch(() => {
+            item.isSC = '0';
+          }).finally(() => {
+            if (isH) {
+              this.hModelList.splice(index, 1, item);
+            } else {
+              this.modelList.splice(index, 1, item);
+            }
+          });
+        }
+      },
+      handleUpdate(product) {
+        let index = -1;
+        if (product.type === '0') {
+          index = this.modelList.findIndex((item) => {
+            return item.code === product.code;
+          });
+          if (~index) {
+            this.modelList.splice(index, 1, product);
+          }
+        } else {
+          index = this.hModelList.findIndex((item) => {
+            return item.code === product.code;
+          });
+          if (~index) {
+            this.hModelList.splice(index, 1, product);
+          }
+        }
+      },
+      formatImg(img) {
+        return formatImg(img);
+      },
       loadImage() {
         if(!this.checkLoaded) {
           this.$refs.scroll.refresh();
           this.checkLoaded = true;
         }
-      }
+      },
+      getInitWXSDKConfig() {
+        this.isWxConfiging = true;
+        initShare({
+          title: '合衣定制',
+          desc: '合衣定制',
+          link: location.href,
+          imgUrl: getShareImg()
+        }, (data) => {
+          this.isWxConfiging = false;
+          this.wxData = data;
+        }, () => {
+          this.isWxConfiging = false;
+          this.wxData = null;
+        });
+      },
+      ...mapMutations({
+        'setCurModel': SET_CURRENT_MODEL
+      })
     },
     components: {
       Slider,
-      Scroll
+      Scroll,
+      Loading
     }
   };
 </script>
@@ -144,7 +249,7 @@
     top: 0;
     left: 0;
     bottom: 49px;
-    padding: 0 19px 15px;
+    padding: 0 19px;
     width: 100%;
     background: #fff;
 
@@ -153,6 +258,11 @@
       height: 100%;
       overflow: hidden;
 
+      .loading-wrapper {
+        clear: both;
+        padding-top: 20px;
+      }
+
       .slider-wrapper {
         position: relative;
 
@@ -160,13 +270,13 @@
           padding-top: 15px;
         }
 
-        .slider-item {
-          a {
+        a {
+          display: block;
+          border-radius: 6px;
+          overflow: hidden;
+
+          img {
             border-radius: 6px;
-            overflow: hidden;
-            img {
-              border-radius: 6px;
-            }
           }
         }
       }
@@ -204,7 +314,7 @@
       }
 
       .home-list {
-        padding-bottom: 4px;
+        padding-bottom: 15px;
 
         .head {
           margin-top: 25px;
@@ -242,6 +352,10 @@
 
               .inner-content {
                 position: relative;
+                width: 100%;
+                height: 100%;
+                border-radius: 6px;
+                overflow: hidden;
               }
             }
 

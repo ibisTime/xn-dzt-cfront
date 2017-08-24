@@ -2,7 +2,7 @@
   <transition name="slide">
     <div class="form-wrapper">
       <div class="form-item">
-        <div class="item-label">手机号</div>
+        <div class="item-label">新手机号</div>
         <div class="item-input-wrapper">
           <input type="tel" class="item-input" v-model="mobile" @change="_mobileValid" placeholder="请输入新手机号">
           <span v-show="mobErr" class="error-tip">{{mobErr}}</span>
@@ -27,6 +27,8 @@
   </transition>
 </template>
 <script>
+  import {mapMutations} from 'vuex';
+  import {SET_USER_MOBILE} from 'store/mutation-types';
   import {sendCaptcha} from 'api/general';
   import {changeMobile} from 'api/user';
   import {mobileValid, captValid, setTitle} from 'common/js/util';
@@ -51,7 +53,7 @@
       sendCaptcha() {
         if (this._mobileValid()) {
           this.sending = true;
-          sendCaptcha(this.mobile, 805047).then(() => {
+          sendCaptcha(this.mobile, 805061).then(() => {
             this._setInterval();
           }).catch(() => {
             this._clearInterval();
@@ -64,6 +66,7 @@
           changeMobile(this.mobile, this.captcha)
             .then(() => {
               this.$refs.toast.show();
+              this.setUserMobile(this.mobile);
               setTimeout(() => {
                 this.$router.back();
               }, 1000);
@@ -105,9 +108,12 @@
           this.captBtnText = '获取验证码';
         }
       },
-      beforeDestroy() {
-        this.timer && clearInterval(this.timer);
-      }
+      ...mapMutations({
+        setUserMobile: SET_USER_MOBILE
+      })
+    },
+    beforeDestroy() {
+      this.timer && clearInterval(this.timer);
     },
     components: {
       Toast

@@ -24,7 +24,7 @@
     props: {
       loop: {
         type: Boolean,
-        default: true
+        default: false
       },
       autoPlay: {
         type: Boolean,

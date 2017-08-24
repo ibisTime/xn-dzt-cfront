@@ -1,5 +1,5 @@
 <template>
-  <input type="text" readonly @click="showPicker" :value="date" placeholder="请输入省市区" />
+  <input type="text" :disabled="disabled" readonly @click="showPicker" :value="date" placeholder="请选择日期" />
 </template>
 <script>
   import Picker from 'better-picker';
@@ -18,6 +18,10 @@
       day: {
         type: String,
         default: ''
+      },
+      disabled: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
@@ -51,9 +55,9 @@
         });
 
         this.picker.on('picker.select', (selectedVal, selectedIndex) => {
-          var text1 = this.first[selectedIndex[0]].value;
-          var text2 = this.second[selectedIndex[1]].value;
-          var text3 = this.third[selectedIndex[2]].value;
+          var text1 = this.first[selectedIndex[0]].value + '';
+          var text2 = this.second[selectedIndex[1]].value + '';
+          var text3 = this.third[selectedIndex[2]].value + '';
           this.$emit('change', text1, text2, text3);
         });
 

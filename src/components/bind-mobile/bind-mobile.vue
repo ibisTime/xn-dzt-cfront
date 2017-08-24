@@ -74,7 +74,7 @@
       sendCaptcha() {
         if (this._mobileValid()) {
           this.sending = true;
-          sendCaptcha(this.mobile, 805151).then(() => {
+          sendCaptcha(this.mobile, 805060).then(() => {
             this._setInterval();
           }).catch(() => {
             this._clearInterval();
@@ -84,7 +84,7 @@
       _bindMobile() {
         if (this._valid()) {
           this.setting = true;
-          bindMobile(this.mobile, this.captcha, this.user.openId)
+          bindMobile(this.mobile, this.captcha)
             .then(() => {
               this.$refs.toast.show();
               this.setUserMobile(this.mobile);
@@ -129,13 +129,13 @@
           this.captBtnText = '获取验证码';
         }
       },
-      beforeDestroy() {
-        this.timer && clearInterval(this.timer);
-      },
       ...mapMutations({
         setUser: SET_USER_STATE,
         setUserMobile: SET_USER_MOBILE
       })
+    },
+    beforeDestroy() {
+      this.timer && clearInterval(this.timer);
     },
     components: {
       Loading,

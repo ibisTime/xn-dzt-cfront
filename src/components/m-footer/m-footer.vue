@@ -2,11 +2,11 @@
   <div class="foot-wrapper">
     <router-link tag="div" class="foot-item item-0" to="/home">
     </router-link>
-    <router-link tag="div" class="foot-item item-1" to="/home1">
+    <router-link tag="div" class="foot-item item-1" to="/book">
     </router-link>
-    <router-link tag="div" class="foot-item item-2" to="/home2">
+    <router-link tag="div" class="foot-item item-2" to="/find">
     </router-link>
-    <router-link tag="div" class="foot-item item-3" to="/home3">
+    <router-link tag="div" class="foot-item item-3" to="/user">
     </router-link>
   </div>
 </template>

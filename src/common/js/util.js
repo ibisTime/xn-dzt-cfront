@@ -1,5 +1,31 @@
 import {setCookie, getCookie, delCookie} from './cookie';
 
+// 日期格式化
+export function formatDate(date, fmt) {
+  date = new Date(date);
+  if (/(y+)/.test(fmt)) {
+    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+  }
+  let o = {
+    'M+': date.getMonth() + 1,
+    'd+': date.getDate(),
+    'h+': date.getHours(),
+    'm+': date.getMinutes(),
+    's+': date.getSeconds()
+  };
+  for (let k in o) {
+    if (new RegExp(`(${k})`).test(fmt)) {
+      let str = o[k] + '';
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : padLeftZero(str));
+    }
+  }
+  return fmt;
+};
+
+function padLeftZero(str) {
+  return ('00' + str).substr(str.length);
+}
+
 // 获取userId
 export function getUserId() {
   return getCookie('userId') || '';
@@ -17,49 +43,81 @@ export function clearUser() {
   delCookie('token');
 }
 
-// 计算密码强度
-export function calculateSecurityLevel(password) {
-  var strengthL = 0;
-  var strengthM = 0;
-  var strengthH = 0;
-
-  for (var i = 0; i < password.length; i++) {
-    var code = password.charCodeAt(i);
-    // 数字
-    if (code >= 48 && code <= 57) {
-      strengthL++;
-      // 小写字母 大写字母
-    } else if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
-      strengthM++;
-      // 特殊符号
-    } else if ((code >= 32 && code <= 47) || (code >= 58 && code <= 64) || (code >= 94 && code <= 96) || (code >= 123 && code <= 126)) {
-      strengthH++;
-    }
-  }
-  // 弱
-  if ((strengthL === 0 && strengthM === 0) || (strengthL === 0 && strengthH === 0) || (strengthM === 0 && strengthH === 0)) {
-    return '1';
-  }
-  // 强
-  if (strengthL !== 0 && strengthM !== 0 && strengthH !== 0) {
-    return '3';
-  }
-  // 中
-  return '2';
+// 是否登录
+export function isLogin() {
+  return !!getUserId();
 }
+
+// 是否为空
+export function isUnDefined(value) {
+  if (value === undefined || value === null || value === '') {
+    return true;
+  }
+  return false;
+}
+
+// 格式化图片地址
+export function formatImg(imgs, suffix = '?imageMogr2/auto-orient') {
+  if(!imgs) {
+    return '';
+  }
+  let img = imgs.split(/\|\|/)[0];
+  if (!/^http/i.test(img)) {
+    img = PIC_PREFIX + img + suffix;
+  }
+  return img;
+}
+
+// 获得分享图片
+export function getShareImg(imgs) {
+  if (!imgs) {
+    let sharImg = require('./app.jpg');
+    if (/data:image/.test(sharImg) || /http(?:s)?/.test(sharImg)) {
+      return sharImg;
+    }
+    return location.origin + sharImg;
+  }
+  return formatImg(imgs);
+}
+
+// 格式化金额
+export function formatAmount(amount) {
+  if (isUnDefined(amount)) {
+    return '--';
+  }
+  amount = (+amount / 1000).toString();
+  amount = +amount.replace(/(\.\d\d)\d+/ig, '$1');
+  return amount.toFixed(2);
+}
+
+// 判断是否 ios
+export const ISIOS = /(iphone|ipod|ipad)/i.test(navigator.userAgent);
 
 // 微信设置页面标题
 export function setTitle(title) {
-  document.title = title;
-  let iframe = document.createElement('iframe');
-  iframe.src = '//m.baidu.com/favicon.ico';
-  iframe.style.display = 'none';
-  iframe.onload = () => {
-    setTimeout(() => {
-      iframe.remove();
-    }, 9);
-  };
-  document.body.appendChild(iframe);
+  if (document.title !== title && ISIOS) {
+    document.title = title;
+    let iframe = document.createElement('iframe');
+    iframe.src = '//m.baidu.com/favicon.ico';
+    iframe.style.display = 'none';
+    iframe.onload = () => {
+      setTimeout(() => {
+        iframe.remove();
+      }, 9);
+    };
+    document.body.appendChild(iframe);
+  }
+}
+
+// 清除内容里的标签
+export function clearTag(content) {
+  return content.replace(/<[^>]+>|<\/[^>]+>|<[^>]+\/>|&nbsp;/ig, '');
+}
+
+// 是否是function
+export function isFunction(fn) {
+  var getType = {};
+  return fn && getType.toString.call(fn) === '[object Function]';
 }
 
 // 校验短信验证码
@@ -122,6 +180,102 @@ export function rePwdValid(rePwd, pwd) {
   } else if (pwd !== rePwd) {
     result.err = 1;
     result.msg = '两次密码不同';
+  }
+  return result;
+}
+
+// 昵称校验
+export function nicknameValid(nickname) {
+  let result = {
+    err: 0,
+    msg: ''
+  };
+  if (!nickname) {
+    result.err = 1;
+    result.msg = '不能为空';
+  } else if (nickname.length > 32) {
+    result.err = 1;
+    result.msg = '不能超过32位';
+  }
+  return result;
+}
+
+// 真实姓名校验
+export function realNameValid(realName) {
+  let result = {
+    err: 0,
+    msg: ''
+  };
+  if (!realName) {
+    result.err = 1;
+    result.msg = '不能为空';
+  } else if (realName.length > 16) {
+    result.err = 1;
+    result.msg = '不能超过16位';
+  }
+  return result;
+}
+// 银行名称校验
+export function bankNameValid(bankName) {
+  return nicknameValid(bankName);
+}
+// 支行校验
+export function subbranchValid(subbranch) {
+  let result = {
+    err: 0,
+    msg: ''
+  };
+  if (!subbranch) {
+    result.err = 1;
+    result.msg = '不能为空';
+  } else if (subbranch.length > 255) {
+    result.err = 1;
+    result.msg = '不能超过255位';
+  }
+  return result;
+}
+
+// 银行卡号校验
+export function bankcardNumberValid(bankcardNumber) {
+  let result = {
+    err: 0,
+    msg: ''
+  };
+  if (!bankcardNumber) {
+    result.err = 1;
+    result.msg = '不能为空';
+  } else if (!/^(\d{16}|\d{19})$/.test(bankcardNumber)) {
+    result.err = 1;
+    result.msg = '格式错误';
+  }
+  return result;
+}
+
+// 金额校验
+export function amountValid(amount) {
+  let result = {
+    err: 0,
+    msg: ''
+  };
+  if (!amount) {
+    result.err = 1;
+    result.msg = '不能为空';
+  } else if (!/^\d+(?:\.\d{1,2})?$/.test(amount)) {
+    result.err = 1;
+    result.msg = '最多两位小数';
+  }
+  return result;
+}
+
+// 非空校验
+export function emptyValid(value) {
+  let result = {
+    err: 0,
+    msg: ''
+  };
+  if (!value) {
+    result.err = 1;
+    result.msg = '不能为空';
   }
   return result;
 }
