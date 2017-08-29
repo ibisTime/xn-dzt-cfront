@@ -31,6 +31,14 @@
               <h2>我的银行卡</h2>
               <i class="arrow"></i>
             </div>
+            <router-link to="/user/setting/aboutus" class="setting-item" tag="div">
+              <h2>关于我们</h2>
+              <i class="arrow"></i>
+            </router-link>
+            <router-link to="/user/setting/notice" class="setting-item" tag="div">
+              <h2>系统消息</h2>
+              <i class="arrow"></i>
+            </router-link>
           </div>
         </div>
         <div class="set-btns">

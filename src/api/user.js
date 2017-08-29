@@ -14,15 +14,24 @@ export function wxLogin(code, userReferee) {
 
 // 获取用户详情
 export function getUser() {
-  return fetch('805121', {
+  return fetch(805121, {
     userId: getUserId()
   });
 }
 
+// 分页获取用户
+export function getPageChildren(start, limit) {
+  return fetch(805120, {
+    userReferee: getUserId(),
+    start,
+    limit
+  });
+}
+
 // 购买会员
-export function buyVIP() {
+export function buyVIP(payType) {
   return fetch(620219, {
-    payType: 2,
+    payType,
     userId: getUserId()
   });
 }

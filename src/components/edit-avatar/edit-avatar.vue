@@ -46,7 +46,7 @@
   import Scroll from 'base/scroll/scroll';
   import Toast from 'base/toast/toast';
   import Loading from 'base/loading/loading';
-  import {formatImg} from 'common/js/util';
+  import {formatAvatar} from 'common/js/util';
   import {getQiniuToken} from 'api/general';
   import {getUser, changeAvatar} from 'api/user';
   import {mapGetters, mapMutations} from 'vuex';
@@ -80,10 +80,12 @@
           this.getQiniuToken()
         ]).then(() => {
           this.loadingFlag = false;
-          this.files.push({
-            status: 200,
-            key: this.user.photo
-          });
+          if (this.user.photo) {
+            this.files.push({
+              status: 200,
+              key: this.user.photo
+            });
+          }
           this.curImg = this.user.photo;
         }).catch(() => {
           this.loadingFlag = false;
@@ -160,10 +162,10 @@
         if (item.status !== 200) {
           return item.preview;
         }
-        return formatImg(item.key);
+        return formatAvatar(item.key);
       },
       formatImg(img) {
-        return formatImg(img);
+        return formatAvatar(img);
       },
       ...mapMutations({
         'setUser': SET_USER_STATE

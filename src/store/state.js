@@ -9,7 +9,8 @@ const state = {
   jfAccount: null,
   jyAccount: null,
   currentMaterial: null,
-  currentModel: null
+  currentModel: null,
+  currentArticle: null
 };
 
 export default state;

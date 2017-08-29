@@ -25,6 +25,8 @@ const Book = () => import('components/book/book');
 const Find = () => import('components/find/find');
 // 发现详情页
 const FindDetail = () => import('components/find-detail/find-detail');
+// 评论列表页
+const FindRatings = () => import('components/find-ratings/find-ratings');
 
 // 我的
 const User = () => import('components/user/user');
@@ -66,6 +68,14 @@ const Adviser = () => import('components/adviser/adviser');
 const Question = () => import('components/question/question');
 // 我的收藏
 const Collection = () => import('components/collection/collection');
+// 收藏的文章
+const CollectionFind = () => import('components/collection-find/collection-find');
+// 收藏的产品
+const CollectionProduct = () => import('components/collection-product/collection-product');
+// 收藏的面料
+const CollectionMaterial = () => import('components/collection-material/collection-material');
+// 收藏的工艺
+const CollectionTech = () => import('components/collection-tech/collection-tech');
 // 会员中心
 const Member = () => import('components/member/member');
 // 积分流水
@@ -76,6 +86,14 @@ const MemberWelfare = () => import('components/member-welfare/member-welfare');
 const MemberIntroduce = () => import('components/member-introduce/member-introduce');
 // 我的推荐
 const Recommend = () => import('components/recommend/recommend');
+// 推荐历史
+const ChildMembers = () => import('components/child-members/child-members');
+// 专属报告
+const Report = () => import('components/report/report');
+// 关于我们
+const Aboutus = () => import('components/aboutus/aboutus');
+// 系统消息
+const Notice = () => import('components/notice/notice');
 // 新增修改地址
 // const AddEditAddress = () => import('components/add-edit-address/add-edit-address');
 
@@ -139,7 +157,13 @@ export default new Router({
       children: [
         {
           path: ':id',
-          component: FindDetail
+          component: FindDetail,
+          children: [
+            {
+              path: 'rating',
+              component: FindRatings
+            }
+          ]
         }
       ]
     },
@@ -190,6 +214,14 @@ export default new Router({
                   component: BankCardAddEdit
                 }
               ]
+            },
+            {
+              path: 'aboutus',
+              component: Aboutus
+            },
+            {
+              path: 'notice',
+              component: Notice
             }
           ]
         },
@@ -261,7 +293,43 @@ export default new Router({
         },
         {
           path: 'collection',
-          component: Collection
+          component: Collection,
+          children: [
+            {
+              path: 'find',
+              component: CollectionFind,
+              children: [
+                {
+                  path: ':id',
+                  component: FindDetail
+                }
+              ]
+            },
+            {
+              path: 'product',
+              component: CollectionProduct,
+              children: [
+                {
+                  path: ':id',
+                  component: ProductDetail
+                }
+              ]
+            },
+            {
+              path: 'material',
+              component: CollectionMaterial,
+              children: [
+                {
+                  path: ':id',
+                  component: MaterialDetail
+                }
+              ]
+            },
+            {
+              path: 'tech',
+              component: CollectionTech
+            }
+          ]
         },
         {
           path: 'member',
@@ -283,7 +351,17 @@ export default new Router({
         },
         {
           path: 'recommend',
-          component: Recommend
+          component: Recommend,
+          children: [
+            {
+              path: 'history',
+              component: ChildMembers
+            }
+          ]
+        },
+        {
+          path: 'report',
+          component: Report
         }
       ]
     }

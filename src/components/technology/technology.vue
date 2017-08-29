@@ -23,8 +23,7 @@
                 <li v-for="tech in techList[item.key]" :key="tech.code" @click="selectItem(tech)">
                   <div class="inner">
                     <div class="inner-content">
-                      <img v-lazy="formatImg(tech.advPic || tech.pic)"/>
-                      <!-- <div class="text">{{tech.name}}</div> -->
+                      <img v-lazy="formatImg(tech.pic)"/>
                     </div>
                   </div>
                 </li>
@@ -39,8 +38,7 @@
       </scroll>
       <modal ref="modal">
         <div class="modal-wrap">
-          <img :src="formatImg(currentItem && (currentItem.advPic || currentItem.pic))"/>
-          <!-- <div class="text">{{currentItem && currentItem.name}}</div> -->
+          <img :src="formatImg(currentItem && currentItem.pic)"/>
           <div @click="handleCollection" class="icon" :class="{active:currentLike}"></div>
         </div>
       </modal>

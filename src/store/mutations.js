@@ -55,6 +55,9 @@ const mutations = {
   },
   [types.SET_CURRENT_MODEL](state, model) {
     state.currentModel = model;
+  },
+  [types.SET_CURRENT_ARTICLE](state, model) {
+    state.currentArticle = model;
   }
 };
 

@@ -20,7 +20,7 @@
       </div>
 
       <div class="form-btn">
-        <button :disabled="setting" @click="_changeMobile">设置</button>
+        <button :disabled="setting" @click="_changeMobile">保存</button>
       </div>
       <toast ref="toast" text="修改成功"></toast>
     </div>

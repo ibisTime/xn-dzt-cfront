@@ -50,8 +50,9 @@ export default {
     left: 50%;
     transform: translate(-50%, -50%);
     position: absolute;
-    max-width: 50%;
+    max-width: 60%;
     z-index: 998;
+    word-wrap: break-word;
 
     &.toast-fade-enter-active {
       animation: toast-fadein 0.3s;

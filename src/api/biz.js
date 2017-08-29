@@ -6,7 +6,8 @@ export function getMaterialList() {
   return fetch(620032, {
     orderColumn: 'order_no',
     orderDir: 'asc',
-    status: 1
+    status: 1,
+    modelStatus: 1
   });
 }
 
@@ -23,21 +24,22 @@ export function getTechnologyList(cache) {
   return fetch(620052, {
     orderColumn: 'order_no',
     orderDir: 'asc',
-    status: 1
+    status: 1,
+    modelStatus: 1
   });
 }
 
-// 端列表查（map）
+// 列表查工艺（map）
 export function getTechMapList() {
-  if (getTechnologyList.data) {
-    return Promise.resolve(getTechnologyList.data);
+  if (getTechMapList.data) {
+    return Promise.resolve(getTechMapList.data);
   }
   return fetch(620054, {
     orderColumn: 'order_no',
     orderDir: 'asc',
     status: 1
   }).then((data) => {
-    getTechnologyList.data = data;
+    getTechMapList.data = data;
     return Promise.resolve(data);
   });
 }
@@ -86,15 +88,16 @@ export function cancelCollection(objectCode) {
 }
 
 // 分页查询我的收藏
+// 1 文章，2产品，3面料，4工艺
 export function getPageCollections(start, limit, category) {
   return fetch(620135, {
     start,
     limit,
+    category,
     operator: getUserId(),
     type: 1,
-    category
-    // orderColumn,
-    // orderDir
+    orderColumn: 'operat_datetime',
+    orderDir: 'desc'
   });
 }
 
@@ -105,6 +108,7 @@ export function getPageModel(start, limit, type, location) {
     limit,
     type,
     location,
+    status: 1,
     userId: getUserId(),
     orderColumn: 'order_no',
     orderDir: 'asc'
@@ -201,6 +205,13 @@ export function getOrder(code) {
   });
 }
 
+// 详情查询订单(map)
+export function getOrderInMap(code) {
+  return fetch(620234, {
+    code
+  });
+}
+
 // 评论
 export function ratingOrder(orderCode, content) {
   return fetch(620214, {
@@ -226,7 +237,40 @@ export function getPageMessages(start, limit, type) {
     limit,
     type,
     lookUser: getUserId(),
-    orderColumn: 'create_datetime',
+    orderColumn: 'comment_datetime',
     orderDir: 'desc'
+  });
+}
+
+// 用户专属报告
+export function getOwnerReport() {
+  return fetch(620217, {
+    userId: getUserId()
+  });
+}
+
+// 评论
+export function rating(parentCode, content) {
+  return fetch(620160, {
+    parentCode,
+    content,
+    commenter: getUserId()
+  });
+}
+
+// 分页查询评论
+export function getPageRatings(topCode, start, limit) {
+  return fetch(620170, {
+    topCode,
+    start,
+    limit,
+    status: 'AB'
+  });
+}
+
+// 获取用户当前的顾问
+export function getCurAdviser() {
+  return fetch(620222, {
+    userId: getUserId()
   });
 }

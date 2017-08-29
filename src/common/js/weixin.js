@@ -1,4 +1,5 @@
 import {getInitWXSDKConfig} from 'api/general';
+import {getUserId} from 'common/js/util';
 
 const ERR_OK = 'get_brand_wcpay_request:ok';
 const ERR_FAIL = 'get_brand_wcpay_request:fail';
@@ -17,6 +18,7 @@ let globalConfig = {};
 export function initShare(config, suc, err) {
   getInitWXSDKConfig().then((data) => {
     suc && suc(data);
+    config.link = config.link + '?userReferee=' + getUserId();
     _initShare(data, config);
   }).catch(() => {
     err && err();

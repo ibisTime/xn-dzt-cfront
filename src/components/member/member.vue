@@ -6,13 +6,13 @@
         <div class="top-wrapper">
           <div class="content">
             <div class="avatar-wrapper">
-              <img :src="(user && user.photo) | formatImg"/>
+              <img :src="(user && user.photo) | formatAvatar"/>
             </div>
             <h1>{{user && user.nickname}}</h1>
             <h3>{{getText(user && user.level)}}</h3>
           </div>
         </div>
-        <div v-show="user && user.level!=='0'" class="member-infos">
+        <div v-show="user && user.level!=='1'" class="member-infos">
           <div class="info">
             <h3>会员积分</h3>
             <p>{{getJF()}}</p>
@@ -26,8 +26,8 @@
             <p>{{sjjy}}</p>
           </div>
         </div>
-        <div v-show="user && user.level==='0'" class="member-infos">
-          <div class="price">购买会员只需{{hyf}}元</div><button @click="buyVIP">购买会员</button>
+        <div v-show="user && user.level==='1'" class="member-infos">
+          <div class="price">购买会员只需{{hyf}}元</div><button @click="showChosen">购买会员</button>
         </div>
         <div class="menus">
           <router-link class="menu" tag="div" to="/user/member/introduce">
@@ -44,6 +44,14 @@
           </router-link>
         </div>
       </scroll>
+      <chosen class="chose-wrapper" ref="chosen">
+        <div class="item" @click="weixinPay">
+          微信支付
+        </div>
+        <div class="item" @click="yePay">
+          余额支付（¥{{getAmount()}})
+        </div>
+      </chosen>
       <div v-show="loadingFlag" class="loading-container">
         <div class="loading-wrapper">
           <loading title=""></loading>
@@ -58,8 +66,9 @@
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
   import Toast from 'base/toast/toast';
+  import Chosen from 'components/chosen/chosen';
   import {mapGetters, mapMutations} from 'vuex';
-  import {SET_USER_STATE, SET_JF_ACCOUNT} from 'store/mutation-types';
+  import {SET_USER_STATE, SET_JF_ACCOUNT, SET_CNY_ACCOUNT} from 'store/mutation-types';
   import {setTitle, isUnDefined, formatAmount} from 'common/js/util';
   import {commonMixin} from 'common/js/mixin';
   import {initPay} from 'common/js/weixin';
@@ -68,10 +77,10 @@
   import {getDictList, getBizSystemConfig, getPageBizSysConfig} from 'api/general';
 
   const JF_CKEY = {
-    '1': 'ONE',
-    '2': 'TWO',
-    '3': 'THREE',
-    '4': 'FOUR'
+    '2': 'ONE',
+    '3': 'TWO',
+    '4': 'THREE',
+    '5': 'FOUR'
   };
 
   export default {
@@ -83,7 +92,8 @@
         text: '',
         loadingFlag: true,
         jfAccount: null,
-        jyAccount: null
+        jyAccount: null,
+        cnyAccount: null
       };
     },
     created() {
@@ -114,6 +124,7 @@
           getBizSystemConfig('HYF'),
           getPageBizSysConfig(1)
         ]).then(([userData, levelDict, accounts, hyf, levelJY]) => {
+          levelJY = levelJY.list;
           this.loadingFlag = false;
           this.hyf = hyf.cvalue;
           let obj = {};
@@ -127,18 +138,21 @@
               this.setJFAccount(item);
             } else if (item.currency === 'JY') {
               this.jyAccount = item;
+            } else if (item.currency === 'CNY') {
+              this.cnyAccount = item;
+              this.setCnyAccount(item);
             }
           });
           this.levelJY = levelJY;
-          if (userData.level !== '0') {
-            if (userData.level === '4') {
+          if (userData.level !== '1' && userData.level !== '0') {
+            if (userData.level === '5') {
               this.sjjy = '-';
             } else {
               let ckey = JF_CKEY[userData.level];
               let index = levelJY.findIndex((item) => {
                 return item.ckey === ckey;
               });
-              let maxValue = levelJY[index].cvalue + 1;
+              let maxValue = +levelJY[index].cvalue + 1;
               this.sjjy = Math.ceil((+maxValue) - (+this.jyAccount.amount / 1000));
             }
           }
@@ -148,11 +162,8 @@
         });
       },
       getText(level) {
-        if (isUnDefined(level)) {
+        if (isUnDefined(level) || !this.levelDict) {
           return '';
-        }
-        if (level === '0') {
-          return '普通会员';
         }
         return this.levelDict[level];
       },
@@ -168,29 +179,38 @@
         }
         return formatAmount(this.jyAccount.amount);
       },
-      buyVIP() {
+      getAmount() {
+        if (this.cnyAccount) {
+          return formatAmount(this.cnyAccount.amount);
+        } else {
+          return '--';
+        }
+      },
+      showChosen() {
+        this.$refs.chosen.show();
+      },
+      buyVIP(payType) {
         this.loadingFlag = true;
-        buyVIP().then((data) => {
-          this.wxPay(data);
+        buyVIP(payType).then((data) => {
+          if (payType === 2) {
+            this.wxPay(data);
+          } else {
+            this.paySuc();
+          }
         }).catch(() => {
           this.loadingFlag = false;
         });
       },
+      weixinPay() {
+        this.buyVIP(2);
+      },
+      yePay() {
+        this.buyVIP(1);
+      },
       wxPay(data) {
         if (data && data.signType) {
           initPay(data, () => {
-            this.loadingFlag = false;
-            this.text = '支付成功';
-            this.$refs.toast.show();
-            let index = this.levelJY.findIndex((item) => {
-              return item.ckey === JF_CKEY['1'];
-            });
-            this.sjjy = this.levelJY[index].cvalue;
-            let _user = {
-              ...this.user,
-              level: '1'
-            };
-            this.setUser(_user);
+            this.paySuc();
           }, () => {
             this.loadingFlag = false;
             this.text = '支付失败';
@@ -204,12 +224,27 @@
           this.$refs.toast.show();
         }
       },
+      paySuc() {
+        this.loadingFlag = false;
+        this.text = '支付成功';
+        this.$refs.toast.show();
+        let index = this.levelJY.findIndex((item) => {
+          return item.ckey === JF_CKEY['2'];
+        });
+        this.sjjy = this.levelJY[index].cvalue;
+        let _user = {
+          ...this.user,
+          level: '2'
+        };
+        this.setUser(_user);
+      },
       back() {
         this.$router.back();
       },
       ...mapMutations({
         'setUser': SET_USER_STATE,
-        'setJFAccount': SET_JF_ACCOUNT
+        'setJFAccount': SET_JF_ACCOUNT,
+        'setCnyAccount': SET_CNY_ACCOUNT
       })
     },
     updated() {
@@ -220,7 +255,8 @@
     components: {
       Scroll,
       Loading,
-      Toast
+      Toast,
+      Chosen
     }
   };
 </script>
@@ -362,6 +398,17 @@
             background-size: 10px;
             @include bg-image('more');
           }
+        }
+      }
+    }
+
+    .chose-wrapper {
+      .item {
+        padding: 14px 10px;
+        border-bottom: 1px solid #a1a1a1;
+
+        &:last-child {
+          border-bottom: none;
         }
       }
     }

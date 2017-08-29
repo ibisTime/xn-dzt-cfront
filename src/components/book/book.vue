@@ -59,14 +59,14 @@
       </div>
       <div class="book-btns">
         <button :disabled="btnDisabled" v-show="curBtn==='bookBtn'" class="book-btn" @click="_book">提交预约</button>
-        <button :disabled="btnDisabled" v-show="curBtn==='cancelBtn'" class="book-btn" @click="_cancel">取消预约</button>
-        <button :disabled="btnDisabled" v-show="curBtn==='reBtn'" class="book-btn" @click="_reBook">一键复购</button>
+        <button :disabled="btnDisabled" v-show="curBtn==='cancelBtn'" class="book-btn btn-cancel" @click="_cancel">取消预约</button>
+        <button :disabled="btnDisabled" v-show="curBtn==='reBtn'" class="book-btn btn-fg" @click="_reBook">一键复购</button>
       </div>
       <toast ref="toast" :text="text"></toast>
     </div>
     <div v-show="isLoading" class="loading-container">
       <div class="loading-wrapper">
-        <loading></loading>
+        <loading title=""></loading>
       </div>
     </div>
   </scroll>
@@ -122,46 +122,54 @@
     },
     methods: {
       getLatestOrder() {
-        getLatestOrder().then((data) => {
+        return getLatestOrder().then((data) => {
           this.isLoading = false;
-          if (data.order) {
-            this.disabled = true;
-            this.orderCode = data.order.code;
-            this.name = data.order.applyName;
-            this.telphone = data.order.applyMobile;
-            this.height = data.map['6-2'];
-            this.weight = data.map['6-3'];
-            this.province = data.order.ltProvince;
-            this.city = data.order.ltCity;
-            this.district = data.order.ltArea;
-            this.address = data.order.ltAddress;
-            let ltDatetime = formatDate(data.order.ltDatetime, 'yyyy-MM-dd');
-            ltDatetime = ltDatetime.split('-');
-            this.year = ltDatetime[0];
-            this.month = ltDatetime[1];
-            this.day = ltDatetime[2];
-            if (data.order.status === '1') {
-              this.curBtn = 'cancelBtn';
-            } else if (data.order.status !== '2' && data.order.status !== '3' && data.order.status !== '11') {
-              this.ltShow = false;
-              this.curBtn = 'reBtn';
-            } else {
-              this.disabled = false;
-            }
-          }
+          this.initData(data);
         }).catch(() => {
           this.isLoading = false;
         });
       },
+      initData(data) {
+        if (data.order) {
+          this.disabled = true;
+          this.orderCode = data.order.code;
+          this.name = data.order.applyName;
+          this.telphone = data.order.applyMobile;
+          this.height = data.map['6-02'];
+          this.weight = data.map['6-03'];
+          this.province = data.order.ltProvince;
+          this.city = data.order.ltCity;
+          this.district = data.order.ltArea;
+          this.address = data.order.ltAddress;
+          let ltDatetime = formatDate(data.order.ltDatetime, 'yyyy-MM-dd');
+          ltDatetime = ltDatetime.split('-');
+          this.year = ltDatetime[0];
+          this.month = ltDatetime[1];
+          this.day = ltDatetime[2];
+          if (data.order.status === '1' || data.order.status === '2') {
+            this.curBtn = 'cancelBtn';
+          } else if (data.order.status !== '11') {
+            this.ltShow = false;
+            this.curBtn = 'reBtn';
+          } else {
+            this.disabled = false;
+          }
+        } else {
+          this.curBtn = 'bookBtn';
+          this.disabled = false;
+          this.ltShow = true;
+        }
+      },
       _book() {
         if (this.valid()) {
           this.btnDisabled = true;
+          this.isLoading = true;
           book({
             applyName: this.name,
             applyMobile: this.telphone,
             map: {
-              '6-2': this.height,
-              '6-3': this.weight
+              '6-02': this.height,
+              '6-03': this.weight
             },
             ltProvince: this.province,
             ltCity: this.city,
@@ -170,33 +178,44 @@
             ltDatetime: `${this.year}-${this.month}-${this.day}`
           }).then((data) => {
             this.btnDisabled = false;
+            this.isLoading = false;
             this.text = '预约成功';
             this.$refs.toast.show();
             this.orderCode = data.code;
             this.curBtn = 'cancelBtn';
           }).catch(() => {
             this.btnDisabled = false;
+            this.isLoading = false;
           });
         }
       },
       _cancel() {
+        this.btnDisabled = true;
+        this.isLoading = true;
         cancelBook(this.orderCode).then(() => {
-          this.btnDisabled = false;
-          this.text = '预约取消成功';
-          this.curBtn = 'bookBtn';
-          this.$refs.toast.show();
+          this.getLatestOrder().then(() => {
+            this.isLoading = false;
+            this.btnDisabled = false;
+            this.text = '预约取消成功';
+            this.$refs.toast.show();
+          });
         }).catch(() => {
+          this.isLoading = false;
           this.btnDisabled = false;
         });
       },
       _reBook() {
+        this.btnDisabled = true;
+        this.isLoading = true;
         reBook().then((data) => {
+          this.isLoading = false;
           this.btnDisabled = false;
           this.text = '一键复购成功';
           this.$refs.toast.show();
           this.orderCode = data.code;
           this.curBtn = 'cancelBtn';
         }).catch(() => {
+          this.isLoading = false;
           this.btnDisabled = false;
         });
       },
@@ -380,6 +399,14 @@
           background-color: $primary-color;
         }
 
+        &.btn-cancel {
+          background-color: $color-cancel-background;
+        }
+
+        &.btn-fg {
+          background-color: rgb(167, 149, 47);
+        }
+
         &[disabled] {
           background-color: $color-disable-background;
         }
@@ -392,7 +419,6 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.2);
 
       .loading-wrapper {
         position: absolute;

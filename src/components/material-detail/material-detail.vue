@@ -48,28 +48,32 @@
         </div>
       </scroll>
       <div class="footer">
-        <button class="f-btn btn-yy" v-show="!isOrder" @click="_book">立即预约</button>
-        <button class="f-btn btn-fg" :disabled="disabled" v-show="isOrder" @click="_reBook">一键复购</button>
+        <button :disabled="disabled" v-show="curBtn==='bookBtn'" class="f-btn btn-yy" @click="_book">提交预约</button>
+        <button :disabled="disabled" v-show="curBtn==='cancelBtn'" class="f-btn btn-yy" @click="_cancel">取消预约</button>
+        <button :disabled="disabled" v-show="curBtn==='reBtn'" class="f-btn btn-fg" @click="_reBook">一键复购</button>
       </div>
       <div v-show="loading" class="loading-container">
         <div class="loading-wrapper">
           <loading></loading>
         </div>
       </div>
-      <toast ref="toast" text="一键复购成功"></toast>
-      <model-book ref="modelBook" :productCode="$route.params.id"></model-book>
+      <model-book v-if="latestOrder"
+                  ref="modelBook"
+                  :latestOrder="latestOrder"
+                  :productCode="$route.params.id"
+                  @bookSuc="handleBook"
+                  @bookCancel="handleCancelBook"></model-book>
     </div>
   </transition>
 </template>
 <script>
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
-  import Toast from 'base/toast/toast';
   import {commonMixin} from 'common/js/mixin';
   import {initShare} from 'common/js/weixin';
   import {getShareImg, setTitle} from 'common/js/util';
   import {mapGetters, mapMutations} from 'vuex';
-  import {getMaterial, collection, cancelCollection, reBook} from 'api/biz';
+  import {getMaterial, collection, cancelCollection, getLatestOrder} from 'api/biz';
   import {getDictList} from 'api/general';
   import {SET_CURRENT_MATERIAL} from 'store/mutation-types';
   import ModelBook from 'components/model-book/model-book';
@@ -81,15 +85,25 @@
         isOrder: false,
         isSC: false,
         loading: true,
-        disabled: false
+        disabled: false,
+        latestOrder: null,
+        curBtn: 'bookBtn'
       };
     },
     created() {
       setTitle('面料详情');
       if (!this.currentMaterial) {
-        this.getInitData();
+        Promise.all([
+          this.getInitData(),
+          this._getLatestOrder()
+        ]).then(() => {
+          this.loading = false;
+        });
       } else {
-        this.getMaterial().then(() => {
+        Promise.all([
+          this.getMaterial(),
+          this._getLatestOrder()
+        ]).then(() => {
           this.loading = false;
         });
       }
@@ -101,7 +115,7 @@
     },
     methods: {
       getInitData() {
-        Promise.all([
+        return Promise.all([
           this.getMaterial(),
           this.getFabricTypeDict(),
           this.getFabricColorDict(),
@@ -137,14 +151,10 @@
           material._advPic = material.advPic.split('||');
 
           this.setCurMaterial(material);
-          this.loading = false;
         }).catch(() => {});
       },
       getMaterial() {
         return getMaterial(this.$route.params.id).then((data) => {
-          if (data.isOrder === '1') {
-            this.isOrder = true;
-          }
           if (data.isSC === '1') {
             this.isSC = true;
           }
@@ -156,6 +166,18 @@
             imgUrl: getShareImg(data.pic)
           });
           return data;
+        });
+      },
+      _getLatestOrder() {
+        return getLatestOrder().then((data) => {
+          this.latestOrder = data;
+          if (data.order) {
+            if (data.order.status === '1' || data.order.status === '2') {
+              this.curBtn = 'cancelBtn';
+            } else if (data.order.status !== '11') {
+              this.curBtn = 'reBtn';
+            }
+          }
         });
       },
       // 面料类型数据字典
@@ -181,12 +203,16 @@
       handleCollect() {
         if (this.isSC) {
           this.isSC = false;
-          cancelCollection(this.$route.params.id).catch(() => {
+          cancelCollection(this.$route.params.id).then(() => {
+            this.$emit('update', this.currentMaterial, false);
+          }).catch(() => {
             this.isSC = true;
           });
         } else {
           this.isSC = true;
-          collection(this.$route.params.id).catch(() => {
+          collection(this.$route.params.id).then(() => {
+            this.$emit('update', this.currentMaterial, true);
+          }).catch(() => {
             this.isSC = false;
           });
         }
@@ -194,14 +220,18 @@
       _book() {
         this.$refs.modelBook.show();
       },
+      _cancel() {
+        this.$refs.modelBook.show();
+      },
       _reBook() {
-        this.disabled = true;
-        reBook(this.$route.params.id).then((data) => {
-          this.disabled = false;
-          this.$refs.toast.show();
-        }).catch(() => {
-          this.disabled = false;
-        });
+        this.$refs.modelBook.show();
+      },
+      handleBook(code) {
+        this.curBtn = 'cancelBtn';
+      },
+      handleCancelBook(order, curBtn) {
+        this.latestOrder = order;
+        this.curBtn = curBtn;
       },
       _refreshScroll() {
         setTimeout(() => {
@@ -234,8 +264,7 @@
     components: {
       Scroll,
       Loading,
-      ModelBook,
-      Toast
+      ModelBook
     }
   };
 </script>

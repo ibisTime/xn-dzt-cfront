@@ -1,4 +1,5 @@
 import fetch from 'common/js/fetch';
+import {SYSTEM_CODE} from 'common/js/config';
 
 // 获取微信sdk初始化的参数
 export function getInitWXSDKConfig() {
@@ -35,10 +36,29 @@ export function getBizSystemConfig(ckey) {
 
 // 分页获取业务的系统参数
 export function getPageBizSysConfig(type) {
-  if (getPageBizSysConfig[type]) {
+  if (type && getPageBizSysConfig[type]) {
     return Promise.resolve(getPageBizSysConfig[type]);
+  } else if (!type && getPageBizSysConfig.__cache__) {
+    return Promise.resolve(getPageBizSysConfig.__cache__);
   }
   return fetch(620915, {
+    type,
+    start: 1,
+    limit: 100
+  }).then((data) => {
+    getPageBizSysConfig[type] = data;
+    return Promise.resolve(data);
+  });
+}
+
+// 分页查询账户的系统参数
+export function getPageAccountSysConfig(type) {
+  if (type && getPageAccountSysConfig[type]) {
+    return Promise.resolve(getPageAccountSysConfig[type]);
+  } else if (!type && getPageAccountSysConfig.__cache__) {
+    return Promise.resolve(getPageAccountSysConfig.__cache__);
+  }
+  return fetch(802025, {
     type,
     start: 1,
     limit: 100
@@ -67,7 +87,7 @@ export function sendCaptcha(mobile, bizType) {
   });
 }
 
-// 列表查寻数据字典
+// 列表查寻用户数据字典
 export function getDictList(parentKey) {
   if (getDictList[parentKey]) {
     return Promise.resolve(getDictList[parentKey]);
@@ -80,9 +100,44 @@ export function getDictList(parentKey) {
   });
 }
 
+// 列表查寻用户数据字典（map）
+export function getDictMap() {
+  if (getDictMap.cache) {
+    return Promise.resolve(getDictMap.cache);
+  }
+  return fetch(805908, {}).then((data) => {
+    getDictMap.cache = data;
+    return Promise.resolve(data);
+  });
+}
+
+// 列表查寻业务数据字典（map）
+export function getBizDictMap() {
+  if (getBizDictMap.cache) {
+    return Promise.resolve(getBizDictMap.cache);
+  }
+  return fetch(620908, {}).then((data) => {
+    getBizDictMap.cache = data;
+    return Promise.resolve(data);
+  });
+}
+
 // 获取banner
 export function getBannerList() {
   return fetch(805806, {
     type: 2
+  });
+}
+
+// 分页查询系统公告
+export function getPageSysNotices(start, limit) {
+  return fetch(804040, {
+    start,
+    limit,
+    pushType: 41,
+    toKind: 1,
+    channelType: 4,
+    status: 1,
+    fromSystemCode: SYSTEM_CODE
   });
 }

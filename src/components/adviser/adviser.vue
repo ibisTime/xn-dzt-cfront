@@ -8,7 +8,7 @@
           </div>
           <div v-for="item in messages" :key="item.code" ref="mesRef">
             <div v-if="item.commenter!==userId" class="message-item message-left clearfix">
-              <div class="avatar">
+              <div class="avatar" @click="showAdviser">
                 <img src="./avatar@2x.png"/>
               </div>
               <div class="item-cont">{{item.content}}</div>
@@ -28,6 +28,7 @@
         </div>
         <button :disabled="disabled || !content" @click="sendMsg">发送</button>
       </div>
+      <confirm :isAlert="isAlert" :isHtml="isHtml" :text="text" ref='confirm'></confirm>
     </div>
   </transition>
 </template>
@@ -36,7 +37,8 @@
   import {SET_USER_STATE} from 'store/mutation-types';
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
-  import {getPageMessages, leaveMessage} from 'api/biz';
+  import Confirm from 'base/confirm/confirm';
+  import {getPageMessages, leaveMessage, getCurAdviser} from 'api/biz';
   import {getUser} from 'api/user';
   import {getUserId, formatImg, setTitle} from 'common/js/util';
 
@@ -49,11 +51,14 @@
         content: '',
         start: 1,
         hasMore: true,
-        disabled: false
+        disabled: false,
+        text: ''
       };
     },
     created() {
       setTitle('着装顾问');
+      this.isAlert = true;
+      this.isHtml = true;
       this.first = true;
       this.listenScroll = true;
       this.probeType = 3;
@@ -69,7 +74,8 @@
       getInitData() {
         Promise.all([
           this.getUser(),
-          this.getMessages()
+          this.getMessages(),
+          this.getCurAdviser()
         ]);
       },
       getUser() {
@@ -86,7 +92,8 @@
           if (data.list.length < LIMIT || data.totalCount <= LIMIT) {
             this.hasMore = false;
           }
-          this.messages = data.list.concat(this.messages);
+          let _list = data.list.reverse();
+          this.messages = _list.concat(this.messages);
           if (this.first) {
             if (this.messages.length) {
               setTimeout(() => {
@@ -100,6 +107,16 @@
             }
           }
           this.start++;
+        });
+      },
+      getCurAdviser() {
+        getCurAdviser().then((data) => {
+          if (data.ltName) {
+            setTitle(data.ltName);
+            this.text = `<div>姓名：${data.ltName}</div><div>手机号：${data.ltMobile}</div>`;
+          }
+        }).catch(() => {
+          this.text = '暂时无法获取顾问信息';
         });
       },
       sendMsg() {
@@ -118,6 +135,9 @@
         }).catch(() => {
           this.disabled = false;
         });
+      },
+      showAdviser() {
+        this.$refs.confirm.show();
       },
       getAvatar() {
         if (!this.user || !this.user.photo) {
@@ -139,7 +159,8 @@
     },
     components: {
       Scroll,
-      Loading
+      Loading,
+      Confirm
     }
   };
 </script>
@@ -185,6 +206,7 @@
           border-radius: 6px;
           padding: 14px 14px 12px;
           line-height: 1.4;
+          word-break: break-word;
           font-size: $font-size-medium;
           color: #000;
           background: #fff;

@@ -14,8 +14,8 @@
               <p>¥<span>{{_formatAmount(accountInfo && accountInfo.outAmount || 0)}}</span></p>
             </div>
             <div class="cate-item">
-              <h1>可提现金额</h1>
-              <p>¥<span>{{_formatAmount(account && account.amount || 0)}}</span></p>
+              <h1>充值金额</h1>
+              <p>¥<span>{{_formatAmount(account && account.rechargeAmount || 0)}}</span></p>
             </div>
             <div class="cate-item">
               <h1>已提现金额</h1>

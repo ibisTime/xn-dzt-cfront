@@ -4,7 +4,7 @@ export const SET_USER_STATE = 'SET_USER_STATE';
 export const SET_USER_MOBILE = 'SET_USER_MOBILE';
 // 设置用户的昵称
 export const SET_USER_NICKNAME = 'SET_USER_NICKNAME';
-// 设置用户的交易密码标志
+// 设置用户的支付密码标志
 export const SET_USER_TRADE_PWD_FLAG = 'SET_USER_TRADE_PWD_FLAG';
 // 设置量体地址
 export const SET_ADDRESS_LIST = 'SET_ADDRESS_LIST';
@@ -24,5 +24,7 @@ export const SET_JF_ACCOUNT = 'SET_JF_ACCOUNT';
 export const SET_JY_ACCOUNT = 'SET_JY_ACCOUNT';
 // 设置当前面料
 export const SET_CURRENT_MATERIAL = 'SET_CURRENT_MATERIAL';
-// 设置当前型号
+// 设置当前产品
 export const SET_CURRENT_MODEL = 'SET_CURRENT_MODEL';
+// 设置当前文章
+export const SET_CURRENT_ARTICLE = 'SET_CURRENT_ARTICLE';

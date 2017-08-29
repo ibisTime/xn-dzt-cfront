@@ -11,7 +11,7 @@
           <span class="error">{{contErr}}</span>
         </div>
         <div class="btn">
-          <button :disabled="disabled" @click="rating">提交</button>
+          <button :disabled="disabled" @click="handleRating">提交</button>
         </div>
       </div>
       <toast ref="toast" :text="text"></toast>
@@ -19,7 +19,7 @@
   </transition>
 </template>
 <script>
-  import {ratingOrder} from 'api/biz';
+  import {ratingOrder, rating} from 'api/biz';
   import Toast from 'base/toast/toast';
   import {isUnDefined} from 'common/js/util';
 
@@ -37,6 +37,14 @@
       orderCode: {
         type: String,
         default: ''
+      },
+      parentCode: {
+        type: String,
+        default: ''
+      },
+      user: {
+        type: Object,
+        default: null
       }
     },
     methods: {
@@ -46,25 +54,64 @@
       hide() {
         this.showFlag = false;
       },
-      rating() {
+      handleRating() {
         if (this.valid()) {
           this.disabled = true;
-          ratingOrder(this.orderCode, this.content).then((data) => {
-            this.disabled = false;
-            if (/;filter/.test(data.code)) {
-              this.text = '您的评论存在敏感词，我们将进行审核';
-            } else {
-              this.text = '评价成功';
-            }
-            this.$refs.toast.show();
-            this.$emit('ratingSuc', this.orderCode);
-            setTimeout(() => {
-              this.showFlag = false;
-            }, 1000);
-          }).catch(() => {
-            this.disabled = false;
-          });
+          if (this.orderCode) {
+            this.orderRating();
+          } else {
+            this.articleRating();
+          }
         }
+      },
+      orderRating() {
+        ratingOrder(this.orderCode, this.content).then((data) => {
+          this.disabled = false;
+          if (/;filter/.test(data.code)) {
+            this.text = '您的评论存在敏感词，我们将进行审核';
+          } else {
+            this.text = '评价成功';
+          }
+          this.$refs.toast.show();
+          this.$emit('ratingSuc', this.orderCode);
+          this.content = '';
+          setTimeout(() => {
+            this.showFlag = false;
+          }, 1000);
+        }).catch(() => {
+          this.disabled = false;
+        });
+      },
+      articleRating() {
+        rating(this.parentCode, this.content).then((data) => {
+          this.disabled = false;
+          if (/;filter/.test(data.code)) {
+            this.text = '您的评论存在敏感词，我们将进行审核';
+          } else {
+            this.text = '评价成功';
+            this.$emit('ratingSuc', {
+              code: data.code,
+              content: this.content,
+              commerRealName: this.user && this.user.nickname || '用户',
+              commentDatetime: new Date(),
+              photo: this.user && this.user.photo || this.getDefaultAvatar()
+            });
+          }
+          this.content = '';
+          this.$refs.toast.show();
+          setTimeout(() => {
+            this.showFlag = false;
+          }, 1000);
+        }).catch(() => {
+          this.disabled = false;
+        });
+      },
+      getDefaultAvatar() {
+        let avatar = require('./avatar@2x.png');
+        if (/data:image/.test(avatar) || /http(?:s)?/.test(avatar)) {
+          return avatar;
+        }
+        return location.origin + avatar;
       },
       valid() {
         if (isUnDefined(this.content)) {

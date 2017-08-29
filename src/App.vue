@@ -48,7 +48,11 @@
           this.timer = setInterval(() => {
             if (this.$route.fullPath !== '/') {
               clearInterval(this.timer);
-              location.replace(`${location.origin}/?#${path}`);
+              if (/\/user\/recommend/.test(hash)) {
+                location.replace(`${location.origin}/?#/home`);
+              } else {
+                location.replace(`${location.origin}/?#${path}`);
+              }
             }
           }, 20);
         } else {

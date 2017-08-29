@@ -10,7 +10,7 @@
       </div>
 
       <div class="form-btn">
-        <button :disabled="setting" @click="_recharge">保存</button>
+        <button :disabled="setting" @click="_recharge">确认充值</button>
       </div>
       <div v-show="!user || !cnyAccount || setting" class="loading-container">
         <div class="loading-wrapper">
@@ -70,6 +70,8 @@
           this.setting = false;
           this.text = '充值失败';
           this.$refs.toast.show();
+        }, () => {
+          this.setting = false;
         });
       },
       _getAccount() {

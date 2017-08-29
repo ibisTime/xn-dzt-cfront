@@ -1,7 +1,7 @@
 <template>
   <transition name="slide">
     <div class="flow-wrapper">
-      <scroll :data="flows" class="flow-content">
+      <scroll :data="flows" :pullup="pullup" @scrollToEnd="getPageFlow" class="flow-content">
         <div>
           <ul>
             <li v-for="item in flows">
@@ -44,6 +44,7 @@
     },
     created() {
       setTitle('账户明细');
+      this.pullup = true;
       if (this.cnyAccount) {
         this.getPageFlow();
       } else {
@@ -69,13 +70,15 @@
         });
       },
       getPageFlow() {
-        return getPageFlow(this.start, LIMIT, this.cnyAccount.accountNumber).then((data) => {
-          if (data.list.length < LIMIT || data.totalCount <= LIMIT) {
-            this.hasMore = false;
-          }
-          this.flows = this.flows.concat(data.list);
-          this.start++;
-        });
+        if (this.hasMore) {
+          return getPageFlow(this.start, LIMIT, this.cnyAccount.accountNumber).then((data) => {
+            if (data.list.length < LIMIT || data.totalCount <= LIMIT) {
+              this.hasMore = false;
+            }
+            this.flows = this.flows.concat(data.list);
+            this.start++;
+          });
+        }
       },
       formatAmount(amount) {
         let prefix = +amount > 0 ? '+' : '';

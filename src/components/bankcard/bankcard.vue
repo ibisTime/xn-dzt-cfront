@@ -11,7 +11,7 @@
                    @touchstart.stop.prevent="touchstart(index,$event)"
                    @touchmove.stop.prevent="touchmove($event)"
                    @touchend.stop.prevent="touchend($event)">
-                <div class="bankname">建设银行</div>
+                <div class="bankname">{{item.bankName}}</div>
                 <div class="bankcode">
                   <h2>借记卡</h2>
                   <p>{{item.bankcardNumber}}</p>
@@ -23,7 +23,7 @@
               </div>
             </li>
             <loading class="bankcard-loading" v-show="!bankcardList" title=""></loading>
-            <li @click="goAdd" class="add">
+            <li v-show="!bankcardList || !bankcardList.length" @click="goAdd" class="add">
               <div class="content">新 增 银 行 卡</div>
             </li>
           </ul>

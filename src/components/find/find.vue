@@ -1,6 +1,6 @@
 <template>
   <div class="find-wrapper">
-    <scroll :data="findList" class="find-content">
+    <scroll :data="findList" :pullup="pullup" @scrollToEnd="getPageArticle" class="find-content">
       <div>
         <ul>
           <li @click="selectItem(item)" v-for="(item,index) in findList" :key="item.code">
@@ -26,6 +26,8 @@
   import {formatImg, getShareImg, setTitle} from 'common/js/util';
   import {initShare} from 'common/js/weixin';
   import {getPageArticle} from 'api/biz';
+  import {mapMutations} from 'vuex';
+  import {SET_CURRENT_ARTICLE} from 'store/mutation-types';
 
   export default {
     data() {
@@ -37,6 +39,7 @@
       };
     },
     created() {
+      this.pullup = true;
       this.isWxConfiging = false;
       this.wxData = null;
       if (this.shouldGetData()) {
@@ -70,15 +73,17 @@
         return false;
       },
       getPageArticle() {
-        getPageArticle(this.start, this.limit).then((data) => {
-          if (data.totalCount <= this.limit || data.list.length < this.limit) {
+        if (this.hasMore) {
+          getPageArticle(this.start, this.limit).then((data) => {
+            if (data.totalCount <= this.limit || data.list.length < this.limit) {
+              this.hasMore = false;
+            }
+            this.start++;
+            this.findList = this.findList.concat(data.list);
+          }).catch(() => {
             this.hasMore = false;
-          }
-          this.start++;
-          this.findList = this.findList.concat(data.list);
-        }).catch(() => {
-          this.hasMore = false;
-        });
+          });
+        }
       },
       getInitWXSDKConfig() {
         this.isWxConfiging = true;
@@ -96,13 +101,20 @@
         });
       },
       selectItem(item) {
+        if (!item._advPic) {
+          item._advPic = item.advPic.split('||');
+        }
+        this.setCurArticle(item);
         this.$router.push(`/find/${item.code}`);
       },
       getImgSyl(imgs) {
         return {
           backgroundImage: `url(${formatImg(imgs)})`
         };
-      }
+      },
+      ...mapMutations({
+        setCurArticle: SET_CURRENT_ARTICLE
+      })
     },
     components: {
       Loading,

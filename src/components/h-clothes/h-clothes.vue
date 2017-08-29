@@ -1,13 +1,12 @@
 <template>
   <transition name="slide">
     <div class="clothes-wrapper">
-      <scroll :data="products" class="scroll-content">
+      <scroll :data="products" :pullup="pullup" @scrollToEnd="getModelList" class="scroll-content">
         <div>
           <div class="list-content clearfix">
             <div v-for="(item,index) in products" @click="selectItem(item)" :key="item.code" class="item">
               <div class="inner">
-                <div class="inner-content">
-                  <img v-lazy="formatImg(item.pic)"/>
+                <div class="inner-content" :style="getImgSyl(item.pic)">
                   <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index)"></div>
                 </div>
               </div>
@@ -41,6 +40,7 @@
       };
     },
     created() {
+      this.pullup = true;
       this.fetching = false;
       this.isWxConfiging = false;
       this.wxData = null;
@@ -71,16 +71,19 @@
         return false;
       },
       getModelList() {
-        this.fetching = true;
-        return getPageModel(this.start, LIMIT, TYPE_H).then((data) => {
-          this.fetching = false;
-          if (data.totalCount <= LIMIT || data.list.length < LIMIT) {
-            this.hasMore = false;
-          }
-          this.products = this.products.concat(data.list);
-        }).catch(() => {
-          this.fetching = false;
-        });
+        if (this.hasMore) {
+          this.fetching = true;
+          return getPageModel(this.start, LIMIT, TYPE_H).then((data) => {
+            this.fetching = false;
+            if (data.totalCount <= LIMIT || data.list.length < LIMIT) {
+              this.hasMore = false;
+            }
+            this.start++;
+            this.products = this.products.concat(data.list);
+          }).catch(() => {
+            this.fetching = false;
+          });
+        }
       },
       getInitWXSDKConfig() {
         this.isWxConfiging = true;
@@ -130,8 +133,10 @@
         }
         this.$emit('update', product);
       },
-      formatImg(img) {
-        return formatImg(img);
+      getImgSyl(imgs) {
+        return {
+          backgroundImage: `url(${formatImg(imgs)})`
+        };
       },
       ...mapMutations({
         'setCurModel': SET_CURRENT_MODEL
@@ -157,6 +162,7 @@
     .scroll-content {
       height: 100%;
       position: relative;
+      padding: 0 18px;
 
       .loading-wrapper {
         clear: both;
@@ -188,6 +194,9 @@
               height: 100%;
               border-radius: 6px;
               overflow: hidden;
+              background-repeat: no-repeat;
+              background-size: cover;
+              background-position: center;
             }
           }
 

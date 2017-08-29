@@ -25,7 +25,7 @@
           <div class="order-info">
             <div v-if="currentOrder && currentOrder.logisticsCompany">
               <p><label>物流公司</label>{{getCompany()}}</p>
-              <p><label>发货时间</label>{{(currentOrder && currentOrder.deliveryDatetime) | formatDate('yyyy-MM-dd hh:mm')}}</p>
+              <p><label>发货时间</label>{{(currentOrder && currentOrder.deliveryDatetime) | formatDate('yyyy-MM-dd')}}</p>
               <p><label>快递单号</label>{{currentOrder && currentOrder.logisticsCode}}</p>
               <p><label>收货确认</label>{{isReceived()}}</p>
             </div>
@@ -36,17 +36,15 @@
           <h1>定制信息</h1>
           <h2>衬衫定制信息</h2>
           <div class="order-info1">
-            <div v-if="productInfo && productInfo.productSpecsList && productInfo.productSpecsList.length">
-              <p><label>规格</label>{{getTechName('1-1')}}</p>
-              <p><label>领型</label>{{getTechName('1-3')}}</p>
-              <p><label>袖型</label>{{getTechName('1-4')}}</p>
-              <p><label>门襟</label>{{getTechName('1-5')}}</p>
-              <p><label>下摆</label>{{getTechName('1-6')}}</p>
-              <p><label>收省</label>{{getTechName('1-7')}}</p>
-              <p><label>领口颜色</label>{{getTechName('1-8')}}</p>
-              <p><label>口袋</label>{{getTechName('1-9')}}</p>
-              <p><label>纽扣</label>{{getTechName('1-10')}}</p>
-              <p><label>纽扣颜色</label>{{getTechName('1-11')}}</p>
+            <div v-if="getTechName('1-01')">
+              <p><label>{{getLabelName('1-01')}}</label>{{getTechName('1-01')}}</p>
+              <p><label>{{getLabelName('1-03')}}</label>{{getTechName('1-03')}}</p>
+              <p><label>{{getLabelName('1-04')}}</label>{{getTechName('1-04')}}</p>
+              <p><label>{{getLabelName('1-05')}}</label>{{getTechName('1-05')}}</p>
+              <p><label>{{getLabelName('1-06')}}</label>{{getTechName('1-06')}}</p>
+              <p><label>{{getLabelName('1-07')}}</label>{{getTechName('1-07')}}</p>
+              <p><label>{{getLabelName('1-08')}}</label>{{getTechName('1-08')}}</p>
+              <!-- <p><label>{{getLabelName('1-09')}}</label>{{getTechName('1-09')}}</p> -->
             </div>
             <div v-else>
               <p>无</p>
@@ -56,9 +54,9 @@
           <div class="order-info1">
             <div v-if="getCXCont()">
               <p><label>刺绣内容</label>{{getCXCont()}}</p>
-              <p><label>刺绣字体</label>{{getTechName('5-3')}}</p>
-              <p><label>刺绣位置</label>{{getCXLocation()}}</p>
-              <p><label>刺绣颜色</label>{{getTechName('5-4')}}</p>
+              <p><label>{{getLabelName('5-03')}}</label>{{getTechName('5-03')}}</p>
+              <p><label>{{getLabelName('5-02')}}</label>{{getTechName('5-02')}}</p>
+              <p><label>{{getLabelName('5-04')}}</label>{{getTechName('5-04')}}</p>
             </div>
             <div v-else>
               <p>无</p>
@@ -72,7 +70,7 @@
       </scroll>
       <div v-show="loadingFlag" class="loading-container">
         <div class="loading-wrapper">
-          <loading title="取消中..."></loading>
+          <loading :title="loadingText"></loading>
         </div>
       </div>
       <confirm ref="confirm" :text="text" @confirm="handleConfirm"></confirm>
@@ -87,7 +85,7 @@
   import Confirm from 'base/confirm/confirm';
   import Loading from 'base/loading/loading';
   import {getOrder, cancelBook, receiveOrder, getTechMapList, getModelList} from 'api/biz';
-  import {getDictList} from 'api/general';
+  import {getBizDictMap, getDictList} from 'api/general';
   import {SET_CURRENT_ORDER} from 'store/mutation-types';
   import {ORDER_STATUS} from '../orders/config';
   import {isUnDefined, formatAmount, setTitle} from 'common/js/util';
@@ -100,7 +98,8 @@
       return {
         loadingFlag: true,
         productInfo: null,
-        text: ''
+        text: '',
+        loadingText: ''
       };
     },
     created() {
@@ -109,7 +108,7 @@
       this.code = this.$route.params.code;
       this.techMap = null;
       this.wlComps = null;
-      this.ztLocas = null;
+      this.dictMap = null;
       this.modelList = null;
       this.getInitData();
     },
@@ -118,6 +117,9 @@
         'currentOrder',
         'orderList'
       ])
+    },
+    updated() {
+      this.getInitData();
     },
     methods: {
       getInitData() {
@@ -129,19 +131,19 @@
       _getOrder() {
         Promise.all([
           getOrder(this.code),
-          getDictList('wl_company'),
-          getDictList('5-2'),
+          getBizDictMap(),
           getTechMapList(),
-          getModelList(true)
-        ]).then(([data, wlComps, ztLocas, techMap, modelList]) => {
+          getModelList(true),
+          getDictList('wl_company')
+        ]).then(([data, dictMap, techMap, modelList, wlComps]) => {
           if (!this.currentOrder) {
             this.setCurrentOrder(data);
           }
           this.productInfo = data.productList && data.productList.length && data.productList[0] || null;
-          this.wlComps = wlComps;
-          this.ztLocas = ztLocas;
+          this.dictMap = dictMap;
           this.techMap = techMap;
           this.modelList = modelList;
+          this.wlComps = wlComps;
           this.loadingFlag = false;
           setTimeout(() => {
             this.$refs.scroll.refresh();
@@ -190,7 +192,7 @@
         if (!this.productInfo) {
           return '无';
         }
-        let index = this._getIndexFromSpecsList('1-2');
+        let index = this._getIndexFromSpecsList('1-02');
         if (~index) {
           return this.productInfo.productSpecsList[index].code;
         }
@@ -208,7 +210,7 @@
         }
         let orderComp = this.currentOrder.logisticsCompany;
         let index = this.wlComps.findIndex((item) => {
-          return orderComp === item.dkey;
+          return item.dkey === orderComp;
         });
         return ~index ? this.wlComps[index].dvalue : '未知';
       },
@@ -256,32 +258,21 @@
         }
         return '';
       },
-      getCXLocation() {
-        if (!this.productInfo || !this.currentOrder || !this.ztLocas) {
-          return '';
-        }
-        let index = this._getIndexFromSpecsList('5-2');
-        if (~index) {
-          let code = this.productInfo.productSpecsList[index].code;
-          let _index = this.ztLocas.findIndex((item) => {
-            return item.dkey === code;
-          });
-          if (~_index) {
-            return this.ztLocas[_index].dvalue;
-          }
-          return '';
-        }
-        return '';
-      },
       getCXCont() {
         if (!this.productInfo || !this.currentOrder) {
           return '';
         }
-        let index = this._getIndexFromSpecsList('5-1');
+        let index = this._getIndexFromSpecsList('5-01');
         if (~index) {
           return this.productInfo.productSpecsList[index].code;
         }
         return '';
+      },
+      getLabelName(key) {
+        if (!this.dictMap) {
+          return '';
+        }
+        return this.dictMap['measure'][key] || '未知';
       },
       _getIndexFromSpecsList(type) {
         let specList = this.productInfo.productSpecsList;
@@ -296,6 +287,7 @@
       handleConfirm() {
         this.loadingFlag = true;
         if (this.currentOrder.status === '7') {
+          this.loadingText = '收货中...';
           receiveOrder(this.code).then(() => {
             this.loadingFlag = false;
             var _order = {
@@ -312,6 +304,7 @@
             this.loadingFlag = false;
           });
         } else {
+          this.loadingText = '取消中';
           cancelBook(this.code).then(() => {
             this.loadingFlag = false;
             let prevStatus = this.currentOrder.status;

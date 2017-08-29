@@ -9,8 +9,10 @@
   left: 50%;
   transform: translate(-50%, -50%);
   position: absolute;
-  max-width: 50%;
+  z-index: 999;
+  max-width: 60%;
   display: none;
+  word-wrap: break-word;
 
   .message-module-text{
     font-size: 14px;

@@ -75,7 +75,7 @@
         this.checked[0] = selectedIndex;
         // 如果月份选择了2月
         if (this.checked[1] === 1) {
-          let _days = getDays(this.first[this.checked[0]].value, 2);
+          let _days = getDays(this.first[this.checked[0]].value, '02');
           if (_days.length !== this.third.length) {
             let scrollIndex = this.checked[2];
             if(scrollIndex + 1 > _days.length) {
@@ -90,7 +90,9 @@
       },
       secondChange(selectedIndex) {
         this.checked[1] = selectedIndex;
-        let _days = getDays(this.first[this.checked[0]].value, this.checked[1] + 1);
+        let _month = (this.checked[1] + 1) + '';
+        _month = '00'.substr(_month.length) + _month;
+        let _days = getDays(this.first[this.checked[0]].value, _month);
         if (_days.length !== this.third.length) {
           let scrollIndex = this.checked[2];
           if(scrollIndex + 1 > _days.length) {
@@ -115,8 +117,8 @@
           index0 = this.first.findIndex((item) => {
             return +item.value === +this.year;
           });
-          index1 = this.month - 1;
-          index2 = this.days - 1;
+          index1 = +this.month - 1;
+          index2 = +this.day - 1;
           this.third = getDays(this.year, this.month);
         } else {
           let result = getCurDatas();

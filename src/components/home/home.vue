@@ -5,7 +5,7 @@
         <div class="slider-wrapper">
           <slider v-if="banners.length" :showDots="showDots" :loop="loop">
             <div v-for="(item,index) in banners" :key="index">
-              <a :href="item.url">
+              <a :href="item.url||'javascript:void(0)'">
                 <img class="needsclick" @load="loadImage" :src="item.pic | formatImg"/>
               </a>
             </div>
@@ -27,12 +27,12 @@
           <div class="list-content clearfix">
             <div v-for="(item,index) in modelList" @click="selectItem(item)" :key="item.code" class="item">
               <div class="inner">
-                <div class="inner-content">
-                  <img v-lazy="formatImg(item.pic)"/>
+                <div class="inner-content" :style="getImgSyl(item.pic)">
                   <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index)"></div>
                 </div>
               </div>
             </div>
+            <no-result v-show="!hasMore && !modelList.length" title="抱歉，暂无衬衫数据"></no-result>
             <loading class="loading-wrapper" v-show="hasMore" title=""></loading>
           </div>
           <div class="head clearfix">
@@ -42,12 +42,12 @@
           <div class="list-content clearfix">
             <div v-for="(item,index) in hModelList" @click="selectItem(item)" :key="item.code" class="item">
               <div class="inner">
-                <div class="inner-content">
-                  <img v-lazy="formatImg(item.pic)"/>
+                <div class="inner-content" :style="getImgSyl(item.pic)">
                   <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index,true)"></div>
                 </div>
               </div>
             </div>
+            <no-result v-show="!hHasMore && !hModelList.length" title="抱歉，暂无H+数据"></no-result>
             <loading class="loading-wrapper" v-show="hHasMore" title=""></loading>
           </div>
         </div>
@@ -62,6 +62,7 @@
   import Slider from 'base/slider/slider';
   import Loading from 'base/loading/loading';
   import Scroll from 'base/scroll/scroll';
+  import NoResult from 'base/no-result/no-result';
   import {commonMixin} from 'common/js/mixin';
   import {formatImg, getShareImg, setTitle} from 'common/js/util';
   import {initShare} from 'common/js/weixin';
@@ -205,8 +206,10 @@
           }
         }
       },
-      formatImg(img) {
-        return formatImg(img);
+      getImgSyl(imgs) {
+        return {
+          backgroundImage: `url(${formatImg(imgs)})`
+        };
       },
       loadImage() {
         if(!this.checkLoaded) {
@@ -236,7 +239,8 @@
     components: {
       Slider,
       Scroll,
-      Loading
+      Loading,
+      NoResult
     }
   };
 </script>
@@ -356,6 +360,9 @@
                 height: 100%;
                 border-radius: 6px;
                 overflow: hidden;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center;
               }
             }
 

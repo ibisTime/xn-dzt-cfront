@@ -20,7 +20,7 @@
       </div>
 
       <div class="form-btn">
-        <button :disabled="setting" @click="_bindMobile">设置</button>
+        <button :disabled="setting" @click="_bindMobile">确定绑定</button>
       </div>
 
       <div v-show="!this.user" class="loading-container">

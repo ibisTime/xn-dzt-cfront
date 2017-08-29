@@ -27,7 +27,7 @@ export const CATEGORYS = [{
   value: '待评价'
 }, {
   key: '11',
-  value: '售后中'
+  value: '已取消'
 }];
 
 export const LIMIT = 10;
@@ -43,5 +43,5 @@ export const ORDER_STATUS = {
   '8': '待评价',
   '9': '已评价',
   '10': '已完成',
-  '11': '售后中'
+  '11': '已取消'
 };

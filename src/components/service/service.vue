@@ -86,7 +86,8 @@
           if (data.list.length < LIMIT || data.totalCount <= LIMIT) {
             this.hasMore = false;
           }
-          this.messages = data.list.concat(this.messages);
+          let _list = data.list.reverse();
+          this.messages = _list.concat(this.messages);
           if (this.first) {
             if (this.messages.length) {
               setTimeout(() => {
@@ -185,6 +186,7 @@
           border-radius: 6px;
           padding: 14px 14px 12px;
           line-height: 1.4;
+          word-break: break-word;
           font-size: $font-size-medium;
           color: #000;
           background: #fff;

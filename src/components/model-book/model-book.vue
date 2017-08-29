@@ -6,29 +6,29 @@
           <i class="close-icon close-icon0"></i>
           <i class="close-icon close-icon1"></i>
         </div>
-        <div class="book-form">
+        <div class="book-form" :class="{disabled: disabled}">
           <div class="form-item">
             <label>姓名</label>
-            <input class="input-item" type="text" v-model="name" @change="_nameValid" placeholder="待量体者姓名"/>
+            <input class="input-item" :disabled="disabled" type="text" v-model="name" @change="_nameValid" placeholder="待量体者姓名"/>
             <span class="error">{{nameErr}}</span>
           </div>
           <div class="form-item">
             <label>手机</label>
-            <input class="input-item" type="tel" v-model="telphone" @change="_telValid" placeholder="待量体者手机"/>
+            <input class="input-item" :disabled="disabled" type="tel" v-model="telphone" @change="_telValid" placeholder="待量体者手机"/>
             <span class="error">{{telErr}}</span>
           </div>
           <div class="clearfix">
             <div class="average pr">
               <div class="form-item">
                 <label>身高</label>
-                <input class="input-item tc" type="number" v-model="height"/>
+                <input class="input-item tc" :disabled="disabled" type="number" v-model="height"/>
                 <span>cm</span>
               </div>
             </div>
             <div class="average pl">
               <div class="form-item">
                 <label>体重</label>
-                <input class="input-item tc" type="number" v-model="weight"/>
+                <input class="input-item tc" :disabled="disabled" type="number" v-model="weight"/>
                 <span>kg</span>
               </div>
             </div>
@@ -39,28 +39,38 @@
                          :province="province"
                          :city="city"
                          :district="district"
+                         :disabled="disabled"
                          @change="updateAddress"></city-picker>
             <span class="error">{{provErr}}</span>
           </div>
           <div class="form-item">
             <label></label>
-            <input class="input-item" type="text" v-model="address" @change="_addrValid" placeholder="街道门牌信息"/>
+            <input class="input-item" type="text" :disabled="disabled" v-model="address" @change="_addrValid" placeholder="街道门牌信息"/>
             <span class="error">{{addrErr}}</span>
           </div>
-          <div class="form-item">
+          <div class="form-item" v-show="ltShow">
             <label>量体时间</label>
             <date-picker class="input-item"
+                         ref="picker"
                          :year="year"
                          :month="month"
                          :day="day"
+                         :disabled="disabled"
                          @change="updateDate"></date-picker>
             <span class="error">{{yearErr}}</span>
           </div>
         </div>
         <div class="book-btns">
-          <button class="book-btn" :disabled="disabled" @click="_book">提交预约</button>
+          <button :disabled="btnDisabled" v-show="curBtn==='bookBtn'" class="book-btn" @click="_book">提交预约</button>
+          <button :disabled="btnDisabled" v-show="curBtn==='cancelBtn'" class="book-btn btn-cancel" @click="_cancel">取消预约</button>
+          <button :disabled="btnDisabled" v-show="curBtn==='reBtn'" class="book-btn btn-fg" @click="_reBook">一键复购</button>
         </div>
         <toast ref="toast" :text="text"></toast>
+        <div v-show="isLoading" class="loading-container">
+          <div class="loading-wrapper">
+            <loading title=""></loading>
+          </div>
+        </div>
       </div>
     </div>
   </transition>
@@ -68,15 +78,30 @@
 <script>
   import DatePicker from 'base/date-picker/date-picker';
   import CityPicker from 'base/city-picker/city-picker';
+  import Loading from 'base/loading/loading';
   import Toast from 'base/toast/toast';
-  import {book} from 'api/biz';
-  import {realNameValid, mobileValid, emptyValid} from 'common/js/util';
+  import {book, cancelBook, reBook, getLatestOrder} from 'api/biz';
+  import {realNameValid, mobileValid, emptyValid, formatDate} from 'common/js/util';
 
   export default {
+    props: {
+      productCode: {
+        type: String,
+        default: ''
+      },
+      latestOrder: {
+        type: Object,
+        default: null
+      }
+    },
     data() {
       return {
         showFlag: false,
+        btnDisabled: false,
+        curBtn: 'bookBtn',
         disabled: false,
+        canClick: false,
+        ltShow: true,
         name: '',
         nameErr: '',
         telphone: '',
@@ -93,14 +118,13 @@
         yearErr: '',
         month: '',
         day: '',
-        text: ''
+        text: '',
+        orderCode: '',
+        isLoading: false
       };
     },
-    props: {
-      productCode: {
-        type: String,
-        default: ''
-      }
+    created() {
+      this._initData(this.latestOrder);
     },
     methods: {
       show() {
@@ -109,15 +133,50 @@
       hide() {
         this.showFlag = false;
       },
+      _getLatestOrder() {
+        return getLatestOrder();
+      },
+      _initData(data) {
+        if (data.order) {
+          this.disabled = true;
+          this.orderCode = data.order.code;
+          this.name = data.order.applyName;
+          this.telphone = data.order.applyMobile;
+          this.height = data.map['6-02'];
+          this.weight = data.map['6-03'];
+          this.province = data.order.ltProvince;
+          this.city = data.order.ltCity;
+          this.district = data.order.ltArea;
+          this.address = data.order.ltAddress;
+          let ltDatetime = formatDate(data.order.ltDatetime, 'yyyy-MM-dd');
+          ltDatetime = ltDatetime.split('-');
+          this.year = ltDatetime[0];
+          this.month = ltDatetime[1];
+          this.day = ltDatetime[2];
+          if (data.order.status === '1' || data.order.status === '2') {
+            this.curBtn = 'cancelBtn';
+          } else if (data.order.status !== '11') {
+            this.ltShow = false;
+            this.curBtn = 'reBtn';
+          } else {
+            this.disabled = false;
+          }
+        } else {
+          this.curBtn = 'bookBtn';
+          this.disabled = false;
+          this.ltShow = true;
+        }
+      },
       _book() {
         if (this.valid()) {
-          this.disabled = true;
+          this.btnDisabled = true;
+          this.isLoading = true;
           book({
             applyName: this.name,
             applyMobile: this.telphone,
             map: {
-              '6-2': this.height,
-              '6-3': this.weight
+              '6-02': this.height,
+              '6-03': this.weight
             },
             ltProvince: this.province,
             ltCity: this.city,
@@ -126,16 +185,60 @@
             ltDatetime: `${this.year}-${this.month}-${this.day}`,
             productCode: this.productCode
           }).then((data) => {
+            this.isLoading = false;
             this.text = '预约成功';
-            this.disabled = false;
+            this.btnDisabled = false;
+            this.$refs.toast.show();
+            this.curBtn = 'cancelBtn';
+            this.orderCode = data.code;
+            setTimeout(() => {
+              this.showFlag = false;
+            }, 1000);
+            this.$emit('bookSuc', data.code);
+          }).catch(() => {
+            this.isLoading = false;
+            this.btnDisabled = false;
+          });
+        }
+      },
+      _cancel() {
+        this.btnDisabled = true;
+        this.isLoading = true;
+        cancelBook(this.orderCode).then(() => {
+          this._getLatestOrder().then((data) => {
+            this._initData(data);
+            this.isLoading = false;
+            this.btnDisabled = false;
+            this.text = '预约取消成功';
             this.$refs.toast.show();
             setTimeout(() => {
               this.showFlag = false;
             }, 1000);
-          }).catch(() => {
-            this.disabled = false;
+            this.$emit('bookCancel', data, this.curBtn);
           });
-        }
+        }).catch(() => {
+          this.isLoading = false;
+          this.btnDisabled = false;
+        });
+      },
+      _reBook() {
+        this.btnDisabled = true;
+        this.isLoading = true;
+        reBook().then((data) => {
+          this.isLoading = false;
+          this.btnDisabled = false;
+          this.text = '一键复购成功';
+          this.$refs.toast.show();
+          this.orderCode = data.code;
+          this.curBtn = 'cancelBtn';
+          setTimeout(() => {
+            this.showFlag = false;
+          }, 1000);
+          this.$emit('bookSuc', data.code);
+        }).catch(() => {
+          this.isLoading = false;
+          this.btnDisabled = false;
+        });
       },
       updateDate(year, month, day) {
         this.year = year;
@@ -173,6 +276,10 @@
         }
       },
       _nameValid() {
+        this.$emit('update', {
+          type: 'applyName',
+          value: this.name
+        });
         let result = realNameValid(this.name);
         this.nameErr = result.msg;
         return !result.err;
@@ -200,6 +307,7 @@
     },
     components: {
       Toast,
+      Loading,
       DatePicker,
       CityPicker
     }
@@ -327,13 +435,35 @@
           font-size: $font-size-medium;
 
           &.book-btn {
-            background-color: $primary-color;
+            background: $primary-color;
+          }
+
+          &.btn-fg {
+            background: #a7952f;
+          }
+
+          &.btn-cancel {
+            background: $color-cancel-background;
           }
 
           &[disabled] {
-            background-color: $color-disable-background;
+            background: $color-disable-background;
           }
         }
+      }
+    }
+    .loading-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+
+      .loading-wrapper {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        transform: translate3d(0, -50%, 0);
       }
     }
   }

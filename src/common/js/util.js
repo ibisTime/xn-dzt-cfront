@@ -68,10 +68,22 @@ export function formatImg(imgs, suffix = '?imageMogr2/auto-orient') {
   return img;
 }
 
+// 格式化头像
+export function formatAvatar(img, suffix = '?imageMogr2/auto-orient') {
+  if (!img) {
+    let avatar = require('../image/avatar@2x.png');
+    if (/data:image/.test(avatar) || /http(?:s)?/.test(avatar)) {
+      return avatar;
+    }
+    return location.origin + avatar;
+  }
+  return formatImg(img, suffix);
+}
+
 // 获得分享图片
 export function getShareImg(imgs) {
   if (!imgs) {
-    let sharImg = require('./app.jpg');
+    let sharImg = require('../image/app.jpg');
     if (/data:image/.test(sharImg) || /http(?:s)?/.test(sharImg)) {
       return sharImg;
     }
@@ -152,7 +164,7 @@ export function mobileValid(mobile) {
   return result;
 }
 
-// 交易密码校验
+// 支付密码校验
 export function tradeValid(trade) {
   let result = {
     err: 0,

@@ -14,9 +14,7 @@
       </div>
       <div class="form-item">
         <div class="item-label">可用金额</div>
-        <div class="item-input-wrapper">
-          <input type="number" disabled class="item-input" :value="_formatAmount()">
-        </div>
+        <div class="inner-label">{{_formatAmount()}}</div>
       </div>
       <div class="form-item">
         <div class="item-label">提现金额</div>
@@ -24,6 +22,10 @@
           <input type="number" class="item-input" v-model="amount" @change="_amountValid" placeholder="提现金额最多两位小数">
           <span v-show="amountErr" class="error-tip">{{amountErr}}</span>
         </div>
+      </div>
+      <div class="form-item">
+        <div class="item-label">手续费</div>
+        <div class="inner-label">{{rateAmount}}</div>
       </div>
       <div class="form-item">
         <div class="item-label">支付密码</div>
@@ -36,7 +38,13 @@
       <div class="form-btn">
         <button :disabled="setting" @click="_withdraw">提现</button>
       </div>
-      <div v-show="!bankcardList || !cnyAccount" class="loading-container">
+      <div class="rules">
+        <p>提现规则：</p>
+        <p>1、每月最大提现次数{{rechargeTimes}}次</p>
+        <p>2、提现金额必须是{{times}}的倍数，单笔最高{{maxAmount}}元</p>
+        <p>3、{{toAccount}}到账</p>
+      </div>
+      <div v-show="!bankcardList || !cnyAccount || !rate" class="loading-container">
         <div class="loading-wrapper">
           <loading></loading>
         </div>
@@ -51,6 +59,7 @@
   import {mapGetters, mapMutations} from 'vuex';
   import {SET_BANKCARD_LIST, SET_CNY_ACCOUNT} from 'store/mutation-types';
   import {getAccount, withdraw, getBankCardList} from 'api/account';
+  import {getPageAccountSysConfig} from 'api/general';
   import {amountValid, tradeValid, formatAmount, setTitle} from 'common/js/util';
   import Toast from 'base/toast/toast';
   import Loading from 'base/loading/loading';
@@ -64,13 +73,21 @@
         amountErr: '',
         tradePwd: '',
         tradeErr: '',
-        setting: false
+        setting: false,
+        rechargeTimes: '',
+        times: '',
+        toAccount: '',
+        maxAmount: '',
+        rate: '',
+        rateAmount: 0
       };
     },
     created() {
       this.isAlert = true;
       if (this.shouldGetData()) {
         this.getInitData();
+      } else {
+        this.payCardNo = this.bankcardList[0];
       }
     },
     computed: {
@@ -88,13 +105,14 @@
       shouldGetData() {
         if (this.$route.path === '/user/account/withdraw') {
           setTitle('提现');
-          return !this.cnyAccount || !this.bankcardList || !this.bankcardList.length;
+          return !this.cnyAccount || !this.bankcardList || !this.bankcardList.length || !this.rate;
         }
       },
       getInitData() {
         Promise.all([
           this._getAccount(),
-          this._getBankCardList()
+          this._getBankCardList(),
+          this._getRules()
         ]).then(([account, cardList]) => {
           if (!cardList.length) {
             this.$refs.confirm.show();
@@ -123,6 +141,23 @@
           this.payCardNo = this.bankcardList[0];
           return Promise.resolve(this.bankcardList);
         }
+      },
+      _getRules() {
+        return getPageAccountSysConfig().then((data) => {
+          data.list.forEach((rule) => {
+            if(rule.ckey === 'CUSERMONTIMES') {
+              this.rechargeTimes = rule.cvalue;
+            } else if(rule.ckey === 'CUSERQXBS') {
+              this.times = rule.cvalue;
+            } else if(rule.ckey === 'CUSERQXSX') {
+              this.toAccount = rule.cvalue;
+            } else if(rule.ckey === 'QXDBZDJE') {
+              this.maxAmount = rule.cvalue;
+            } else if(rule.ckey === 'CUSERQXFL') {   // 提现费率
+              this.rate = +rule.cvalue;
+            }
+          });
+        });
       },
       _formatAmount() {
         let _amount = this.cnyAccount && this.cnyAccount.amount || 0;
@@ -192,6 +227,15 @@
       })
     },
     watch: {
+      amount(newAmount) {
+        if (+newAmount) {
+          console.log('1');
+          this.rateAmount = +this.rate * +newAmount;
+        } else {
+          console.log('2');
+          this.rateAmount = '--';
+        }
+      },
       bankcardList(newList) {
         this.payCardNo = newList[0];
       }
@@ -218,6 +262,13 @@
       height: 15px;
       top: 50%;
       transform: translate(0, -50%);
+    }
+
+    .rules {
+      margin-top: 20px;
+      line-height: 1.3;
+      font-size: 14px;
+      color: #999;
     }
 
     .loading-container {

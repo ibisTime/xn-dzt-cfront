@@ -6,6 +6,7 @@
           <div class="description" ref="description">
             <div v-html="content"></div>
           </div>
+          <loading v-if="!content" title=""></loading>
         </div>
       </scroll>
     </div>
@@ -13,6 +14,7 @@
 </template>
 <script>
   import Scroll from 'base/scroll/scroll';
+  import Loading from 'base/loading/loading';
   import {setTitle} from 'common/js/util';
   import {getUserSystemConfig} from 'api/general';
 
@@ -55,7 +57,8 @@
       }
     },
     components: {
-      Scroll
+      Scroll,
+      Loading
     }
   };
 </script>

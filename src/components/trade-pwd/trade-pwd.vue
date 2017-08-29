@@ -88,7 +88,7 @@
     methods: {
       shouldGetData() {
         if (/\/set-tradepwd\/?$/.test(this.$route.path)) {
-          setTitle('设置交易密码');
+          setTitle('设置支付密码');
           return !this.fetching;
         }
       },

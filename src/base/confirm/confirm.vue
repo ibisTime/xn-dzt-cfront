@@ -3,7 +3,8 @@
     <div class="confirm" v-show="showFlag" @click.stop>
       <div class="confirm-wrapper">
         <div class="confirm-content">
-          <p class="text" :class="textCls">{{text}}</p>
+          <p v-if="isHtml" class="text" :class="textCls" v-html='text'></p>
+          <p v-else class="text" :class="textCls">{{text}}</p>
           <div class="operate">
             <div v-if="!isAlert" @click="cancel" class="operate-btn left">{{cancelBtnText}}</div>
             <div @click="confirm" class="operate-btn right">{{confirmBtnText}}</div>
@@ -30,6 +31,10 @@
         default: '取消'
       },
       isAlert: {
+        type: Boolean,
+        default: false
+      },
+      isHtml: {
         type: Boolean,
         default: false
       }

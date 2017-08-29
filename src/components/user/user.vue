@@ -4,12 +4,12 @@
       <div>
         <div @click="goSet" class="avatar-wrapper" ref="bgImage">
           <div class="avatar">
-            <img :src="(user && user.photo) | formatImg"/>
+            <img :src="(user && user.photo) | formatAvatar"/>
           </div>
           <div class="user-info">
             <h1>{{user && user.nickname}}</h1>
             <p>
-              <span class="rectangle" v-show="user && user.level!=='0'">VIP{{user && user.level}}</span>
+              <span class="rectangle" v-show="user && user.level!=='0' && user.level!=='1'">VIP{{getLevel()}}</span>
               <span>{{getText(user && user.level)}}</span>
             </p>
           </div>
@@ -22,7 +22,7 @@
           <div class="order-types">
             <div class="order-type" @click="goOrder(1)">
               <div class="type order-dlt"></div>
-              <p>带量体</p>
+              <p>待量体</p>
             </div>
             <div class="order-type" @click="goOrder(2)">
               <div class="type order-dzf"></div>
@@ -36,9 +36,9 @@
               <div class="type order-dpj"></div>
               <p>待评价</p>
             </div>
-            <div class="order-type" @click="goOrder(9)">
+            <div class="order-type" @click="goOrder('', $event)">
               <div class="type order-shz"></div>
-              <p>售后中</p>
+              <p>查看全部</p>
             </div>
           </div>
         </div>
@@ -48,39 +48,39 @@
             <h2>私人服务</h2>
           </div>
           <div class="service-types">
-            <div class="service-type">
+            <router-link class="service-type" tag="div" to="/user/report">
               <div class="type service-zsbg"></div>
               <p>专属报告</p>
-            </div>
-            <div class="service-type" @click="goAdviser">
+            </router-link>
+            <router-link to="/user/adviser" class="service-type" tag="div">
               <div class="type service-zzgw"></div>
               <p>着装顾问</p>
-            </div>
-            <div class="service-type" @click="goService">
+            </router-link>
+            <router-link to="/user/service" class="service-type" tag="div">
               <div class="type service-kfts"></div>
               <p>客服投诉</p>
-            </div>
-            <div class="service-type" @click="goQuestion">
+            </router-link>
+            <router-link to="/user/question" class="service-type" tag="div">
               <div class="type service-cjwt"></div>
               <p>常见问题</p>
-            </div>
+            </router-link>
           </div>
-          <div class="user-title" @click="goMember">
+          <router-link to="/user/member" class="user-title" tag="div">
             <h2>会员中心</h2>
             <i class="arrow"></i>
-          </div>
-          <div class="user-title" @click="goAccount">
+          </router-link>
+          <router-link to="/user/account" class="user-title" tag="div">
             <h2>我的账户</h2>
             <i class="arrow"></i>
-          </div>
-          <div class="user-title" @click="goRecommend">
+          </router-link>
+          <router-link to="/user/recommend" class="user-title" tag="div">
             <h2>我的推荐</h2>
             <i class="arrow"></i>
-          </div>
-          <div class="user-title" @click="goCollection">
+          </router-link>
+          <router-link to="/user/collection" class="user-title" tag="div">
             <h2>我的收藏</h2>
             <i class="arrow"></i>
-          </div>
+          </router-link>
         </div>
       </div>
     </scroll>
@@ -136,10 +136,13 @@
         if (isUnDefined(level)) {
           return '';
         }
-        if (level === '0') {
-          return '普通会员';
-        }
         return this.levelDict[level];
+      },
+      getLevel() {
+        if (!this.user) {
+          return 0;
+        }
+        return +this.user.level - 1;
       },
       goOrder(index) {
         if (index) {
@@ -150,27 +153,6 @@
       },
       goSet() {
         this.$router.push('/user/setting');
-      },
-      goAccount() {
-        this.$router.push('/user/account');
-      },
-      goAdviser() {
-        this.$router.push('/user/adviser');
-      },
-      goService() {
-        this.$router.push('/user/service');
-      },
-      goQuestion() {
-        this.$router.push('/user/question');
-      },
-      goCollection() {
-        this.$router.push('/user/collection');
-      },
-      goMember() {
-        this.$router.push('/user/member');
-      },
-      goRecommend() {
-        this.$router.push(`/user/recommend?userReferee=${this.user.userId}`);
       },
       ...mapMutations({
         setUser: SET_USER_STATE

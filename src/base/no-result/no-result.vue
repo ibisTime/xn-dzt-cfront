@@ -18,7 +18,6 @@
 
 <style scoped lang="scss" rel="stylesheet/scss">
   @import "~common/scss/variable";
-  @import "~common/scss/mixin";
 
   .no-result {
     text-align: center;
@@ -27,7 +26,6 @@
       width: 86px;
       height: 90px;
       margin: 0 auto;
-      // @include bg-image('no-result');
       background-image: url('no-result.png');
       background-size: 86px 90px;
     }

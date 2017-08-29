@@ -1,18 +1,19 @@
 <template>
   <transition name="slide">
     <div class="product-detail-wrapper">
-      <div class="head">
-        <i class="back" @click="back"></i>
-        <i class="like" @click="handleCollect" :class="{active:isSC}"></i>
-      </div>
       <div class="banner-wrapper" ref="sliderWrapper">
         <slider v-if="currentModel" :showDots="showDots" :loop="loop">
           <div v-for="item in currentModel._advPic">
             <img :src="item | formatImg" @load="loadImage"/>
           </div>
         </slider>
+        <div class="head">
+          <i class="back" @click="back"></i>
+          <i class="like" @click="handleCollect" :class="{active:isSC}"></i>
+        </div>
         <div class="filter" ref="filter" v-show="!loop"></div>
       </div>
+      <div class="split"></div>
       <div class="bg-layer" ref="layer"></div>
       <div ref="scrollWrapper" class="scroll-wrapper">
         <scroll class="scroll-content"
@@ -22,18 +23,27 @@
                 :probe-type="probeType">
           <div>
             <div class="description" ref="description">
-              <loading class="find-loading" v-show="!currentModel" title=""></loading>
               <div v-html="currentModel && currentModel.description || ''"></div>
             </div>
           </div>
         </scroll>
       </div>
       <div class="footer">
-        <button class="f-btn btn-yy" v-show="!isOrder" @click="_book">立即预约</button>
-        <button :disabled="disabled" class="f-btn btn-fg" v-show="isOrder" @click="_reBook">一键复购</button>
+        <button :disabled="disabled" v-show="curBtn==='bookBtn'" class="f-btn btn-yy" @click="_book">提交预约</button>
+        <button :disabled="disabled" v-show="curBtn==='cancelBtn'" class="f-btn btn-cancel" @click="_cancel">取消预约</button>
+        <button :disabled="disabled" v-show="curBtn==='reBtn'" class="f-btn btn-fg" @click="_reBook">一键复购</button>
       </div>
-      <toast ref="toast" text="一键复购成功"></toast>
-      <model-book ref="modelBook" :productCode="$route.params.id"></model-book>
+      <div v-show="loadingFlag" class="loading-container">
+        <div class="loading-wrapper">
+          <loading title=""></loading>
+        </div>
+      </div>
+      <model-book v-if="latestOrder"
+                  ref="modelBook"
+                  :latestOrder="latestOrder"
+                  :productCode="$route.params.id"
+                  @bookSuc="handleBook"
+                  @bookCancel="handleCancelBook"></model-book>
     </div>
   </transition>
 </template>
@@ -42,16 +52,15 @@
   import {SET_CURRENT_MODEL} from 'store/mutation-types';
   import Loading from 'base/loading/loading';
   import Slider from 'base/slider/slider';
-  import Toast from 'base/toast/toast';
   import Scroll from 'base/scroll/scroll';
-  import {getModel, collection, cancelCollection, reBook} from 'api/biz';
+  import {getModel, collection, cancelCollection, getLatestOrder} from 'api/biz';
   import {commonMixin} from 'common/js/mixin';
   import {prefixStyle} from 'common/js/dom';
   import {initShare} from 'common/js/weixin';
   import {getShareImg, setTitle} from 'common/js/util';
   import ModelBook from 'components/model-book/model-book';
 
-  const RESERVED_HEIGHT = 62;
+  const RESERVED_HEIGHT = 0;
   const transform = prefixStyle('transform');
   const backdrop = prefixStyle('backdrop-filter');
 
@@ -60,16 +69,25 @@
     data() {
       return {
         scrollY: 0,
-        isOrder: false,
         isSC: false,
-        disabled: false
+        disabled: false,
+        loadingFlag: true,
+        latestOrder: null,
+        curBtn: 'bookBtn'
       };
     },
     created() {
       this.showDots = false;
       this.probeType = 3;
       this.listenScroll = true;
-      this._getModel();
+      Promise.all([
+        this._getModel(),
+        this._getLatestOrder()
+      ]).then(() => {
+        this.loadingFlag = false;
+      }).catch(() => {
+        this.loadingFlag = false;
+      });
     },
     mounted() {
       setTimeout(() => {
@@ -90,10 +108,7 @@
         if (this.currentModel) {
           setTitle(this.currentModel.name);
         }
-        getModel(this.$route.params.id).then((data) => {
-          if (data.isOrder === '1') {
-            this.isOrder = true;
-          }
+        return getModel(this.$route.params.id).then((data) => {
           if (data.isSC === '1') {
             this.isSC = true;
           }
@@ -108,6 +123,18 @@
             setTitle(data.name);
             data._advPic = data.advPic.split('||');
             this.setCurModel(data);
+          }
+        });
+      },
+      _getLatestOrder() {
+        return getLatestOrder().then((data) => {
+          this.latestOrder = data;
+          if (data.order) {
+            if (data.order.status === '1' || data.order.status === '2') {
+              this.curBtn = 'cancelBtn';
+            } else if (data.order.status !== '11') {
+              this.curBtn = 'reBtn';
+            }
           }
         });
       },
@@ -137,16 +164,20 @@
         }
       },
       _book() {
-        this.$refs.modelBook.show();
+        this.$refs.modelBook.show(this.latestOrder);
+      },
+      _cancel() {
+        this.$refs.modelBook.show(this.latestOrder);
       },
       _reBook() {
-        this.disabled = true;
-        reBook(this.$route.params.id).then((data) => {
-          this.disabled = false;
-          this.$refs.toast.show();
-        }).catch(() => {
-          this.disabled = false;
-        });
+        this.$refs.modelBook.show(this.latestOrder);
+      },
+      handleBook(code) {
+        this.curBtn = 'cancelBtn';
+      },
+      handleCancelBook(order, curBtn) {
+        this.latestOrder = order;
+        this.curBtn = curBtn;
       },
       scroll(pos) {
         this.scrollY = pos.y;
@@ -222,8 +253,7 @@
       Scroll,
       Loading,
       Slider,
-      ModelBook,
-      Toast
+      ModelBook
     }
   };
 </script>
@@ -240,10 +270,31 @@
     background: #fff;
     z-index: 101;
 
+    .loading-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.2);
+
+      .loading-wrapper {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        transform: translate3d(0, -50%, 0);
+      }
+    }
+
     .bg-layer {
       position: relative;
       height: 100%;
       background: #fff;
+    }
+
+    .split {
+      height: 10px;
+      background: #f2f2f2;
     }
 
     .head {
@@ -345,8 +396,12 @@
           background: rgb(167, 149, 47);
         }
 
+        &.btn-cancel {
+          background: $color-cancel-background;
+        }
+
         &[disabled] {
-          background-color: $color-disable-background;
+          background: $color-disable-background;
         }
       }
     }
