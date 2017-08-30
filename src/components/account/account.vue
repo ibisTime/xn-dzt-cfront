@@ -15,7 +15,7 @@
             </div>
             <div class="cate-item">
               <h1>充值金额</h1>
-              <p>¥<span>{{_formatAmount(account && account.rechargeAmount || 0)}}</span></p>
+              <p>¥<span>{{_formatAmount(accountInfo && accountInfo.rechargeAmount || 0)}}</span></p>
             </div>
             <div class="cate-item">
               <h1>已提现金额</h1>
@@ -28,13 +28,13 @@
         <button @click="goRecharge">充值</button>
         <button @click="goWithdraw">提现</button>
       </div>
-      <div v-show="!account || !user || !accountInfo" class="loading-container">
+      <div v-show="!account || !user || !accountInfo || loadingFlag" class="loading-container">
         <div class="loading-wrapper">
           <loading></loading>
         </div>
       </div>
       <confirm ref="confirm" text="未设置支付密码" :isAlert="isAlert" @confirm="goTrade"></confirm>
-      <router-view></router-view>
+      <router-view @amountUpdate="amountUpdate"></router-view>
     </div>
   </transition>
 </template>
@@ -52,7 +52,8 @@
     data() {
       return {
         account: null,
-        accountInfo: null
+        accountInfo: null,
+        loadingFlag: false
       };
     },
     created() {
@@ -70,7 +71,7 @@
       shouldGetData() {
         if (this.$route.path === '/user/account') {
           setTitle('我的账户');
-          return !this.cnyAccount || !this.account;
+          return !this.account;
         }
         return false;
       },
@@ -81,8 +82,8 @@
         ]).catch(() => {});
       },
       _getAccount() {
-        if (this.cnyAccount) {
-          this._getAccountInfo(this.cnyAccount.accountNumber);
+        if (this.cnyAccount && this.account) {
+          return this._getAccountInfo(this.cnyAccount.accountNumber);
         }
         return getAccount().then((data) => {
           let index = data.findIndex((item) => {
@@ -106,6 +107,24 @@
         return getAccountInfo(accountNumber).then((data) => {
           this.accountInfo = data;
         });
+      },
+      amountUpdate() {
+        if (this.cnyAccount && this.account) {
+          this.loadingFlag = true;
+          Promise.all([
+            getAccount(),
+            this._getAccountInfo(this.cnyAccount.accountNumber)
+          ]).then(([data]) => {
+            let index = data.findIndex((item) => {
+              return item.currency === 'CNY';
+            });
+            this.setCnyAccount(data[index]);
+            this.account = data[index];
+            this.loadingFlag = false;
+          }).catch(() => {
+            this.loadingFlag = false;
+          });
+        }
       },
       _formatAmount(amount) {
         return formatAmount(amount);

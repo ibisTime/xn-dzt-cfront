@@ -86,7 +86,7 @@
       this.isAlert = true;
       if (this.shouldGetData()) {
         this.getInitData();
-      } else {
+      } else if (this.bankcardList) {
         this.payCardNo = this.bankcardList[0];
       }
     },
@@ -107,17 +107,24 @@
           setTitle('提现');
           return !this.cnyAccount || !this.bankcardList || !this.bankcardList.length || !this.rate;
         }
+        return false;
       },
       getInitData() {
-        Promise.all([
-          this._getAccount(),
-          this._getBankCardList(),
-          this._getRules()
-        ]).then(([account, cardList]) => {
-          if (!cardList.length) {
-            this.$refs.confirm.show();
-          }
-        }).catch(() => {});
+        if (!this.fetching) {
+          this.fetching = true;
+          Promise.all([
+            this._getAccount(),
+            this._getBankCardList(),
+            this._getRules()
+          ]).then(([account, cardList]) => {
+            this.fetching = false;
+            if (!cardList.length) {
+              this.$refs.confirm.show();
+            }
+          }).catch(() => {
+            this.fetching = false;
+          });
+        }
       },
       _getAccount() {
         if (!this.cnyAccount) {
@@ -177,7 +184,7 @@
             accountNumber: this.cnyAccount.accountNumber
           }).then(() => {
             this.$refs.toast.show();
-            this.setCnyAccount(null);
+            this.$emit('amountUpdate');
             setTimeout(() => {
               this.$router.back();
             }, 1000);
@@ -229,10 +236,8 @@
     watch: {
       amount(newAmount) {
         if (+newAmount) {
-          console.log('1');
           this.rateAmount = +this.rate * +newAmount;
         } else {
-          console.log('2');
           this.rateAmount = '--';
         }
       },

@@ -62,7 +62,7 @@
           this.setting = false;
           this.text = '充值成功';
           this.$refs.toast.show();
-          this.setCnyAccount(null);
+          this.$emit('amountUpdate');
           setTimeout(() => {
             this.$router.back();
           }, 1000);

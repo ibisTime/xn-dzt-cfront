@@ -5,8 +5,8 @@
         v-for="(item, index) in categorys"
         :key="index"
         ref="cate"
-        @click="_selectItem(index)"
-        class="category-item"
+        @click="_selectItem(index, $event)"
+        class="category-item needsclick"
         :class="{active: index === currentIndex}"
         :style="_getItemColor(index)">
         {{item.value}}
@@ -57,7 +57,10 @@
       });
     },
     methods: {
-      _selectItem(index) {
+      _selectItem(index, e) {
+        if (!event._constructed) {
+          return;
+        }
         this.scroll.scrollToElement(this.$refs.cate[index], 200, true);
         this.$emit('select', index);
       },
@@ -109,7 +112,8 @@
       _initSlider() {
         this.scroll = new BScroll(this.$refs.category, {
           scrollX: true,
-          scrollY: false
+          scrollY: false,
+          click: true
         });
       }
     },

@@ -226,6 +226,7 @@
     left: 0;
     width: 100%;
     height: 100%;
+    z-index: 2;
     background: #f5f5f5;
 
     .category-wrapper {

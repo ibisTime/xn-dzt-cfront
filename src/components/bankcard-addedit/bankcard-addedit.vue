@@ -12,7 +12,7 @@
         <div class="item-label">开户银行</div>
         <div class="item-input-wrapper">
           <select class="item-input" v-model="bankName" @change="_bankNameValid">
-            <option v-for="bankcode in bankcodeList" :key="bankcode.id" :value="bankcode">
+            <option v-for="(bankcode,index) in bankcodeList" :key="index" :value="bankcode">
               {{bankcode.bankName}}
             </option>
           </select>
@@ -108,7 +108,7 @@
       _getBankCodeList() {
         return getBankCodeList().then((data) => {
           this.bankcodeList = data;
-          this.bankName = this.bankcodeList.length && this.bankcodeList[0];
+          this.bankName = data[0];
           return data;
         }).catch(() => {});
       },

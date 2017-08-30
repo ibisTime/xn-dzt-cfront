@@ -9,53 +9,60 @@
         <div class="book-form" :class="{disabled: disabled}">
           <div class="form-item">
             <label>姓名</label>
-            <input class="input-item" :disabled="disabled" type="text" v-model="name" @change="_nameValid" placeholder="待量体者姓名"/>
+            <div v-show="disabled" class="input-item">{{name}}</div>
+            <input v-show="!disabled" class="input-item" type="text" v-model="name" @change="_nameValid" placeholder="待量体者姓名"/>
             <span class="error">{{nameErr}}</span>
           </div>
           <div class="form-item">
             <label>手机</label>
-            <input class="input-item" :disabled="disabled" type="tel" v-model="telphone" @change="_telValid" placeholder="待量体者手机"/>
+            <div v-show="disabled" class="input-item">{{telphone}}</div>
+            <input v-show="!disabled" class="input-item" type="tel" v-model="telphone" @change="_telValid" placeholder="待量体者手机"/>
             <span class="error">{{telErr}}</span>
           </div>
           <div class="clearfix">
             <div class="average pr">
               <div class="form-item">
                 <label>身高</label>
-                <input class="input-item tc" :disabled="disabled" type="number" v-model="height"/>
+                <div v-show="disabled" class="input-item tc">{{height}}</div>
+                <input class="input-item tc" v-show="!disabled" type="number" v-model="height"/>
                 <span>cm</span>
               </div>
             </div>
             <div class="average pl">
               <div class="form-item">
                 <label>体重</label>
-                <input class="input-item tc" :disabled="disabled" type="number" v-model="weight"/>
+                <div v-show="disabled" class="input-item tc">{{weight}}</div>
+                <input class="input-item tc" v-show="!disabled" type="number" v-model="weight"/>
                 <span>kg</span>
               </div>
             </div>
           </div>
           <div class="form-item">
             <label>量体地址</label>
+            <div v-show="disabled" class="input-item">{{province + ' ' + city + ' ' + district}}</div>
             <city-picker class="input-item"
+                         v-show="!disabled"
                          :province="province"
                          :city="city"
                          :district="district"
-                         :disabled="disabled"
                          @change="updateAddress"></city-picker>
             <span class="error">{{provErr}}</span>
           </div>
           <div class="form-item">
             <label></label>
-            <input class="input-item" type="text" :disabled="disabled" v-model="address" @change="_addrValid" placeholder="街道门牌信息"/>
+            <div v-show="disabled" class="input-item">{{address}}</div>
+            <input class="input-item" type="text" v-show="!disabled" v-model="address" @change="_addrValid" placeholder="街道门牌信息"/>
             <span class="error">{{addrErr}}</span>
           </div>
           <div class="form-item" v-show="ltShow">
             <label>量体时间</label>
+            <div v-show="disabled" class="input-item">{{year + '-' + month + '-' + day}}</div>
             <date-picker class="input-item"
                          ref="picker"
+                         v-show="!disabled"
                          :year="year"
                          :month="month"
                          :day="day"
-                         :disabled="disabled"
                          @change="updateDate"></date-picker>
             <span class="error">{{yearErr}}</span>
           </div>
@@ -224,7 +231,7 @@
       _reBook() {
         this.btnDisabled = true;
         this.isLoading = true;
-        reBook().then((data) => {
+        reBook(this.productCode).then((data) => {
           this.isLoading = false;
           this.btnDisabled = false;
           this.text = '一键复购成功';

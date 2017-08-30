@@ -42,9 +42,14 @@
     },
     methods: {
       getPageNotices() {
-        getPageSysNotices(this.start, LIMIT).then((data) => {
-          this.notices = this.notices.concat(data.list);
-        });
+        if (this.hasMore) {
+          getPageSysNotices(this.start, LIMIT).then((data) => {
+            if (data.totalCount <= LIMIT || data.list.length < LIMIT) {
+              this.hasMore = false;
+            }
+            this.notices = this.notices.concat(data.list);
+          });
+        }
       }
     },
     components: {

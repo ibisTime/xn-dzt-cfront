@@ -3,7 +3,7 @@
     <div class="welfare-wrapper">
       <scroll ref="scroll" class="welfare-content">
         <div>
-          <div class="description" ref="description">
+          <div class="rich-text-description" ref="description">
             <div v-html="content"></div>
           </div>
           <loading v-if="!content" title=""></loading>

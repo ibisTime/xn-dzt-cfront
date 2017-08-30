@@ -12,6 +12,9 @@
             <loading class="loading-wrapper" v-show="hasMore" title=""></loading>
           </div>
         </div>
+        <div v-show="!hasMore && !products.length" class="no-result-wrapper">
+          <no-result title="抱歉，暂无收藏的产品"></no-result>
+        </div>
       </scroll>
       <router-view @update="handleUpdate"></router-view>
     </div>
@@ -20,6 +23,7 @@
 <script>
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
+  import NoResult from 'base/no-result/no-result';
   import {setTitle, formatImg} from 'common/js/util';
   import {getPageCollections} from 'api/biz';
   import {SET_CURRENT_MODEL} from 'store/mutation-types';
@@ -107,7 +111,8 @@
     },
     components: {
       Scroll,
-      Loading
+      Loading,
+      NoResult
     }
   };
 </script>
@@ -183,6 +188,12 @@
           }
         }
       }
+    }
+    .no-result-wrapper {
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
   .slide-enter-active, .slide-leave-active {

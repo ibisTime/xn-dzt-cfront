@@ -2,7 +2,7 @@
   <transition name="slide">
     <div class="product-detail-wrapper">
       <div class="banner-wrapper" ref="sliderWrapper">
-        <slider v-if="currentModel" :showDots="showDots" :loop="loop">
+        <slider class="in-slider" v-if="currentModel" :showDots="showDots" :loop="loop">
           <div v-for="item in currentModel._advPic">
             <img :src="item | formatImg" @load="loadImage"/>
           </div>
@@ -22,7 +22,7 @@
                 :listen-scroll="listenScroll"
                 :probe-type="probeType">
           <div>
-            <div class="description" ref="description">
+            <div class="rich-text-description" ref="description">
               <div v-html="currentModel && currentModel.description || ''"></div>
             </div>
           </div>
@@ -38,6 +38,7 @@
           <loading title=""></loading>
         </div>
       </div>
+      <go-home></go-home>
       <model-book v-if="latestOrder"
                   ref="modelBook"
                   :latestOrder="latestOrder"
@@ -59,6 +60,7 @@
   import {initShare} from 'common/js/weixin';
   import {getShareImg, setTitle} from 'common/js/util';
   import ModelBook from 'components/model-book/model-book';
+  import GoHome from 'components/go-home/go-home';
 
   const RESERVED_HEIGHT = 0;
   const transform = prefixStyle('transform');
@@ -253,6 +255,7 @@
       Scroll,
       Loading,
       Slider,
+      GoHome,
       ModelBook
     }
   };
@@ -333,6 +336,10 @@
       position: relative;
       font-size: 0;
       overflow: hidden;
+
+      .in-slider {
+        min-height: 62px;
+      }
 
       img {
         width: 100%;

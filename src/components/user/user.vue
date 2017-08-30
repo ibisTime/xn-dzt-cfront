@@ -176,6 +176,7 @@
     left: 0;
     width: 100%;
     bottom: 49px;
+    z-index: 2;
     background: #fff;
 
     .user-content{

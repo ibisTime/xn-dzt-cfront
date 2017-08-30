@@ -72,7 +72,6 @@
               }, 1000);
             }).catch(() => {
               this.setting = false;
-              this._clearInterval();
             });
         }
       },

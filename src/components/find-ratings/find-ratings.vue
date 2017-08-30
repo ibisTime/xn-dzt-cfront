@@ -22,12 +22,16 @@
           <loading class="find-loading" v-show="hasMore" title=""></loading>
         </div>
       </div>
+      <div v-show="!hasMore && !ratingList.length" class="no-result-wrapper">
+        <no-result title="抱歉，暂无评论"></no-result>
+      </div>
     </scroll>
   </transition>
 </template>
 <script>
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
+  import NoResult from 'base/no-result/no-result';
   import {getPageRatings} from 'api/biz';
   import {commonMixin} from 'common/js/mixin';
 
@@ -62,7 +66,8 @@
     },
     components: {
       Scroll,
-      Loading
+      Loading,
+      NoResult
     }
   };
 </script>
@@ -75,7 +80,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 103;
+    z-index: 121;
     background: #fff;
 
     .rating-content {
@@ -122,9 +127,17 @@
           }
         }
       }
+
       .find-loading {
         padding-top: 20px;
       }
+    }
+    
+    .no-result-wrapper {
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 </style>

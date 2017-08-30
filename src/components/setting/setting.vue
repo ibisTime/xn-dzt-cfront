@@ -53,6 +53,7 @@
   import {mapGetters, mapMutations} from 'vuex';
   import {SET_USER_STATE} from 'store/mutation-types';
   import {getUser} from 'api/user';
+  import {getAppId} from 'api/general';
   import {setTitle, clearUser, formatImg} from 'common/js/util';
   import Scroll from 'base/scroll/scroll';
 
@@ -103,13 +104,24 @@
       },
       logout() {
         clearUser();
-        location.reload(true);
+        this._reloadPage();
       },
       getAvatar() {
         if (!this.user || !this.user.photo) {
           return require('./avatar@2x.png');
         }
         return formatImg(this.user.photo);
+      },
+      _reloadPage() {
+        getAppId().then((data) => {
+          let appId = data.cvalue;
+          let redirectUri = encodeURIComponent(`${location.origin}?#/home`);
+          let url = 'https://open.weixin.qq.com/connect/oauth2/authorize';
+          let suffix = '&response_type=code&scope=snsapi_userinfo#wechat_redirect';
+          setTimeout(() => {
+            location.replace(`${url}?appid=${appId}&redirect_uri=${redirectUri}${suffix}`);
+          }, 100);
+        });
       },
       ...mapMutations({
         setUser: SET_USER_STATE

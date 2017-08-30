@@ -1,21 +1,24 @@
 <template>
-  <div class="find-wrapper">
-    <scroll :data="findList" :pullup="pullup" @scrollToEnd="getPageArticle" class="find-content">
-      <div>
-        <ul>
-          <li @click="selectItem(item)" v-for="(item,index) in findList" :key="item.code">
-            <div class="img">
-              <div :style="getImgSyl(item.pic)"></div>
-            </div>
-            <h2>{{item.title}}</h2>
-          </li>
-          <loading class="find-loading" v-show="hasMore" title=""></loading>
-        </ul>
-      </div>
-      <div v-show="!hasMore && !findList.length" class="no-result-wrapper">
-        <no-result title="抱歉，暂无内容"></no-result>
-      </div>
-    </scroll>
+  <div>
+    <div class="find-wrapper">
+      <scroll :data="findList" :pullup="pullup" @scrollToEnd="getPageArticle" class="find-content">
+        <div>
+          <ul>
+            <li @click="selectItem(item)" v-for="(item,index) in findList" :key="item.code">
+              <div class="img">
+                <div :style="getImgSyl(item.pic)"></div>
+              </div>
+              <h2>{{item.title}}</h2>
+            </li>
+            <loading class="find-loading" v-show="hasMore" title=""></loading>
+          </ul>
+          <div class="spilt-div"></div>
+        </div>
+        <div v-show="!hasMore && !findList.length" class="no-result-wrapper">
+          <no-result title="抱歉，暂无内容"></no-result>
+        </div>
+      </scroll>
+    </div>
     <router-view></router-view>
   </div>
 </template>
@@ -131,10 +134,9 @@
     top: 0;
     left: 0;
     width: 100%;
-    bottom: 49px;
-    padding: 19px 19px 0;
+    bottom: 0;
+    padding: 0 19px;
     background: #fff;
-    z-index: 101;
 
     .find-content{
       position: relative;
@@ -143,6 +145,8 @@
     }
 
     ul {
+      padding-top: 19px;
+
       li {
         padding-bottom: 18px;
 
@@ -171,6 +175,10 @@
           font-size: $font-size-medium;
         }
       }
+    }
+
+    .spilt-div {
+      height: 49px;
     }
 
     .no-result-wrapper {

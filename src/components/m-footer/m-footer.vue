@@ -31,7 +31,10 @@
     align-items: center;
     height: 49px;
     width: 100%;
-    background: #fff;
+    border-top: 1px solid #a1a1a1;
+    opacity: 0.9;
+    z-index: 1;
+    background: #fcfcfc;
 
     .foot-item {
       flex: 1;

@@ -2,7 +2,7 @@
   <transition name="slide">
     <div class="find-detail-wrapper">
       <div class="banner-wrapper" ref="sliderWrapper">
-        <slider v-if="currentArticle" :showDots="showDots" :loop="loop">
+        <slider class="in-slider" v-if="currentArticle" :showDots="showDots" :loop="loop">
           <div v-for="item in currentArticle._advPic">
             <img :src="item | formatImg" @load="loadImage"/>
           </div>
@@ -23,9 +23,9 @@
                 :listen-scroll="listenScroll"
                 :probe-type="probeType">
           <div>
-            <div class="description">
+            <div class="rich-text-description">
               <loading class="find-loading" v-show="!currentArticle" title=""></loading>
-              <div ref="description" class="" v-html="currentArticle && currentArticle.description || ''"></div>
+              <div ref="description" v-html="currentArticle && currentArticle.description || ''"></div>
             </div>
             <div class="split"></div>
             <div class="title" ref="rTitle" @click="goRating">
@@ -59,6 +59,7 @@
         <span>{{totalCount}}条评论</span>
         <i class="arrow"></i>
       </div>
+      <go-home></go-home>
       <rating ref="rating" @ratingSuc="ratingSuccess" :user="user" :parentCode="code"></rating>
       <router-view></router-view>
     </div>
@@ -77,6 +78,7 @@
   import {mapGetters, mapMutations} from 'vuex';
   import {SET_CURRENT_ARTICLE, SET_USER_STATE} from 'store/mutation-types';
   import Rating from 'components/rating/rating';
+  import GoHome from 'components/go-home/go-home';
 
   const RESERVED_HEIGHT = 0;
   const transform = prefixStyle('transform');
@@ -114,7 +116,7 @@
     },
     computed: {
       loop() {
-        return this.currentArticle && this.currentArticle.advPic.length > 1;
+        return this.currentArticle && this.currentArticle._advPic && this.currentArticle._advPic.length > 1;
       },
       ...mapGetters([
         'currentArticle',
@@ -266,7 +268,8 @@
       Scroll,
       Loading,
       Slider,
-      Rating
+      Rating,
+      GoHome
     }
   };
 </script>
@@ -331,6 +334,10 @@
       font-size: 0;
       overflow: hidden;
 
+      .in-slider {
+        min-height: 62px;
+      }
+
       img {
         width: 100%;
       }
@@ -354,14 +361,6 @@
       .scroll-content {
         position: relative;
         height: 100%;
-      }
-
-      .description {
-        padding: 32px 20px;
-
-        img {
-          max-width: 100%;
-        }
       }
 
       .rating-content {
@@ -439,6 +438,7 @@
         top: 0;
         left: 0;
         width: 100%;
+        z-index: 120;
       }
 
       label {

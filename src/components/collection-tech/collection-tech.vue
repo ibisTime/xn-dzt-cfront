@@ -18,7 +18,7 @@
           </ul>
         </div>
         <div v-show="!hasMore && !techList.length" class="no-result-wrapper">
-          <no-result title="抱歉，暂无相关工艺"></no-result>
+          <no-result title="抱歉，暂无收藏的工艺"></no-result>
         </div>
       </scroll>
       <modal ref="modal">

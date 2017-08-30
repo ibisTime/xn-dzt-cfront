@@ -3,11 +3,11 @@
     <div class="about-wrapper">
       <scroll class="about-content">
         <div>
-          <div ref="description" class="description">
+          <div ref="description" class="rich-text-description">
             <div v-html="content"></div>
             <div class="other-info">
               <p>服务时间：{{time}}</p>
-              <p>服务热线：{{telephone}}</p>
+              <p>服务热线：<a class="needsclick" :href="getTel()">{{telephone}}</a></p>
             </div>
             <loading v-if="loadingFlag" title=""></loading>
           </div>
@@ -45,6 +45,13 @@
       });
     },
     methods: {
+      getTel() {
+        if (this.telephone) {
+          return `tel://${this.telephone}`;
+        } else {
+          return '';
+        }
+      },
       _refreshScroll() {
         setTimeout(() => {
           let imgs = this.$refs.description.getElementsByTagName('img');
@@ -86,20 +93,26 @@
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 0 18px;
     background: #fff;
 
     .about-content {
       height: 100%;
       overflow: hidden;
 
-      .description {
-        padding: 18px;
+      .rich-text-description {
+        a {
+          line-height: 1;
+          color: $color-text;
+          text-decoration: underline;
+        }
       }
 
       .other-info {
         padding-top: 30px;
-        line-height: 1.5;
+
+        p {
+          line-height: 1;
+        }
       }
     }
   }

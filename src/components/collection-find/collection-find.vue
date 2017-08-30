@@ -14,7 +14,7 @@
           </ul>
         </div>
         <div v-show="!hasMore && !findList.length" class="no-result-wrapper">
-          <no-result title="抱歉，暂无内容"></no-result>
+          <no-result title="抱歉，暂无收藏的文章"></no-result>
         </div>
       </scroll>
       <router-view @update="handleUpdate"></router-view>

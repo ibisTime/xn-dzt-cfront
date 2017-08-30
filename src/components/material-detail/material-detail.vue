@@ -49,7 +49,7 @@
       </scroll>
       <div class="footer">
         <button :disabled="disabled" v-show="curBtn==='bookBtn'" class="f-btn btn-yy" @click="_book">提交预约</button>
-        <button :disabled="disabled" v-show="curBtn==='cancelBtn'" class="f-btn btn-yy" @click="_cancel">取消预约</button>
+        <button :disabled="disabled" v-show="curBtn==='cancelBtn'" class="f-btn btn-cancel" @click="_cancel">取消预约</button>
         <button :disabled="disabled" v-show="curBtn==='reBtn'" class="f-btn btn-fg" @click="_reBook">一键复购</button>
       </div>
       <div v-show="loading" class="loading-container">
@@ -362,6 +362,10 @@
 
         &.btn-fg {
           background: rgb(167, 149, 47);
+        }
+
+        &.btn-cancel {
+          background: $color-cancel-background;
         }
 
         &[disabled] {

@@ -3,7 +3,7 @@
     <div class="question-wrapper">
       <scroll class="question-content">
         <div>
-          <div ref="description" class="description">
+          <div ref="description" class="rich-text-description">
             <div v-html="content"></div>
           </div>
           <loading v-if="!content" title=""></loading>
@@ -72,7 +72,6 @@
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 0 18px;
     background: #fff;
 
     .question-content {

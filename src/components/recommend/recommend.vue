@@ -3,7 +3,7 @@
     <div class="recommend-wrapper">
       <scroll ref="scroll" class="scroll-content">
         <div>
-          <div class="description" ref="description">
+          <div class="rich-text-description" ref="description">
             <div v-html="content"></div>
           </div>
           <loading v-if="!content" title=""></loading>

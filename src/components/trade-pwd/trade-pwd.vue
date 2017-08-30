@@ -3,9 +3,7 @@
     <div class="form-wrapper">
       <div class="form-item">
         <div class="item-label">手机号</div>
-        <div class="item-input-wrapper">
-          <input type="tel" class="item-input" :value="this.user && this.user.mobile || ''" placeholder="请先绑定手机号" disabled>
-        </div>
+        <div class="inner-label">{{getMobile()}}</div>
       </div>
       <div class="form-item">
         <div class="item-label">验证码</div>
@@ -120,6 +118,12 @@
           });
         }
       },
+      getMobile() {
+        if (this.user && this.user.mobile) {
+          return this.user.mobile;
+        }
+        return '请先绑定手机号';
+      },
       showConfirm() {
         this.$refs.confirm.show();
       },
@@ -138,7 +142,6 @@
               }, 1000);
             }).catch(() => {
               this.setting = false;
-              this._clearInterval();
             });
         }
       },

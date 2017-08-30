@@ -1,58 +1,59 @@
 <template>
-  <div class="home-wrapper">
-    <scroll :data="compData" ref="scroll" class="home-content">
-      <div>
-        <div class="slider-wrapper">
-          <slider v-if="banners.length" :showDots="showDots" :loop="loop">
-            <div v-for="(item,index) in banners" :key="index">
-              <a :href="item.url||'javascript:void(0)'">
-                <img class="needsclick" @load="loadImage" :src="item.pic | formatImg"/>
-              </a>
-            </div>
-          </slider>
-        </div>
-        <div class="home-category">
-          <router-link tag="div" class="cate-item cate-material" to="/home/material">
-            <h2>高端面料</h2>
-          </router-link>
-          <router-link tag="div" class="cate-item cate-technology" to="/home/technology">
-            <h2>精致工艺</h2>
-          </router-link>
-        </div>
-        <div class="home-list">
-          <div class="head clearfix">
-            <span>合衣衬衫</span>
-            <router-link to="/home/shirt">查看全部</router-link>
+  <div class="">
+    <div class="home-wrapper">
+      <scroll :data="compData" ref="scroll" class="home-content">
+        <div>
+          <div class="slider-wrapper">
+            <slider v-if="banners.length" :showDots="showDots" :loop="loop">
+              <div class="home-slider" v-for="(item,index) in banners" :key="index">
+                <a :href="item.url||'javascript:void(0)'" :style="getImgSyl(item.pic)"></a>
+              </div>
+            </slider>
           </div>
-          <div class="list-content clearfix">
-            <div v-for="(item,index) in modelList" @click="selectItem(item)" :key="item.code" class="item">
-              <div class="inner">
-                <div class="inner-content" :style="getImgSyl(item.pic)">
-                  <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index)"></div>
+          <div class="home-category">
+            <router-link tag="div" class="cate-item cate-material" to="/home/material">
+              <h2>高端面料</h2>
+            </router-link>
+            <router-link tag="div" class="cate-item cate-technology" to="/home/technology">
+              <h2>精致工艺</h2>
+            </router-link>
+          </div>
+          <div class="home-list">
+            <div class="head clearfix">
+              <span>合衣衬衫</span>
+              <router-link to="/home/shirt">查看全部</router-link>
+            </div>
+            <div class="list-content clearfix">
+              <div v-for="(item,index) in modelList" @click="selectItem(item)" :key="item.code" class="item">
+                <div class="inner">
+                  <div class="inner-content" :style="getImgSyl(item.pic)">
+                    <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index)"></div>
+                  </div>
                 </div>
               </div>
+              <no-result v-show="!hasMore && !modelList.length" title="抱歉，暂无衬衫数据"></no-result>
+              <loading class="loading-wrapper" v-show="hasMore" title=""></loading>
             </div>
-            <no-result v-show="!hasMore && !modelList.length" title="抱歉，暂无衬衫数据"></no-result>
-            <loading class="loading-wrapper" v-show="hasMore" title=""></loading>
-          </div>
-          <div class="head clearfix">
-            <span>H+</span>
-            <router-link to="/home/clothes">查看全部</router-link>
-          </div>
-          <div class="list-content clearfix">
-            <div v-for="(item,index) in hModelList" @click="selectItem(item)" :key="item.code" class="item">
-              <div class="inner">
-                <div class="inner-content" :style="getImgSyl(item.pic)">
-                  <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index,true)"></div>
+            <div class="head clearfix">
+              <span>H+</span>
+              <router-link to="/home/clothes">查看全部</router-link>
+            </div>
+            <div class="list-content clearfix">
+              <div v-for="(item,index) in hModelList" @click="selectItem(item)" :key="item.code" class="item">
+                <div class="inner">
+                  <div class="inner-content" :style="getImgSyl(item.pic)">
+                    <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index,true)"></div>
+                  </div>
                 </div>
               </div>
+              <no-result v-show="!hHasMore && !hModelList.length" title="抱歉，暂无H+数据"></no-result>
+              <loading class="loading-wrapper" v-show="hHasMore" title=""></loading>
             </div>
-            <no-result v-show="!hHasMore && !hModelList.length" title="抱歉，暂无H+数据"></no-result>
-            <loading class="loading-wrapper" v-show="hHasMore" title=""></loading>
           </div>
+          <div class="spilt-div"></div>
         </div>
-      </div>
-    </scroll>
+      </scroll>
+    </div>
     <router-view @update="handleUpdate"></router-view>
   </div>
 </template>
@@ -211,12 +212,6 @@
           backgroundImage: `url(${formatImg(imgs)})`
         };
       },
-      loadImage() {
-        if(!this.checkLoaded) {
-          this.$refs.scroll.refresh();
-          this.checkLoaded = true;
-        }
-      },
       getInitWXSDKConfig() {
         this.isWxConfiging = true;
         initShare({
@@ -252,7 +247,8 @@
     position: fixed;
     top: 0;
     left: 0;
-    bottom: 49px;
+    // bottom: 49px;
+    bottom: 0;
     padding: 0 19px;
     width: 100%;
     background: #fff;
@@ -269,19 +265,24 @@
 
       .slider-wrapper {
         position: relative;
+        height: 204px;
 
         .slider {
           padding-top: 15px;
+          height: 204px;
+        }
+
+        .home-slider {
+          height: 189px;
         }
 
         a {
           display: block;
+          height: 100%;
           border-radius: 6px;
-          overflow: hidden;
-
-          img {
-            border-radius: 6px;
-          }
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
         }
       }
 
@@ -403,6 +404,10 @@
             }
           }
         }
+      }
+
+      .spilt-div {
+        height: 49px;
       }
     }
   }

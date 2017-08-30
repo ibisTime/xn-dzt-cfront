@@ -15,7 +15,7 @@
           </ul>
         </div>
         <div v-show="!hasMore && !materialList.length" class="no-result-wrapper">
-          <no-result title="抱歉，暂无相关面料"></no-result>
+          <no-result title="抱歉，暂无收藏的面料"></no-result>
         </div>
       </scroll>
       <router-view @update="handleUpdate"></router-view>
