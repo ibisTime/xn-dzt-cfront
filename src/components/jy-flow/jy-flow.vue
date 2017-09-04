@@ -8,7 +8,7 @@
               <div class="time">{{item.createDatetime | formatDate('yy/MM/dd')}}</div>
               <div class="info">
                 <p class="note">{{item.bizNote}}</p>
-                <p class="trans-amount">积分 {{formatAmount(item.transAmount)}}</p>
+                <p class="trans-amount">经验 {{formatAmount(item.transAmount)}}</p>
               </div>
             </li>
             <loading class="loading" v-show="hasMore" title=""></loading>
@@ -24,7 +24,7 @@
 <script>
   import {getPageFlow, getAccount} from 'api/account';
   import {mapGetters, mapMutations} from 'vuex';
-  import {SET_JF_ACCOUNT} from 'store/mutation-types';
+  import {SET_JY_ACCOUNT} from 'store/mutation-types';
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
   import NoResult from 'base/no-result/no-result';
@@ -43,9 +43,9 @@
       };
     },
     created() {
-      setTitle('积分账单');
+      setTitle('经验明细');
       this.pullup = true;
-      if (this.jfAccount) {
+      if (this.jyAccount) {
         this.getPageFlow();
       } else {
         this.getAccount().then(() => {
@@ -55,15 +55,15 @@
     },
     computed: {
       ...mapGetters([
-        'jfAccount'
+        'jyAccount'
       ])
     },
     methods: {
       getAccount() {
         return getAccount().then((data) => {
           data.forEach((item) => {
-            if (item.currency === 'JF') {
-              this.setJFAccount(item);
+            if (item.currency === 'JY') {
+              this.setJYAccount(item);
             }
           });
           return data;
@@ -71,7 +71,7 @@
       },
       getPageFlow() {
         if (this.hasMore) {
-          return getPageFlow(this.start, LIMIT, this.jfAccount.accountNumber).then((data) => {
+          return getPageFlow(this.start, LIMIT, this.jyAccount.accountNumber).then((data) => {
             if (data.list.length < LIMIT || data.totalCount <= LIMIT) {
               this.hasMore = false;
             }
@@ -85,7 +85,7 @@
         return prefix + (+amount / 1000).toFixed(0);
       },
       ...mapMutations({
-        'setJFAccount': SET_JF_ACCOUNT
+        'setJYAccount': SET_JY_ACCOUNT
       })
     },
     components: {
@@ -106,50 +106,50 @@
     height: 100%;
     background: #fff;
 
-    .flow-content {
-      position: relative;
-      height: 100%;
+  .flow-content {
+    position: relative;
+    height: 100%;
 
-      ul {
-        padding: 0 18px;
+  ul {
+    padding: 0 18px;
 
-        li {
-          display: flex;
-          align-items: flex-start;
-          padding: 18px 0 18px 18px;
-          border-bottom: 1px solid #a1a1a1;
+  li {
+    display: flex;
+    align-items: flex-start;
+    padding: 18px 0 18px 18px;
+    border-bottom: 1px solid #a1a1a1;
 
-          .time {
-            font-size: 13px;
-          }
+  .time {
+    font-size: 13px;
+  }
 
-          .info {
-            padding-left: 18px;
+  .info {
+    padding-left: 18px;
 
-            .note {
-              font-size: 13px;
-            }
+  .note {
+    font-size: 13px;
+  }
 
-            .trans-amount {
-              padding-top: 7px;
-              font-size: $font-size-medium-x;
-            }
-          }
-        }
+  .trans-amount {
+    padding-top: 7px;
+    font-size: $font-size-medium-x;
+  }
+  }
+  }
 
-        .loading {
-          padding-top: 20px;
-        }
-      }
-    }
+  .loading {
+    padding-top: 20px;
+  }
+  }
+  }
 
-    .no-result-wrapper {
-      position: absolute;
-      width: 100%;
-      top: 50%;
-      left: 0;
-      transform: translateY(-50%);
-    }
+  .no-result-wrapper {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+  }
   }
   .slide-enter-active, .slide-leave-active {
     transition: all 0.3s;

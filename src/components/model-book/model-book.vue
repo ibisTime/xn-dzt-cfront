@@ -54,12 +54,12 @@
             <input class="input-item" type="text" v-show="!disabled" v-model="address" @change="_addrValid" placeholder="街道门牌信息"/>
             <span class="error">{{addrErr}}</span>
           </div>
-          <div class="form-item" v-show="ltShow">
+          <div class="form-item">
             <label>量体时间</label>
-            <div v-show="disabled" class="input-item">{{year + '-' + month + '-' + day}}</div>
+            <div v-show="showTime()" class="input-item">{{year + '-' + month + '-' + day}}</div>
             <date-picker class="input-item"
                          ref="picker"
-                         v-show="!disabled"
+                         v-show="!showTime()"
                          :year="year"
                          :month="month"
                          :day="day"
@@ -108,7 +108,6 @@
         curBtn: 'bookBtn',
         disabled: false,
         canClick: false,
-        ltShow: true,
         name: '',
         nameErr: '',
         telphone: '',
@@ -163,7 +162,6 @@
           if (data.order.status === '1' || data.order.status === '2') {
             this.curBtn = 'cancelBtn';
           } else if (data.order.status !== '11') {
-            this.ltShow = false;
             this.curBtn = 'reBtn';
           } else {
             this.disabled = false;
@@ -171,7 +169,6 @@
         } else {
           this.curBtn = 'bookBtn';
           this.disabled = false;
-          this.ltShow = true;
         }
       },
       _book() {
@@ -231,7 +228,7 @@
       _reBook() {
         this.btnDisabled = true;
         this.isLoading = true;
-        reBook(this.productCode).then((data) => {
+        reBook(`${this.year}-${this.month}-${this.day}`, this.productCode).then((data) => {
           this.isLoading = false;
           this.btnDisabled = false;
           this.text = '一键复购成功';
@@ -258,6 +255,9 @@
         this.city = city;
         this.district = district;
         return this._provValid();
+      },
+      showTime() {
+        return this.disabled && this.curBtn !== 'reBtn';
       },
       valid() {
         let r1 = this._nameValid();

@@ -80,6 +80,11 @@
             if (ckey === '4') {
               this.xtReport.push(item);
             } else {
+              if (item.ckey === '6-02') {
+                item.cvalue = item.cvalue + '(cm)';
+              } else if (item.ckey === '6-03') {
+                item.cvalue = item.cvalue + '(kg)';
+              }
               this.ltReport.push(item);
             }
           });

@@ -18,8 +18,8 @@
           </div>
           <div class="order-info">
             <p><label>下单产品</label>{{getModel()}}</p>
-            <p><label>面料编号</label>{{getMaterialCode()}}</p>
-            <p><label>订单价格</label>{{getAmount()}}</p>
+            <p><label>面料编号</label><span v-html="getMaterialCode()"></span></p>
+            <p><label>订单价格</label><span v-if="getOriAmount()" class="ori-amount">{{getOriAmount()}}</span>{{getAmount()}}</p>
           </div>
           <h1>物流信息</h1>
           <div class="order-info">
@@ -44,7 +44,6 @@
               <p><label>{{getLabelName('1-06')}}</label>{{getTechName('1-06')}}</p>
               <p><label>{{getLabelName('1-07')}}</label>{{getTechName('1-07')}}</p>
               <p><label>{{getLabelName('1-08')}}</label>{{getTechName('1-08')}}</p>
-              <!-- <p><label>{{getLabelName('1-09')}}</label>{{getTechName('1-09')}}</p> -->
             </div>
             <div v-else>
               <p>无</p>
@@ -84,7 +83,7 @@
   import Scroll from 'base/scroll/scroll';
   import Confirm from 'base/confirm/confirm';
   import Loading from 'base/loading/loading';
-  import {getOrder, cancelBook, receiveOrder, getTechMapList, getModelList} from 'api/biz';
+  import {getOrder, cancelBook, receiveOrder, getTechMapList} from 'api/biz';
   import {getBizDictMap, getDictList} from 'api/general';
   import {SET_CURRENT_ORDER} from 'store/mutation-types';
   import {ORDER_STATUS} from '../orders/config';
@@ -109,7 +108,7 @@
       this.techMap = null;
       this.wlComps = null;
       this.dictMap = null;
-      this.modelList = null;
+      this.fabricYarn = null;
       this.getInitData();
     },
     computed: {
@@ -133,17 +132,17 @@
           getOrder(this.code),
           getBizDictMap(),
           getTechMapList(),
-          getModelList(true),
-          getDictList('wl_company')
-        ]).then(([data, dictMap, techMap, modelList, wlComps]) => {
+          getDictList('wl_company'),
+          getDictList('fabric_yarn')
+        ]).then(([data, dictMap, techMap, wlComps, fabricYarn]) => {
           if (!this.currentOrder) {
             this.setCurrentOrder(data);
           }
           this.productInfo = data.productList && data.productList.length && data.productList[0] || null;
           this.dictMap = dictMap;
           this.techMap = techMap;
-          this.modelList = modelList;
           this.wlComps = wlComps;
+          this.fabricYarn = fabricYarn;
           this.loadingFlag = false;
           setTimeout(() => {
             this.$refs.scroll.refresh();
@@ -194,7 +193,11 @@
         }
         let index = this._getIndexFromSpecsList('1-02');
         if (~index) {
-          return this.productInfo.productSpecsList[index].code;
+          let _model = this.productInfo.productSpecsList[index];
+          let _index = this.fabricYarn.findIndex((item) => {
+            return item.dkey === _model.yarn;
+          });
+          return `${_model.modelNum} &nbsp;${this.fabricYarn[_index].dvalue}`;
         }
         return '无';
       },
@@ -203,6 +206,13 @@
           return '暂未定价';
         }
         return '¥' + formatAmount(this.currentOrder.amount);
+      },
+      getOriAmount() {
+        if (!this.currentOrder || isUnDefined(this.currentOrder.originalAmount) || this.currentOrder.amount === this.currentOrder.originalAmount) {
+          return '';
+        } else {
+          return '¥' + formatAmount(this.currentOrder.originalAmount);
+        }
       },
       getCompany() {
         if (!this.wlComps || !this.currentOrder.logisticsCompany) {
@@ -225,17 +235,10 @@
         }
       },
       getModel() {
-        if (!this.productInfo || !this.currentOrder || !this.modelList) {
+        if (!this.productInfo || !this.currentOrder) {
           return '无';
         }
-        let modelCode = this.productInfo.modelCode;
-        if (!modelCode) {
-          return '无';
-        }
-        let index = this.modelList.findIndex((item) => {
-          return item.code === modelCode;
-        });
-        return this.modelList[index].name;
+        return this.productInfo.modelName || '无';
       },
       getTechName(key) {
         if (!this.productInfo || !this.currentOrder || !this.techMap) {
@@ -413,6 +416,12 @@
           label {
             padding-right: 16px;
             color: $primary-color;
+          }
+
+          .ori-amount {
+            text-decoration: line-through;
+            color: #999;
+            padding-right: 4px;
           }
 
           .btn {

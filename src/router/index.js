@@ -80,6 +80,8 @@ const CollectionTech = () => import('components/collection-tech/collection-tech'
 const Member = () => import('components/member/member');
 // 积分流水
 const JfFlow = () => import('components/jf-flow/jf-flow');
+// 经验流水
+const JyFlow = () => import('components/jy-flow/jy-flow');
 // 会员福利
 const MemberWelfare = () => import('components/member-welfare/member-welfare');
 // 会员介绍
@@ -338,6 +340,10 @@ export default new Router({
             {
               path: 'flow',
               component: JfFlow
+            },
+            {
+              path: 'jy-flow',
+              component: JyFlow
             },
             {
               path: 'welfare',

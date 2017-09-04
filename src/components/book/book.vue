@@ -8,13 +8,15 @@
         <div class="form-item">
           <label>姓名</label>
           <div v-show="disabled" class="input-item">{{name}}</div>
-          <input v-show="!disabled" class="input-item" type="text" v-model="name" @change="_nameValid" placeholder="待量体者姓名"/>
+          <input v-show="!disabled" class="input-item" type="text" v-model="name" @change="_nameValid"
+                 placeholder="待量体者姓名"/>
           <span class="error">{{nameErr}}</span>
         </div>
         <div class="form-item">
           <label>手机</label>
           <div v-show="disabled" class="input-item">{{telphone}}</div>
-          <input v-show="!disabled" class="input-item" type="tel" v-model="telphone" @change="_telValid" placeholder="待量体者手机"/>
+          <input v-show="!disabled" class="input-item" type="tel" v-model="telphone" @change="_telValid"
+                 placeholder="待量体者手机"/>
           <span class="error">{{telErr}}</span>
         </div>
         <div class="clearfix">
@@ -49,14 +51,15 @@
         <div class="form-item">
           <label></label>
           <div v-show="disabled" class="input-item">{{address}}</div>
-          <input class="input-item" v-show="!disabled" type="text" v-model="address" @change="_addrValid" placeholder="街道门牌信息"/>
+          <input class="input-item" v-show="!disabled" type="text" v-model="address" @change="_addrValid"
+                 placeholder="街道门牌信息"/>
           <span class="error">{{addrErr}}</span>
         </div>
-        <div class="form-item" v-show="ltShow">
+        <div class="form-item">
           <label>量体时间</label>
-          <div v-show="disabled" class="input-item">{{year + '-' + month + '-' + day}}</div>
+          <div v-show="showTime()" class="input-item">{{year + '-' + month + '-' + day}}</div>
           <date-picker class="input-item"
-                       v-show="!disabled"
+                       v-show="!showTime()"
                        :year="year"
                        :month="month"
                        :day="day"
@@ -66,7 +69,9 @@
       </div>
       <div class="book-btns">
         <button :disabled="btnDisabled" v-show="curBtn==='bookBtn'" class="book-btn" @click="_book">提交预约</button>
-        <button :disabled="btnDisabled" v-show="curBtn==='cancelBtn'" class="book-btn btn-cancel" @click="_cancel">取消预约</button>
+        <button :disabled="btnDisabled" v-show="curBtn==='cancelBtn'" class="book-btn btn-cancel" @click="_cancel">
+          取消预约
+        </button>
         <button :disabled="btnDisabled" v-show="curBtn==='reBtn'" class="book-btn btn-fg" @click="_reBook">一键复购</button>
       </div>
       <toast ref="toast" :text="text"></toast>
@@ -89,14 +94,13 @@
   import {initShare} from 'common/js/weixin';
 
   export default {
-    data() {
+    data () {
       return {
         btnDisabled: false,
         curBtn: 'bookBtn',
         isLoading: true,
         disabled: false,
         canClick: false,
-        ltShow: true,
         name: '',
         nameErr: '',
         telphone: '',
@@ -117,7 +121,7 @@
         orderCode: ''
       };
     },
-    created() {
+    created () {
       setTitle('预约');
       initShare({
         title: '预约',
@@ -128,7 +132,7 @@
       this.getLatestOrder();
     },
     methods: {
-      getLatestOrder() {
+      getLatestOrder () {
         return getLatestOrder().then((data) => {
           this.isLoading = false;
           this.initData(data);
@@ -136,7 +140,7 @@
           this.isLoading = false;
         });
       },
-      initData(data) {
+      initData (data) {
         if (data.order) {
           this.disabled = true;
           this.orderCode = data.order.code;
@@ -156,7 +160,6 @@
           if (data.order.status === '1' || data.order.status === '2') {
             this.curBtn = 'cancelBtn';
           } else if (data.order.status !== '11') {
-            this.ltShow = false;
             this.curBtn = 'reBtn';
           } else {
             this.disabled = false;
@@ -164,10 +167,9 @@
         } else {
           this.curBtn = 'bookBtn';
           this.disabled = false;
-          this.ltShow = true;
         }
       },
-      _book() {
+      _book () {
         if (this.valid()) {
           this.btnDisabled = true;
           this.isLoading = true;
@@ -196,7 +198,7 @@
           });
         }
       },
-      _cancel() {
+      _cancel () {
         this.btnDisabled = true;
         this.isLoading = true;
         cancelBook(this.orderCode).then(() => {
@@ -211,10 +213,10 @@
           this.btnDisabled = false;
         });
       },
-      _reBook() {
+      _reBook () {
         this.btnDisabled = true;
         this.isLoading = true;
-        reBook().then((data) => {
+        reBook(`${this.year}-${this.month}-${this.day}`).then((data) => {
           this.isLoading = false;
           this.btnDisabled = false;
           this.text = '一键复购成功';
@@ -226,24 +228,27 @@
           this.btnDisabled = false;
         });
       },
-      updateDate(year, month, day) {
+      updateDate (year, month, day) {
         this.year = year;
         this.month = month;
         this.day = day;
         return this._yearValid();
       },
-      updateAddress(province, city, district) {
+      updateAddress (province, city, district) {
         this.province = province;
         this.city = city;
         this.district = district;
         return this._provValid();
       },
-      handleLoad() {
+      handleLoad () {
         setTimeout(() => {
           this.$refs.scroll.refresh();
         }, 20);
       },
-      valid() {
+      showTime () {
+        return this.disabled && this.curBtn !== 'reBtn';
+      },
+      valid () {
         let r1 = this._nameValid();
         let r2 = this._telValid();
         let r3 = this._addrValid();
@@ -266,27 +271,27 @@
           return false;
         }
       },
-      _nameValid() {
+      _nameValid () {
         let result = realNameValid(this.name);
         this.nameErr = result.msg;
         return !result.err;
       },
-      _telValid() {
+      _telValid () {
         let result = mobileValid(this.telphone);
         this.telErr = result.msg;
         return !result.err;
       },
-      _addrValid() {
+      _addrValid () {
         let result = emptyValid(this.address);
         this.addrErr = result.msg;
         return !result.err;
       },
-      _provValid() {
+      _provValid () {
         let result = emptyValid(this.province);
         this.provErr = result.msg;
         return !result.err;
       },
-      _yearValid() {
+      _yearValid () {
         let result = emptyValid(this.year);
         this.yearErr = result.msg;
         return !result.err;

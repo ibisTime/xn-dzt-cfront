@@ -43,6 +43,7 @@
         <p>1、每月最大提现次数{{rechargeTimes}}次</p>
         <p>2、提现金额必须是{{times}}的倍数，单笔最高{{maxAmount}}元</p>
         <p>3、{{toAccount}}到账</p>
+        <p>4、提现手续费率{{rate}}</p>
       </div>
       <div v-show="!bankcardList || !cnyAccount || !rate" class="loading-container">
         <div class="loading-wrapper">
@@ -236,7 +237,8 @@
     watch: {
       amount(newAmount) {
         if (+newAmount) {
-          this.rateAmount = +this.rate * +newAmount;
+          let _amount = +this.rate * +newAmount;
+          this.rateAmount = _amount.toFixed(2);
         } else {
           this.rateAmount = '--';
         }

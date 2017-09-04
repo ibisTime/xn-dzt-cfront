@@ -64,7 +64,11 @@
       wxLogin(code, userReferee) {
         wxLogin(code, userReferee).then((data) => {
           setUser(data);
-          location.replace(`${location.origin}?#${this.$route.fullPath}`);
+          if (this.$route.path === '/user/recommend') {
+            location.replace(`${location.origin}/?#/home`);
+          } else {
+            location.replace(`${location.origin}?#${this.$route.fullPath}`);
+          }
         }).catch(() => {});
       },
       getAppId() {

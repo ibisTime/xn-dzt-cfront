@@ -9,7 +9,7 @@
           <div v-for="item in messages" :key="item.code" ref="mesRef">
             <div v-if="item.commenter!==userId" class="message-item message-left clearfix">
               <div class="avatar" @click="showAdviser">
-                <img src="./avatar@2x.png"/>
+                <img :src="getImg(item)"/>
               </div>
               <div class="item-cont">{{item.content}}</div>
             </div>
@@ -144,6 +144,12 @@
           return require('./avatar1@2x.png');
         }
         return formatImg(this.user.photo);
+      },
+      getImg(item) {
+        if (!item.commentPhoto) {
+          return require('./avatar@2x.png');
+        }
+        return formatImg(item.commentPhoto);
       },
       scroll(pos) {
         if (pos.y > -20 && !this.fetching && !this.first && this.hasMore) {

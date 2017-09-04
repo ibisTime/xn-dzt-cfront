@@ -3,13 +3,17 @@ import {getUserId} from 'common/js/util';
 
 // 微信登录
 export function wxLogin(code, userReferee) {
-  return fetch(805170, {
+  let params = {
     code,
-    userReferee,
     isNeedMobile: 0,
     kind: 'C',
     type: 'WX_H5'
-  });
+  };
+  if (userReferee) {
+    params.userReferee = userReferee;
+    params.userRefereeKind = 0;
+  }
+  return fetch(805170, params);
 }
 
 // 获取用户详情

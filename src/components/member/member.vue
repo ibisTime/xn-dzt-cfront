@@ -42,6 +42,10 @@
             <h1>积分账单</h1>
             <i class="arrow"></i>
           </router-link>
+          <router-link class="menu" tag="div" to="/user/member/jy-flow">
+            <h1>经验明细</h1>
+            <i class="arrow"></i>
+          </router-link>
         </div>
       </scroll>
       <chosen class="chose-wrapper" ref="chosen">
@@ -68,7 +72,7 @@
   import Toast from 'base/toast/toast';
   import Chosen from 'components/chosen/chosen';
   import {mapGetters, mapMutations} from 'vuex';
-  import {SET_USER_STATE, SET_JF_ACCOUNT, SET_CNY_ACCOUNT} from 'store/mutation-types';
+  import {SET_USER_STATE, SET_JF_ACCOUNT, SET_CNY_ACCOUNT, SET_JY_ACCOUNT} from 'store/mutation-types';
   import {setTitle, isUnDefined, formatAmount} from 'common/js/util';
   import {commonMixin} from 'common/js/mixin';
   import {initPay} from 'common/js/weixin';
@@ -138,6 +142,7 @@
               this.setJFAccount(item);
             } else if (item.currency === 'JY') {
               this.jyAccount = item;
+              this.setJYAccount(item);
             } else if (item.currency === 'CNY') {
               this.cnyAccount = item;
               this.setCnyAccount(item);
@@ -171,13 +176,13 @@
         if (!this.jfAccount) {
           return '-';
         }
-        return formatAmount(this.jfAccount.amount);
+        return (+this.jfAccount.amount / 1000).toFixed(0);
       },
       getJY() {
         if (!this.jyAccount) {
           return '-';
         }
-        return formatAmount(this.jyAccount.amount);
+        return (+this.jyAccount.amount / 1000).toFixed(0);
       },
       getAmount() {
         if (this.cnyAccount) {
@@ -244,7 +249,8 @@
       ...mapMutations({
         'setUser': SET_USER_STATE,
         'setJFAccount': SET_JF_ACCOUNT,
-        'setCnyAccount': SET_CNY_ACCOUNT
+        'setCnyAccount': SET_CNY_ACCOUNT,
+        'setJYAccount': SET_JY_ACCOUNT
       })
     },
     updated() {

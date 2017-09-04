@@ -26,6 +26,9 @@
             <div class="rich-text-description">
               <loading class="find-loading" v-show="!currentArticle" title=""></loading>
               <div ref="description" v-html="currentArticle && currentArticle.description || ''"></div>
+              <div class="rating-label" ref="ratingLabel">
+                <span @click="showRating">评论</span>
+              </div>
             </div>
             <div class="split"></div>
             <div class="title" ref="rTitle" @click="goRating">
@@ -47,9 +50,6 @@
                 </div>
               </div>
               <loading class="find-loading" v-show="hasMore" title=""></loading>
-            </div>
-            <div class="rating-label" ref="ratingLabel">
-              <span @click="showRating">评论</span>
             </div>
           </div>
         </scroll>

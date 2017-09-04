@@ -156,9 +156,10 @@ export function cancelBook(orderCode) {
 }
 
 // 一键复购
-export function reBook(productCode) {
+export function reBook(ltDatetime, productCode) {
   return fetch(620201, {
     productCode,
+    ltDatetime,
     applyUser: getUserId()
   });
 }
