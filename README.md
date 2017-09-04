@@ -1,6 +1,6 @@
 # xn-dzt-cfront
 
-> A Vue.js project
+> 合衣定制
 
 ## Build Setup
 

@@ -41,9 +41,9 @@
             </router-link>
           </div>
         </div>
-        <div class="set-btns">
-          <button @click="logout">退出登录</button>
-        </div>
+        <!--<div class="set-btns">-->
+          <!--<button @click="logout">退出登录</button>-->
+        <!--</div>-->
       </scroll>
       <router-view></router-view>
     </div>

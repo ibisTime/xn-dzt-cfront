@@ -21,6 +21,7 @@
         </div>
         <img src="./arrow.png" class="arrow">
       </div>
+      <go-home></go-home>
       <router-view></router-view>
     </div>
   </transition>
@@ -31,6 +32,7 @@
   import {getShareImg, setTitle} from 'common/js/util';
   import {initShare} from 'common/js/weixin';
   import {getUserSystemConfig} from 'api/general';
+  import GoHome from 'components/go-home/go-home';
 
   export default {
     data() {
@@ -119,7 +121,8 @@
     },
     components: {
       Scroll,
-      Loading
+      Loading,
+      GoHome
     }
   };
 </script>

@@ -63,7 +63,7 @@
           </div>
           <h1>备注</h1>
           <div class="remark">
-            <p>{{currentOrder && currentOrder.remark || '无'}}</p>
+            <p>{{getRemark()}}</p>
           </div>
         </div>
       </scroll>
@@ -186,6 +186,13 @@
           return true;
         }
         return false;
+      },
+      getRemark() {
+        if (!this.productInfo) {
+          return '无';
+        }
+        let index = this._getIndexFromSpecsList('6-05');
+        return ~index ? this.productInfo.productSpecsList[index].code : '无';
       },
       getMaterialCode() {
         if (!this.productInfo) {
