@@ -4,38 +4,38 @@
       <scroll class="user-content">
         <div>
           <div class="setting-wrapper">
-            <router-link to="/user/setting/avatar" tag="div" class="setting-item">
+            <router-link to="/user/setting/avatar" tag="div" class="setting-item border-bottom-1px">
               <h2>头像</h2>
               <img :src="getAvatar()"/>
               <i class="arrow"></i>
             </router-link>
-            <div class="setting-item" @click="goNick">
+            <div class="setting-item border-bottom-1px" @click="goNick">
               <h2>昵称</h2>
               <span v-if="user && user.nickname">{{user.nickname}}</span>
               <span v-else>设置昵称</span>
               <i class="arrow"></i>
             </div>
-            <div class="setting-item" @click="goMobile">
+            <div class="setting-item border-bottom-1px" @click="goMobile">
               <h2>手机号</h2>
               <span v-if="user && user.mobile">{{user.mobile}}</span>
               <span v-else>绑定手机号</span>
               <i class="arrow"></i>
             </div>
-            <div class="setting-item" @click="goTrade">
+            <div class="setting-item border-bottom-1px" @click="goTrade">
               <h2>支付密码</h2>
               <span v-if="user && user.tradepwdFlag">修改密码</span>
               <span v-else>设置密码</span>
               <i class="arrow"></i>
             </div>
-            <div class="setting-item" @click="goBankCode">
+            <div class="setting-item border-bottom-1px" @click="goBankCode">
               <h2>我的银行卡</h2>
               <i class="arrow"></i>
             </div>
-            <router-link to="/user/setting/aboutus" class="setting-item" tag="div">
+            <router-link to="/user/setting/aboutus" class="setting-item border-bottom-1px" tag="div">
               <h2>关于我们</h2>
               <i class="arrow"></i>
             </router-link>
-            <router-link to="/user/setting/notice" class="setting-item" tag="div">
+            <router-link to="/user/setting/notice" class="setting-item border-bottom-1px" tag="div">
               <h2>系统消息</h2>
               <i class="arrow"></i>
             </router-link>
@@ -157,8 +157,8 @@
           position: relative;
           height: 58px;
           line-height: 58px;
-          border-bottom: 1px solid #a1a1a1;
           padding-left: 9.5px;
+          @include border-bottom-1px($color-border);
 
           h2 {
             font-size: $font-size-medium;
@@ -191,6 +191,7 @@
             top: 50%;
             transform: translate(0, -50%);
             font-size: $font-size-medium;
+            font-weight: bold;
           }
         }
       }

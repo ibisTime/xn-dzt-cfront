@@ -24,7 +24,7 @@
             <div class="form-item">
               <label>身高</label>
               <div v-show="disabled" class="input-item tc">{{height}}</div>
-              <input class="input-item tc" v-show="!disabled" type="number" v-model="height"/>
+              <input class="input-item tc" v-show="!disabled" type="tel" v-model="height"/>
               <span>cm</span>
             </div>
           </div>
@@ -32,7 +32,7 @@
             <div class="form-item">
               <label>体重</label>
               <div v-show="disabled" class="input-item tc">{{weight}}</div>
-              <input class="input-item tc" v-show="!disabled" type="number" v-model="weight"/>
+              <input class="input-item tc" v-show="!disabled" type="tel" v-model="weight"/>
               <span>kg</span>
             </div>
           </div>
@@ -410,7 +410,7 @@
         font-size: $font-size-medium;
 
         &.book-btn {
-          background-color: $primary-color;
+          background-color: $color-cancel-background;
         }
 
         &.btn-cancel {
@@ -418,7 +418,7 @@
         }
 
         &.btn-fg {
-          background-color: rgb(167, 149, 47);
+          background-color: $color-cancel-background;
         }
 
         &[disabled] {

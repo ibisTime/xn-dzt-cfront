@@ -12,7 +12,7 @@
             <h3>{{getText(user && user.level)}}</h3>
           </div>
         </div>
-        <div v-show="user && user.level!=='1'" class="member-infos">
+        <div class="member-infos">
           <div class="info">
             <h3>会员积分</h3>
             <p>{{getJF()}}</p>
@@ -26,42 +26,30 @@
             <p>{{sjjy}}</p>
           </div>
         </div>
-        <div v-show="user && user.level==='1'" class="member-infos">
-          <div class="price">购买会员只需{{hyf}}元</div><button @click="showChosen">购买会员</button>
-        </div>
         <div class="menus">
-          <router-link class="menu" tag="div" to="/user/member/introduce">
+          <router-link class="menu border-bottom-1px border-top-1px" tag="div" to="/user/member/introduce">
             <h1>会员介绍</h1>
             <i class="arrow"></i>
           </router-link>
-          <router-link class="menu" tag="div" to="/user/member/welfare">
+          <router-link class="menu border-bottom-1px" tag="div" to="/user/member/welfare">
             <h1>会员福利</h1>
             <i class="arrow"></i>
           </router-link>
-          <router-link class="menu" tag="div" to="/user/member/flow">
-            <h1>积分账单</h1>
-            <i class="arrow"></i>
-          </router-link>
-          <router-link class="menu" tag="div" to="/user/member/jy-flow">
-            <h1>经验明细</h1>
-            <i class="arrow"></i>
-          </router-link>
+          <!--<router-link class="menu border-bottom-1px" tag="div" to="/user/member/flow">-->
+            <!--<h1>积分账单</h1>-->
+            <!--<i class="arrow"></i>-->
+          <!--</router-link>-->
+          <!--<router-link class="menu border-bottom-1px" tag="div" to="/user/member/jy-flow">-->
+            <!--<h1>经验明细</h1>-->
+            <!--<i class="arrow"></i>-->
+          <!--</router-link>-->
         </div>
       </scroll>
-      <chosen class="chose-wrapper" ref="chosen">
-        <div class="item" @click="weixinPay">
-          微信支付
-        </div>
-        <div class="item" @click="yePay">
-          余额支付（¥{{getAmount()}})
-        </div>
-      </chosen>
       <div v-show="loadingFlag" class="loading-container">
         <div class="loading-wrapper">
           <loading title=""></loading>
         </div>
       </div>
-      <toast ref="toast" :text="text"></toast>
       <router-view></router-view>
     </div>
   </transition>
@@ -69,16 +57,13 @@
 <script>
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
-  import Toast from 'base/toast/toast';
-  import Chosen from 'components/chosen/chosen';
   import {mapGetters, mapMutations} from 'vuex';
   import {SET_USER_STATE, SET_JF_ACCOUNT, SET_CNY_ACCOUNT, SET_JY_ACCOUNT} from 'store/mutation-types';
   import {setTitle, isUnDefined, formatAmount} from 'common/js/util';
   import {commonMixin} from 'common/js/mixin';
-  import {initPay} from 'common/js/weixin';
-  import {getUser, buyVIP} from 'api/user';
+  import {getUser} from 'api/user';
   import {getAccount} from 'api/account';
-  import {getDictList, getBizSystemConfig, getPageBizSysConfig} from 'api/general';
+  import {getDictList, getPageBizSysConfig} from 'api/general';
 
   const JF_CKEY = {
     '2': 'ONE',
@@ -91,7 +76,6 @@
     mixins: [commonMixin],
     data() {
       return {
-        hyf: '',
         sjjy: '-',
         text: '',
         loadingFlag: true,
@@ -125,12 +109,10 @@
           getUser(),
           getDictList('user_level'),
           getAccount(),
-          getBizSystemConfig('HYF'),
           getPageBizSysConfig(1)
-        ]).then(([userData, levelDict, accounts, hyf, levelJY]) => {
+        ]).then(([userData, levelDict, accounts, levelJY]) => {
           levelJY = levelJY.list;
           this.loadingFlag = false;
-          this.hyf = hyf.cvalue;
           let obj = {};
           levelDict.forEach((item) => {
             obj[item.dkey] = item.dvalue;
@@ -191,58 +173,6 @@
           return '--';
         }
       },
-      showChosen() {
-        this.$refs.chosen.show();
-      },
-      buyVIP(payType) {
-        this.loadingFlag = true;
-        buyVIP(payType).then((data) => {
-          if (payType === 2) {
-            this.wxPay(data);
-          } else {
-            this.paySuc();
-          }
-        }).catch(() => {
-          this.loadingFlag = false;
-        });
-      },
-      weixinPay() {
-        this.buyVIP(2);
-      },
-      yePay() {
-        this.buyVIP(1);
-      },
-      wxPay(data) {
-        if (data && data.signType) {
-          initPay(data, () => {
-            this.paySuc();
-          }, () => {
-            this.loadingFlag = false;
-            this.text = '支付失败';
-            this.$refs.toast.show();
-          }, () => {
-            this.loadingFlag = false;
-          });
-        } else {
-          this.loadingFlag = false;
-          this.text = '支付失败';
-          this.$refs.toast.show();
-        }
-      },
-      paySuc() {
-        this.loadingFlag = false;
-        this.text = '支付成功';
-        this.$refs.toast.show();
-        let index = this.levelJY.findIndex((item) => {
-          return item.ckey === JF_CKEY['2'];
-        });
-        this.sjjy = this.levelJY[index].cvalue;
-        let _user = {
-          ...this.user,
-          level: '2'
-        };
-        this.setUser(_user);
-      },
       back() {
         this.$router.back();
       },
@@ -260,9 +190,7 @@
     },
     components: {
       Scroll,
-      Loading,
-      Toast,
-      Chosen
+      Loading
     }
   };
 </script>
@@ -334,7 +262,7 @@
             margin-top: 7.5px;
             text-align: center;
             font-size: $font-size-medium;
-            color: #a89300;
+            color: $second-color;
           }
         }
       }
@@ -386,11 +314,12 @@
           height: 59px;
           line-height: 59px;
           padding-left: 10px;
-          border-bottom: 1px solid #a1a1a1;
           font-size: $font-size-medium;
+          @include border-bottom-1px(#d8d8d8);
+
 
           &:first-child {
-            border-top: 1px solid #a1a1a1;
+            @include border-top-1px(#d8d8d8);
           }
 
           .arrow {

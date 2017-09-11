@@ -49,7 +49,7 @@
             if (this.$route.fullPath !== '/') {
               clearInterval(this.timer);
               if (/\/user\/recommend/.test(hash)) {
-                location.replace(`${location.origin}/?#/home`);
+                location.replace(`${location.origin}/?#/book`);
               } else {
                 location.replace(`${location.origin}/?#${path}`);
               }
@@ -65,7 +65,7 @@
         wxLogin(code, userReferee).then((data) => {
           setUser(data);
           if (this.$route.path === '/user/recommend') {
-            location.replace(`${location.origin}/?#/home`);
+            location.replace(`${location.origin}/?#/book`);
           } else {
             location.replace(`${location.origin}?#${this.$route.fullPath}`);
           }

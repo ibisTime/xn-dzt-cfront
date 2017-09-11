@@ -9,15 +9,15 @@
           <div class="user-info">
             <h1>{{user && user.nickname}}</h1>
             <p>
-              <span class="rectangle" v-show="user && user.level!=='0' && user.level!=='1'">VIP{{getLevel()}}</span>
               <span>{{getText(user && user.level)}}</span>
             </p>
           </div>
         </div>
         <div class="order-wrapper">
-          <div class="user-title" @click="goOrder('', $event)">
-            <h2>我的订单</h2>
-            <i class="arrow"></i>
+          <div class="user-main-title">
+            <div class="title border-top-1px border-bottom-1px">
+              <h2>我的订单</h2>
+            </div>
           </div>
           <div class="order-types">
             <div class="order-type" @click="goOrder(1)">
@@ -44,8 +44,10 @@
         </div>
         <div class="split"></div>
         <div class="user-menus">
-          <div class="user-title">
-            <h2>私人服务</h2>
+          <div class="user-main-title">
+            <div class="title border-top-1px border-bottom-1px">
+              <h2>私人服务</h2>
+            </div>
           </div>
           <div class="service-types">
             <router-link class="service-type" tag="div" to="/user/report">
@@ -65,39 +67,66 @@
               <p>常见问题</p>
             </router-link>
           </div>
-          <router-link to="/user/member" class="user-title" tag="div">
+          <router-link v-if="user && user.level!=='1'" to="/user/member" class="user-title border-bottom-1px user-title-top border-top-1px" tag="div">
             <h2>会员中心</h2>
             <i class="arrow"></i>
           </router-link>
-          <router-link to="/user/account" class="user-title" tag="div">
+          <div v-else class="join-member" @click="showChosen">加入会员</div>
+          <router-link to="/user/account" class="user-title border-bottom-1px" tag="div">
             <h2>我的账户</h2>
             <i class="arrow"></i>
           </router-link>
-          <router-link to="/user/recommend" class="user-title" tag="div">
+          <router-link to="/user/recommend" class="user-title border-bottom-1px" tag="div">
             <h2>我的推荐</h2>
             <i class="arrow"></i>
           </router-link>
-          <router-link to="/user/collection" class="user-title" tag="div">
+          <router-link to="/user/collection" class="user-title border-bottom-1px" tag="div">
             <h2>我的收藏</h2>
             <i class="arrow"></i>
           </router-link>
         </div>
       </div>
     </scroll>
+    <toast ref="toast" :text="text"></toast>
+    <chosen class="chose-wrapper" ref="chosen">
+      <div class="item" @click="weixinPay">
+        微信支付
+      </div>
+      <div class="item" @click="yePay">
+        余额支付（¥{{getAmount()}})
+      </div>
+    </chosen>
+    <div v-show="loadingFlag" class="loading-container">
+      <div class="loading-wrapper">
+        <loading title=""></loading>
+      </div>
+    </div>
     <router-view></router-view>
   </div>
 </template>
 <script>
+  import Chosen from 'components/chosen/chosen';
   import {mapGetters, mapMutations} from 'vuex';
-  import {SET_USER_STATE} from 'store/mutation-types';
-  import {getUser} from 'api/user';
+  import {SET_USER_STATE, SET_CNY_ACCOUNT} from 'store/mutation-types';
+  import {getUser, buyVIP} from 'api/user';
   import {getDictList} from 'api/general';
-  import {setTitle, isUnDefined} from 'common/js/util';
+  import {getAccount} from 'api/account';
+  import {setTitle, formatAmount, isUnDefined} from 'common/js/util';
   import {commonMixin} from 'common/js/mixin';
+  import {initPay} from 'common/js/weixin';
   import Scroll from 'base/scroll/scroll';
+  import Loading from 'base/loading/loading';
+  import Toast from 'base/toast/toast';
 
   export default {
     mixins: [commonMixin],
+    data() {
+      return {
+        text: '',
+        loadingFlag: false,
+        cnyAccount: null
+      };
+    },
     created() {
       this.first = true;
       this.levelDict = {};
@@ -138,12 +167,6 @@
         }
         return this.levelDict[level];
       },
-      getLevel() {
-        if (!this.user) {
-          return 0;
-        }
-        return +this.user.level - 1;
-      },
       goOrder(index) {
         if (index) {
           this.$router.push(`/user/order?index=${index}`);
@@ -154,7 +177,75 @@
       goSet() {
         this.$router.push('/user/setting');
       },
+      showChosen() {
+        this.loadingFlag = true;
+        getAccount().then((data) => {
+          this.loadingFlag = false;
+          data.forEach((item) => {
+            if (item.currency === 'CNY') {
+              this.cnyAccount = item;
+              this.setCnyAccount(item);
+            }
+          });
+          this.$refs.chosen.show();
+        }).catch(() => {
+          this.loadingFlag = false;
+        });
+      },
+      buyVIP(payType) {
+        this.loadingFlag = true;
+        buyVIP(payType).then((data) => {
+          if (payType === 2) {
+            this.wxPay(data);
+          } else {
+            this.paySuc();
+          }
+        }).catch(() => {
+          this.loadingFlag = false;
+        });
+      },
+      weixinPay() {
+        this.buyVIP(2);
+      },
+      yePay() {
+        this.buyVIP(1);
+      },
+      wxPay(data) {
+        if (data && data.signType) {
+          initPay(data, () => {
+            this.paySuc();
+          }, () => {
+            this.loadingFlag = false;
+            this.text = '支付失败';
+            this.$refs.toast.show();
+          }, () => {
+            this.loadingFlag = false;
+          });
+        } else {
+          this.loadingFlag = false;
+          this.text = '支付失败';
+          this.$refs.toast.show();
+        }
+      },
+      paySuc() {
+        this.loadingFlag = false;
+        this.text = '支付成功';
+        this.$refs.toast.show();
+        let _user = {
+          ...this.user,
+          level: '2'
+        };
+        this.setUser(_user);
+      },
+      getAmount() {
+        if (this.cnyAccount) {
+          return formatAmount(this.cnyAccount.amount);
+        } else {
+          return '--';
+        }
+      },
       ...mapMutations({
+        setCnyAccount: SET_CNY_ACCOUNT,
         setUser: SET_USER_STATE
       })
     },
@@ -162,7 +253,10 @@
       this._getUser();
     },
     components: {
-      Scroll
+      Scroll,
+      Loading,
+      Chosen,
+      Toast
     }
   };
 </script>
@@ -184,13 +278,57 @@
       height: 100%;
       overflow: hidden;
 
+      .user-main-title {
+        position: relative;
+        height: 39px;
+        line-height: 39px;
+        text-align: center;
+        font-size: $font-size-medium;
+
+        h2 {
+          font-weight: bold;
+        }
+
+        .title {
+          position: relative;
+          margin: 0 auto;
+          width: 130px;
+
+          &:before {
+            content: '';
+            position: absolute;
+            top: 19px;
+            left: 0;
+            width: 26px;
+            border-bottom: 1px solid $color-border;
+          }
+
+          &:after {
+            content: '';
+            position: absolute;
+            top: 19px;
+            right: 0;
+            width: 26px;
+            border-bottom: 1px solid $color-border;
+          }
+        }
+      }
+
       .user-title {
         position: relative;
         height: 39px;
         line-height: 39px;
         padding-left: 12px;
-        border-bottom: 1px solid #a1a1a1;
         font-size: $font-size-medium;
+        @include border-bottom-1px($color-border);
+
+        &.user-title-top {
+          @include border-top-1px(#a1a1a1);
+        }
+
+        h2 {
+          font-weight: bold;
+        }
 
         .arrow {
           position: absolute;
@@ -203,6 +341,17 @@
           background-size: 10px;
           @include bg-image('more');
         }
+      }
+
+      .join-member {
+        height: 38px;
+        margin-top: 10px;
+        line-height: 38px;
+        border-radius: 20px;
+        text-align: center;
+        font-size: 20px;
+        color: #fff;
+        background: $second-color;
       }
 
       .avatar-wrapper {
@@ -239,15 +388,7 @@
           p {
             margin-top: 7px;
             font-size: $font-size-small;
-            color: #a89300;
-
-            .rectangle {
-              display: inline-block;
-              padding: 2px 4px;
-              border-radius: 4px;
-              background: #a89300;
-              color: #fff;
-            }
+            color: #fff;
           }
         }
       }
@@ -314,7 +455,6 @@
           height: 68px;
           display: flex;
           align-items: center;
-          border-bottom: 1px solid #a1a1a1;
 
           .service-type {
             flex: 1;
@@ -350,6 +490,32 @@
             }
           }
         }
+      }
+    }
+
+    .chose-wrapper {
+      .item {
+        padding: 14px 10px;
+        border-bottom: 1px solid #a1a1a1;
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+
+    .loading-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+
+      .loading-wrapper {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        transform: translate3d(0, -50%, 0);
       }
     }
   }
