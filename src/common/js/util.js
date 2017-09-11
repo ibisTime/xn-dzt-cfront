@@ -107,17 +107,19 @@ export const ISIOS = /(iphone|ipod|ipad)/i.test(navigator.userAgent);
 
 // 微信设置页面标题
 export function setTitle(title) {
-  if (document.title !== title && ISIOS) {
+  if (document.title !== title) {
     document.title = title;
-    let iframe = document.createElement('iframe');
-    iframe.src = '//m.baidu.com/favicon.ico';
-    iframe.style.display = 'none';
-    iframe.onload = () => {
-      setTimeout(() => {
-        iframe.remove();
-      }, 9);
-    };
-    document.body.appendChild(iframe);
+    if (ISIOS) {
+      let iframe = document.createElement('iframe');
+      iframe.src = '//m.baidu.com/favicon.ico';
+      iframe.style.display = 'none';
+      iframe.onload = () => {
+        setTimeout(() => {
+          iframe.remove();
+        }, 9);
+      };
+      document.body.appendChild(iframe);
+    }
   }
 }
 
