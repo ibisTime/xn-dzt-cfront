@@ -22,6 +22,8 @@ export const SET_CNY_ACCOUNT = 'SET_CNY_ACCOUNT';
 export const SET_JF_ACCOUNT = 'SET_JF_ACCOUNT';
 // 设置经验账户
 export const SET_JY_ACCOUNT = 'SET_JY_ACCOUNT';
+// 设置合衣币账户
+export const SET_HYB_ACCOUNT = 'SET_HYB_ACCOUNT';
 // 设置当前面料
 export const SET_CURRENT_MATERIAL = 'SET_CURRENT_MATERIAL';
 // 设置当前产品

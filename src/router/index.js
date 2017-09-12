@@ -50,10 +50,20 @@ const BankCardAddEdit = () => import('components/bankcard-addedit/bankcard-added
 const Account = () => import('components/account/account');
 // 账户流水
 const CnyFlow = () => import('components/cny-flow/cny-flow');
+// 积分流水
+const JfFlow = () => import('components/jf-flow/jf-flow');
+// 合衣币流水
+const HybFlow = () => import('components/hyb-flow/hyb-flow');
+// 经验流水
+// const JyFlow = () => import('components/jy-flow/jy-flow');
+// 积分兑换
+const JfExchange = () => import('components/jf-exchange/jf-exchange');
 // 充值
 const Recharge = () => import('components/recharge/recharge');
 // 提现
 const Withdraw = () => import('components/withdraw/withdraw');
+// 积分规则
+const JfRules = () => import('components/jf-rules/jf-rules');
 // 订单列表
 const Orders = () => import('components/orders/orders');
 // 订单详情
@@ -78,10 +88,6 @@ const CollectionMaterial = () => import('components/collection-material/collecti
 const CollectionTech = () => import('components/collection-tech/collection-tech');
 // 会员中心
 const Member = () => import('components/member/member');
-// 积分流水
-const JfFlow = () => import('components/jf-flow/jf-flow');
-// 经验流水
-const JyFlow = () => import('components/jy-flow/jy-flow');
 // 会员福利
 const MemberWelfare = () => import('components/member-welfare/member-welfare');
 // 会员介绍
@@ -232,8 +238,20 @@ export default new Router({
           component: Account,
           children: [
             {
-              path: 'flow',
+              path: 'cny-flow',
               component: CnyFlow
+            },
+            {
+              path: 'jf-flow',
+              component: JfFlow
+            },
+            {
+              path: 'hyb-flow',
+              component: HybFlow
+            },
+            {
+              path: 'jf-exchange',
+              component: JfExchange
             },
             {
               path: 'recharge',
@@ -258,6 +276,10 @@ export default new Router({
                   component: BindMobile
                 }
               ]
+            },
+            {
+              path: 'jf-rules',
+              component: JfRules
             }
           ]
         },
@@ -345,14 +367,6 @@ export default new Router({
           path: 'member',
           component: Member,
           children: [
-            {
-              path: 'flow',
-              component: JfFlow
-            },
-            {
-              path: 'jy-flow',
-              component: JyFlow
-            },
             {
               path: 'welfare',
               component: MemberWelfare

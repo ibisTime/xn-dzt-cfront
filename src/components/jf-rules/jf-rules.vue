@@ -1,15 +1,11 @@
 <template>
   <transition name="slide">
-    <div class="about-wrapper">
-      <scroll class="about-content">
+    <div class="rule-wrapper">
+      <scroll class="scroll-content">
         <div>
           <div ref="description" class="rich-text-description">
             <div v-html="content"></div>
-            <div class="other-info">
-              <p>服务时间：{{time}}</p>
-              <p>服务热线：<a class="needsclick" :href="getTel()">{{telephone}}</a></p>
-            </div>
-            <loading v-if="loadingFlag" title=""></loading>
+            <loading v-if="!content" title=""></loading>
           </div>
         </div>
       </scroll>
@@ -25,33 +21,16 @@
   export default {
     data() {
       return {
-        content: '',
-        telephone: '',
-        time: '',
-        loadingFlag: true
+        content: ''
       };
     },
     created() {
-      setTitle('关于我们');
-      Promise.all([
-        getUserSystemConfig('aboutUs'),
-        getUserSystemConfig('telephone'),
-        getUserSystemConfig('serviceTime')
-      ]).then(([aboutus, telephone, time]) => {
-        this.loadingFlag = false;
-        this.telephone = telephone.cvalue;
-        this.time = time.cvalue;
-        this.content = aboutus.cvalue;
+      setTitle('积分规则');
+      getUserSystemConfig('jfRule').then((data) => {
+        this.content = data.cvalue;
       });
     },
     methods: {
-      getTel() {
-        if (this.telephone) {
-          return `tel://${this.telephone}`;
-        } else {
-          return '';
-        }
-      },
       _refreshScroll() {
         setTimeout(() => {
           let imgs = this.$refs.description.getElementsByTagName('img');
@@ -86,7 +65,7 @@
 <style lang="scss" scoped>
   @import "~common/scss/variable";
 
-  .about-wrapper {
+  .rule-wrapper {
     position: fixed;
     top: 0;
     left: 0;
@@ -94,7 +73,7 @@
     height: 100%;
     background: #fff;
 
-    .about-content {
+    .scroll-content {
       height: 100%;
       overflow: hidden;
 
@@ -103,14 +82,6 @@
           line-height: 1;
           color: $color-text;
           text-decoration: underline;
-        }
-      }
-
-      .other-info {
-        padding-top: 30px;
-
-        p {
-          line-height: 1;
         }
       }
     }

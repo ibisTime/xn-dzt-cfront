@@ -8,7 +8,7 @@
               <div class="time">{{item.createDatetime | formatDate('yy/MM/dd')}}</div>
               <div class="info">
                 <p class="note">{{item.bizNote}}</p>
-                <p class="trans-amount">¥ {{formatAmount(item.transAmount)}}</p>
+                <p class="trans-amount">合衣币 {{formatAmount(item.transAmount)}}</p>
               </div>
             </li>
             <loading class="loading" v-show="hasMore" title=""></loading>
@@ -16,7 +16,7 @@
         </div>
       </scroll>
       <div v-show="!hasMore && !flows.length" class="no-result-wrapper">
-        <no-result title="抱歉，暂无明细"></no-result>
+        <no-result title="抱歉，暂无账单"></no-result>
       </div>
     </div>
   </transition>
@@ -24,12 +24,12 @@
 <script>
   import {getPageFlow, getAccount} from 'api/account';
   import {mapGetters, mapMutations} from 'vuex';
-  import {SET_CNY_ACCOUNT} from 'store/mutation-types';
+  import {SET_HYB_ACCOUNT} from 'store/mutation-types';
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
   import NoResult from 'base/no-result/no-result';
   import {commonMixin} from 'common/js/mixin';
-  import {formatAmount, setTitle} from 'common/js/util';
+  import {setTitle} from 'common/js/util';
 
   const LIMIT = 20;
 
@@ -43,9 +43,9 @@
       };
     },
     created() {
-      setTitle('人民币账单');
+      setTitle('合衣币账单');
       this.pullup = true;
-      if (this.cnyAccount) {
+      if (this.hybAccount) {
         this.getPageFlow();
       } else {
         this.getAccount().then(() => {
@@ -55,15 +55,15 @@
     },
     computed: {
       ...mapGetters([
-        'cnyAccount'
+        'hybAccount'
       ])
     },
     methods: {
       getAccount() {
         return getAccount().then((data) => {
           data.forEach((item) => {
-            if (item.currency === 'CNY') {
-              this.setCnyAccount(item);
+            if (item.currency === 'HYB') {
+              this.setHybAccount(item);
             }
           });
           return data;
@@ -71,7 +71,7 @@
       },
       getPageFlow() {
         if (this.hasMore) {
-          return getPageFlow(this.start, LIMIT, this.cnyAccount.accountNumber).then((data) => {
+          return getPageFlow(this.start, LIMIT, this.hybAccount.accountNumber).then((data) => {
             if (data.list.length < LIMIT || data.totalCount <= LIMIT) {
               this.hasMore = false;
             }
@@ -82,10 +82,10 @@
       },
       formatAmount(amount) {
         let prefix = +amount > 0 ? '+' : '';
-        return prefix + formatAmount(amount);
+        return prefix + (+amount / 1000).toFixed(0);
       },
       ...mapMutations({
-        'setCnyAccount': SET_CNY_ACCOUNT
+        'setHybAccount': SET_HYB_ACCOUNT
       })
     },
     components: {

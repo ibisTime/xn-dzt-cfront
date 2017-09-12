@@ -10,6 +10,7 @@ const state = {
   cnyAccount: null,
   jfAccount: null,
   jyAccount: null,
+  hybAccount: null,
   currentMaterial: null,
   currentModel: null,
   currentArticle: null,

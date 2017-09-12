@@ -145,7 +145,9 @@
       deleteAvatar() {
         let idx = this._findFileIndex(this.currentItem);
         this.files.splice(idx, 1);
-        this.deleteAvatarHistory(this.currentItem);
+        if (this.currentItem.status === 200) {
+          this.deleteAvatarHistory(this.currentItem);
+        }
       },
       /**
        * 处理图片上传前的事件

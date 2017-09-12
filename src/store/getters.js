@@ -16,6 +16,8 @@ export const jfAccount = state => state.jfAccount;
 
 export const jyAccount = state => state.jyAccount;
 
+export const hybAccount = state => state.hybAccount;
+
 export const currentMaterial = state => state.currentMaterial;
 
 export const currentModel = state => state.currentModel;

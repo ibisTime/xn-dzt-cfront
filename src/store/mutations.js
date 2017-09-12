@@ -50,6 +50,9 @@ const mutations = {
   [types.SET_JY_ACCOUNT](state, account) {
     state.jyAccount = account;
   },
+  [types.SET_HYB_ACCOUNT](state, account) {
+    state.hybAccount = account;
+  },
   [types.SET_CURRENT_MATERIAL](state, material) {
     state.currentMaterial = material;
   },
