@@ -108,14 +108,16 @@
           padding-left: 10px;
 
           .top {
+            display: flex;
             margin-bottom: 10px;
 
             label {
+              flex: 1;
+              line-height: 1.1;
               font-size: 15px;
             }
 
             span {
-              float: right;
               font-size: $font-size-small;
               color: #999;
             }
@@ -132,7 +134,7 @@
         padding-top: 20px;
       }
     }
-    
+
     .no-result-wrapper {
       position: absolute;
       width: 100%;

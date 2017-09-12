@@ -1,7 +1,7 @@
 <template>
   <transition name="modal-fade">
-    <div class="modal" v-show="showFlag" @click.stop>
-      <div class="modal-wrapper">
+    <div class="modal" v-show="showFlag" @click.stop="hide">
+      <div class="modal-wrapper" @click.stop>
         <div class="modal-content">
           <div class="close" @click="hide"></div>
           <slot></slot>
@@ -66,6 +66,7 @@
         width: 100%;
         height: 100%;
         border-radius: 13px;
+        overflow: hidden;
         background: $color-highlight-background;
 
         .close {

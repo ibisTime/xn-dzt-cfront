@@ -9,7 +9,6 @@
         </slider>
         <div class="head">
           <i class="back" @click="back"></i>
-          <i class="like" :class="{active:isSC}" @click="handleCollect"></i>
         </div>
         <div class="filter" ref="filter" v-show="!loop"></div>
       </div>
@@ -26,9 +25,6 @@
             <div class="rich-text-description">
               <loading class="find-loading" v-show="!currentArticle" title=""></loading>
               <div ref="description" v-html="currentArticle && currentArticle.description || ''"></div>
-              <div class="rating-label" ref="ratingLabel">
-                <span @click="showRating">评论</span>
-              </div>
             </div>
             <div class="split"></div>
             <div class="title" ref="rTitle" @click="goRating">
@@ -60,7 +56,12 @@
         <i class="arrow"></i>
       </div>
       <go-home></go-home>
-      <rating ref="rating" @ratingSuc="ratingSuccess" :user="user" :parentCode="code"></rating>
+      <rating-box @handleCollect="handleCollect"
+                  @ratingSuc="ratingSuccess"
+                  :user="user"
+                  :code="code"
+                  :isSC="isSC"
+                  :num="totalCount"></rating-box>
       <router-view></router-view>
     </div>
   </transition>
@@ -69,7 +70,7 @@
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
   import Slider from 'base/slider/slider';
-  import {getArticle, collection, cancelCollection, getPageRatings} from 'api/biz';
+  import {getArticle, getPageRatings} from 'api/biz';
   import {getUser} from 'api/user';
   import {commonMixin} from 'common/js/mixin';
   import {prefixStyle} from 'common/js/dom';
@@ -77,8 +78,8 @@
   import {getShareImg, setTitle, clearTag} from 'common/js/util';
   import {mapGetters, mapMutations} from 'vuex';
   import {SET_CURRENT_ARTICLE, SET_USER_STATE} from 'store/mutation-types';
-  import Rating from 'components/rating/rating';
   import GoHome from 'components/go-home/go-home';
+  import RatingBox from 'components/rating-box/rating-box';
 
   const RESERVED_HEIGHT = 0;
   const transform = prefixStyle('transform');
@@ -154,31 +155,14 @@
           });
         }
       },
-      handleCollect() {
-        if (this.isSC) {
-          this.isSC = false;
-          cancelCollection(this.$route.params.id).then(() => {
-            this.$emit('update', this.currentArticle, false);
-          }).catch(() => {
-            this.isSC = true;
-            this.$emit('update', this.currentArticle);
-          });
-        } else {
-          this.isSC = true;
-          collection(this.$route.params.id).then(() => {
-            this.$emit('update', this.currentArticle, true);
-          }).catch(() => {
-            this.isSC = false;
-          });
-        }
+      handleCollect(flag) {
+        this.isSC = flag;
+        this.$emit('update', this.currentArticle, flag);
       },
       goRating() {
         if (this.user) {
           this.$router.push(`${this.$route.path}/rating`);
         }
-      },
-      showRating() {
-        this.$refs.rating.show();
       },
       ratingSuccess(info) {
         this.ratingList.unshift(info);
@@ -268,8 +252,8 @@
       Scroll,
       Loading,
       Slider,
-      Rating,
-      GoHome
+      GoHome,
+      RatingBox
     }
   };
 </script>
@@ -310,23 +294,6 @@
         z-index: 102;
         @include bg-image('back');
       }
-
-      .like {
-        position: fixed;
-        right: 0;
-        top: 0;
-        width: 62px;
-        height: 62px;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 20px;
-        z-index: 102;
-        @include bg-image('like');
-
-        &.active {
-          @include bg-image('like-act');
-        }
-      }
     }
 
     .banner-wrapper {
@@ -356,7 +323,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      bottom: 0;
+      bottom: 42px;
 
       .scroll-content {
         position: relative;
@@ -388,14 +355,16 @@
             padding-left: 10px;
 
             .top {
+              display: flex;
               margin-bottom: 10px;
 
               label {
+                flex: 1;
+                line-height: 1.1;
                 font-size: 15px;
               }
 
               span {
-                float: right;
                 font-size: $font-size-small;
                 color: #999;
               }

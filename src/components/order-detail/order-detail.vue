@@ -8,12 +8,13 @@
             <p><label>订单编号</label>{{currentOrder && currentOrder.code}}</p>
             <p><label>下单时间</label>{{(currentOrder && currentOrder.createDatetime) | formatDate('yyyy-MM-dd hh:mm')}}</p>
             <p><label>订单状态</label><span class="status">{{(currentOrder && currentOrder.status) | formatStatus}}</span></p>
-            <p v-show="showCancelBtn() || showPayBtn() || showRatingBtn() || showReceiveBtn()">
+            <p v-show="showCancelBtn() || showPayBtn() || showRatingBtn() || showReceiveBtn() || showAdviserBtn()">
               <label>订单操作</label>
               <span class="btn cancel" v-show="showCancelBtn()" @click="_cancelOrder">取消订单</span>
               <span class="btn" v-show="showPayBtn()" @click="payOrder">立即支付</span>
               <span class="btn" v-show="showRatingBtn()" @click="ratingOrder">立即评价</span>
               <span class="btn" v-show="showReceiveBtn()" @click="receiveOrder">确认收货</span>
+              <span class="btn" v-show="showAdviserBtn()" @click="goAdviser">联系顾问</span>
             </p>
           </div>
           <div class="order-info">
@@ -178,7 +179,7 @@
         }
         return false;
       },
-      showReceiveBtn(status) {
+      showReceiveBtn() {
         if (!this.currentOrder) {
           return false;
         }
@@ -186,6 +187,12 @@
           return true;
         }
         return false;
+      },
+      showAdviserBtn() {
+        return this.currentOrder && this.currentOrder.status === '10';
+      },
+      goAdviser() {
+        this.$router.push(`${this.$route.path}/adviser`);
       },
       getRemark() {
         if (!this.productInfo) {

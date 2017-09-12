@@ -1,4 +1,5 @@
 import * as types from './mutation-types';
+import {saveAvatar, deleteAvatar, clearAvatar} from 'common/js/cache';
 
 function _getOrderList(state, code, prevStatus, nextStatus) {
   let allList = null;
@@ -21,6 +22,13 @@ function _getOrderList(state, code, prevStatus, nextStatus) {
       };
       allList.data.splice(index, 1, _item);
     }
+  }
+
+  if (prevStatus === '3' || prevStatus === '4' || prevStatus === '5' || prevStatus === '6' || prevStatus === '7') {
+    prevStatus = '3||4||5||6||7';
+  }
+  if (nextStatus === '3' || nextStatus === '4' || nextStatus === '5' || nextStatus === '6' || nextStatus === '7') {
+    nextStatus = '3||4||5||6||7';
   }
   // 如果有当前状态的数据，则删除这条订单
   if (state.orderList[prevStatus]) {
@@ -119,4 +127,16 @@ export const addAddrAndSetCur = function({commit, state}, {address}) {
   addressList.push(address);
   commit(types.SET_ADDRESS_LIST, addressList);
   commit(types.SET_CURRENT_ADDR_CODE, address.code);
+};
+// 设置头像的列表，并保存到localStorage
+export const saveAvatarHistory = function ({commit}, query) {
+  commit(types.SET_AVATARS, saveAvatar(query));
+};
+// 删除头像的列表中的某条数据，并保存到localStorage
+export const deleteAvatarHistory = function ({commit}, query) {
+  commit(types.SET_AVATARS, deleteAvatar(query));
+};
+// 删除头像的列表，并保存到localStorage
+export const clearAvatarHistory = function ({commit}) {
+  commit(types.SET_AVATARS, clearAvatar());
 };

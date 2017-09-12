@@ -13,15 +13,8 @@
         <button @click="showTJ">我要推荐</button>
         <button @click="goHistory">推荐历史</button>
       </div>
-      <div class="mask" @click="_hideMask" v-show="showMask">
-        <div class="content">
-          <p>请点击右上角</p>
-          <p>将它发送给指定朋友</p>
-          <p>或分享到朋友圈</p>
-        </div>
-        <img src="./arrow.png" class="arrow">
-      </div>
       <go-home></go-home>
+      <share-mask ref="mask"></share-mask>
       <router-view></router-view>
     </div>
   </transition>
@@ -33,12 +26,12 @@
   import {initShare} from 'common/js/weixin';
   import {getUserSystemConfig} from 'api/general';
   import GoHome from 'components/go-home/go-home';
+  import ShareMask from 'components/share-mask/share-mask';
 
   export default {
     data() {
       return {
-        content: '',
-        showMask: false
+        content: ''
       };
     },
     created() {
@@ -104,11 +97,8 @@
           }
         }, 20);
       },
-      _hideMask() {
-        this.showMask = false;
-      },
       showTJ() {
-        this.showMask = true;
+        this.$refs.mask.show();
       },
       goHistory() {
         this.$router.push('/user/recommend/history');
@@ -122,7 +112,8 @@
     components: {
       Scroll,
       Loading,
-      GoHome
+      GoHome,
+      ShareMask
     }
   };
 </script>
@@ -169,32 +160,6 @@
           margin-right: 10px;
           margin-left: 0;
         }
-      }
-    }
-
-    .mask {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-
-      .content {
-        position: absolute;
-        top: 90px;
-        left: 30%;
-        text-align: center;
-        color: #fff;
-        line-height: 1.5;
-        font-size: $font-size-large-xx;
-      }
-
-      .arrow {
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        width: 80px;
       }
     }
   }

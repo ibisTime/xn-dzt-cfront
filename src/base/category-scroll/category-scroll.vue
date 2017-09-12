@@ -82,7 +82,7 @@
               };
             } else {
               return {
-                color: 'rgb(178,160,46)'
+                color: '#beb098'
               };
             }
           }
@@ -147,7 +147,7 @@
         padding: 0 10px;
 
         &.active {
-          color: rgb(178,160,46);
+          color: $second-color;
         }
       }
     }

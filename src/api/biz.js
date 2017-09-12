@@ -189,14 +189,19 @@ export function payOrder(orderCode, payType) {
 
 // 分页查询订单
 export function getPageOrders(start, limit, status) {
-  return fetch(620233, {
+  let params = {
     start,
     limit,
-    status,
     applyUser: getUserId(),
     orderColumn: 'apply_datetime',
     orderDir: 'desc'
-  });
+  };
+  if (status.constructor === Array) {
+    params.statusList = status;
+  } else {
+    params.status = status;
+  }
+  return fetch(620233, params);
 }
 
 // 详情查询订单

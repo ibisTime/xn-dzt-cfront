@@ -400,7 +400,7 @@
         }
 
         &.btn-fg {
-          background: rgb(167, 149, 47);
+          background: $second-color;
         }
 
         &.btn-cancel {

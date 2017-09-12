@@ -104,6 +104,7 @@
           .avatar {
             width: 45px;
             height: 45px;
+            flex: 0 0 45px;
             border-radius: 50%;
             overflow: hidden;
 

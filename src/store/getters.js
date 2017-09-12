@@ -23,3 +23,5 @@ export const currentModel = state => state.currentModel;
 export const currentOrder = state => state.currentOrder;
 
 export const currentArticle = state => state.currentArticle;
+
+export const avatars = state => state.avatars;

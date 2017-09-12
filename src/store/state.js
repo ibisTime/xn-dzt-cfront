@@ -1,3 +1,5 @@
+import {loadAvatar} from 'common/js/cache';
+
 const state = {
   user: null,
   addressList: [],
@@ -10,7 +12,8 @@ const state = {
   jyAccount: null,
   currentMaterial: null,
   currentModel: null,
-  currentArticle: null
+  currentArticle: null,
+  avatars: loadAvatar()
 };
 
 export default state;

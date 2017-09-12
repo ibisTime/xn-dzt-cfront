@@ -62,8 +62,9 @@ export function formatImg(imgs, suffix = '?imageMogr2/auto-orient') {
     return '';
   }
   let img = imgs.split(/\|\|/)[0];
-  if (!/^http/i.test(img)) {
-    img = PIC_PREFIX + img + suffix;
+
+  if (!/^http|^data:image/i.test(img)) {
+    img = PIC_PREFIX + encodeURIComponent(img) + suffix;
   }
   return img;
 }
@@ -72,7 +73,7 @@ export function formatImg(imgs, suffix = '?imageMogr2/auto-orient') {
 export function formatAvatar(img, suffix = '?imageMogr2/auto-orient') {
   if (!img) {
     let avatar = require('../image/avatar@2x.png');
-    if (/data:image/.test(avatar) || /http(?:s)?/.test(avatar)) {
+    if (/^http|^data:image/i.test(avatar)) {
       return avatar;
     }
     return location.origin + avatar;
@@ -207,27 +208,16 @@ export function nicknameValid(nickname) {
   if (!nickname) {
     result.err = 1;
     result.msg = '不能为空';
-  } else if (nickname.length > 32) {
+  } else if (nickname.length > 16) {
     result.err = 1;
-    result.msg = '不能超过32位';
+    result.msg = '不能超过16位';
   }
   return result;
 }
 
 // 真实姓名校验
 export function realNameValid(realName) {
-  let result = {
-    err: 0,
-    msg: ''
-  };
-  if (!realName) {
-    result.err = 1;
-    result.msg = '不能为空';
-  } else if (realName.length > 16) {
-    result.err = 1;
-    result.msg = '不能超过16位';
-  }
-  return result;
+  return nicknameValid(realName);
 }
 // 银行名称校验
 export function bankNameValid(bankName) {

@@ -28,3 +28,5 @@ export const SET_CURRENT_MATERIAL = 'SET_CURRENT_MATERIAL';
 export const SET_CURRENT_MODEL = 'SET_CURRENT_MODEL';
 // 设置当前文章
 export const SET_CURRENT_ARTICLE = 'SET_CURRENT_ARTICLE';
+// 设置头像列表
+export const SET_AVATARS = 'SET_AVATARS';

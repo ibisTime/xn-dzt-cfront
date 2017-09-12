@@ -270,12 +270,20 @@ export default new Router({
               component: Pay
             },
             {
+              path: 'adviser',
+              component: Adviser
+            },
+            {
               path: ':code',
               component: OrderDetail,
               children: [
                 {
                   path: 'pay',
                   component: Pay
+                },
+                {
+                  path: 'adviser',
+                  component: Adviser
                 }
               ]
             }

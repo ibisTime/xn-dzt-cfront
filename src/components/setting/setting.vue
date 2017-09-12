@@ -188,8 +188,13 @@
           span {
             position: absolute;
             right: 34px;
+            left: 100px;
             top: 50%;
             transform: translate(0, -50%);
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: right;
+            text-overflow: ellipsis;
             font-size: $font-size-medium;
             font-weight: bold;
           }

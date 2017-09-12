@@ -28,17 +28,17 @@
               <div class="type order-dzf"></div>
               <p>待支付</p>
             </div>
-            <div class="order-type" @click="goOrder(7)">
+            <div class="order-type" @click="goOrder(3)">
               <div class="type order-dsh"></div>
               <p>待收货</p>
             </div>
-            <div class="order-type" @click="goOrder(8)">
+            <div class="order-type" @click="goOrder(4)">
               <div class="type order-dpj"></div>
               <p>待评价</p>
             </div>
-            <div class="order-type" @click="goOrder('', $event)">
+            <div class="order-type" @click="goOrder(5)">
               <div class="type order-shz"></div>
-              <p>查看全部</p>
+              <p>售后中</p>
             </div>
           </div>
         </div>
@@ -89,10 +89,10 @@
     </scroll>
     <toast ref="toast" :text="text"></toast>
     <chosen class="chose-wrapper" ref="chosen">
-      <div class="item" @click="weixinPay">
+      <div class="item border-bottom-1px" @click="weixinPay">
         微信支付
       </div>
-      <div class="item" @click="yePay">
+      <div class="item border-bottom-1px" @click="yePay">
         余额支付（¥{{getAmount()}})
       </div>
     </chosen>
@@ -367,6 +367,7 @@
         .avatar {
           width: 75px;
           height: 75px;
+          flex: 0 0 75px;
           border-radius: 50%;
           overflow: hidden;
           border: 2px solid #fff;
@@ -381,6 +382,7 @@
           margin-left: 24px;
 
           h1 {
+            line-height: 1.1;
             font-size: $font-size-large-xx;
             color: #fff;
           }
@@ -496,10 +498,10 @@
     .chose-wrapper {
       .item {
         padding: 14px 10px;
-        border-bottom: 1px solid #a1a1a1;
+        @include border-bottom-1px($color-border);
 
         &:last-child {
-          border-bottom: none;
+          @include border-none();
         }
       }
     }

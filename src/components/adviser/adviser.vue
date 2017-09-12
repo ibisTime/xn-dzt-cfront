@@ -179,6 +179,7 @@
     left: 0;
     width: 100%;
     bottom: 60px;
+    z-index: 101;
     background: #eee;
 
     .message-content {

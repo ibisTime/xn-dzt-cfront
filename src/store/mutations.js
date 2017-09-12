@@ -58,6 +58,9 @@ const mutations = {
   },
   [types.SET_CURRENT_ARTICLE](state, model) {
     state.currentArticle = model;
+  },
+  [types.SET_AVATARS](state, avatars) {
+    state.avatars = avatars;
   }
 };
 

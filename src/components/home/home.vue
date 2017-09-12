@@ -5,7 +5,7 @@
         <div>
           <div class="slider-wrapper">
             <slider v-if="banners.length" :showDots="showDots" :loop="loop">
-              <div class="home-slider" v-for="(item,index) in banners" :key="index">
+              <div class="home-slider" v-for="item in banners" :key="item.code">
                 <a :href="item.url||'javascript:void(0)'" :style="getImgSyl(item.pic)"></a>
               </div>
             </slider>

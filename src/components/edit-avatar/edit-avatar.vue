@@ -10,7 +10,7 @@
             <h2>修改您的头像</h2>
           </div>
           <div class="avatar-content clearfix">
-            <div v-for="item in files" class="avatar" @click="choseItem(item)">
+            <div v-for="item in files" class="avatar" @click="showChosen(item)">
               <div class="inner-content">
                 <img :src="getImg(item)"/>
                 <div v-show="item.status!==200" class="inner-loading">
@@ -19,11 +19,12 @@
                 <i v-show="curImg===item.key" class="chose-icon"></i>
               </div>
             </div>
-            <div v-if="token" class="avatar">
+            <div v-show="token" class="avatar" ref="fileChose">
               <div class="inner-content">
                 <qiniu class="add-icon"
                        :token="token"
                        :uploadUrl="uploadUrl"
+                       :multiple="multiple"
                        @upload="onUpload"
                        @drop="onDrop"
                        @error="onUploadError"></qiniu>
@@ -32,6 +33,14 @@
           </div>
         </div>
       </scroll>
+      <chosen class="chose-wrapper" ref="chosen">
+        <div class="item" @click="deleteAvatar">
+          删除图片
+        </div>
+        <div class="item" @click="choseItem">
+          选择图片
+        </div>
+      </chosen>
       <div v-show="loadingFlag" class="loading-container">
         <div class="loading-wrapper">
           <loading title=""></loading>
@@ -49,14 +58,14 @@
   import {formatAvatar} from 'common/js/util';
   import {getQiniuToken} from 'api/general';
   import {getUser, changeAvatar} from 'api/user';
-  import {mapGetters, mapMutations} from 'vuex';
+  import {mapGetters, mapMutations, mapActions} from 'vuex';
   import {SET_USER_STATE} from 'store/mutation-types';
+  import Chosen from 'components/chosen/chosen';
 
   export default {
     data() {
       return {
         token: '',
-        uploadUrl: 'http://up-z0.qiniu.com',
         files: [],
         text: '',
         curImg: '',
@@ -65,12 +74,16 @@
     },
     created() {
       this.click = false;
+      this.multiple = false;
+      this.uploadUrl = 'http://up-z0.qiniu.com';
+      this.currentItem = null;
       this.getInitData();
       this.getQiniuToken();
     },
     computed: {
       ...mapGetters([
-        'user'
+        'user',
+        'avatars'
       ])
     },
     methods: {
@@ -81,10 +94,12 @@
         ]).then(() => {
           this.loadingFlag = false;
           if (this.user.photo) {
-            this.files.push({
+            let _file = {
               status: 200,
               key: this.user.photo
-            });
+            };
+            this.saveAvatarHistory(_file);
+            this.files = [...this.avatars];
           }
           this.curImg = this.user.photo;
         }).catch(() => {
@@ -105,20 +120,32 @@
           this.token = data.uploadToken;
         });
       },
-      choseItem(item) {
-        if (item.status === 200) {
-          this.loadingFlag = true;
-          changeAvatar(item.key).then(() => {
-            this.loadingFlag = false;
-            this.curImg = item.key;
-            this.setUser({
-              ...this.user,
-              photo: item.key
-            });
-          }).catch(() => {
-            this.loadingFlag = false;
-          });
+      showChosen(item) {
+        this.currentItem = item;
+        this.$refs.chosen.show();
+      },
+      choseItem() {
+        if (this.currentItem.status !== 200) {
+          this.text = '头像还未上传完成';
+          this.$refs.toast.show();
+          return;
         }
+        this.loadingFlag = true;
+        changeAvatar(this.currentItem.key).then(() => {
+          this.loadingFlag = false;
+          this.curImg = this.currentItem.key;
+          this.setUser({
+            ...this.user,
+            photo: this.currentItem.key
+          });
+        }).catch(() => {
+          this.loadingFlag = false;
+        });
+      },
+      deleteAvatar() {
+        let idx = this._findFileIndex(this.currentItem);
+        this.files.splice(idx, 1);
+        this.deleteAvatarHistory(this.currentItem);
       },
       /**
        * 处理图片上传前的事件
@@ -130,12 +157,20 @@
           file.onprogress = (e) => {
             file.status = e.srcElement.status;
             let idx = this._findFileIndex(file);
-            this.files.splice(idx, 1, file);
+            if (idx > -1) {
+              this.files.splice(idx, 1, file);
+              if (file.status === 200) {
+                this.saveAvatarHistory({
+                  key: file.key,
+                  status: 200
+                });
+              }
+            }
           };
         }
       },
       /**
-       * 处理添加图片事件，把新加入的图片拼到state的files数组里
+       * 处理添加图片事件，把新加入的图片拼到files数组里
        * @param newFiles    新加入的图片
        */
       onDrop(newFiles) {
@@ -150,7 +185,7 @@
         this.$refs.toast.show();
       },
       /**
-       * 根据file找到在state的files里的下标
+       * 根据file找到在files里的下标
        * @param file    需要寻找下标的file
        */
       _findFileIndex(file) {
@@ -169,10 +204,21 @@
       },
       ...mapMutations({
         'setUser': SET_USER_STATE
-      })
+      }),
+      ...mapActions([
+        'saveAvatarHistory',
+        'deleteAvatarHistory'
+      ])
     },
     watch: {
-      files() {
+      files(newFiles) {
+        if (newFiles.length >= 9) {
+          this.$refs.fileChose.style['position'] = 'absolute';
+          this.$refs.fileChose.style['visibility'] = 'hidden';
+        } else {
+          this.$refs.fileChose.style['position'] = 'relative';
+          this.$refs.fileChose.style['visibility'] = 'visible';
+        }
         setTimeout(() => {
           this.$refs.scroll.refresh();
         }, 20);
@@ -182,7 +228,8 @@
       Qiniu,
       Toast,
       Scroll,
-      Loading
+      Loading,
+      Chosen
     }
   };
 </script>
@@ -293,6 +340,7 @@
         }
       }
     }
+
     .loading-container {
       position: absolute;
       top: 0;
@@ -305,6 +353,17 @@
         top: 50%;
         width: 100%;
         transform: translate3d(0, -50%, 0);
+      }
+    }
+
+    .chose-wrapper {
+      .item {
+        padding: 14px 10px;
+        @include border-bottom-1px($color-border);
+
+        &:last-child {
+          @include border-none();
+        }
       }
     }
   }

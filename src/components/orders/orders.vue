@@ -7,7 +7,7 @@
                          @select="selectCategory"
                          bgColor="#f2f2f2"
                          deColor="#b3b3b3"
-                         acColor="#062745"></category-scroll>
+                         acColor="#004e7e"></category-scroll>
       </div>
       <scroll ref="scroll"
               :data="currentList.data"
@@ -31,6 +31,7 @@
                 <span class="btn cancel fr" v-show="showCancelBtn(item.status)" @click.stop="cancelOrder(item)">取消订单</span>
                 <span class="btn fr" v-show="showRatingBtn(item.status)" @click.stop="ratingOrder(item)">立即评价</span>
                 <span class="btn fr" v-show="showReceiveBtn(item.status)" @click.stop="receiveOrder(item)">确认收货</span>
+                <span class="btn fr" v-show="item.status==='10'" @click.stop="goAdviser()">联系顾问</span>
               </p>
             </li>
             <loading class="orders-loading" v-show="currentList.hasMore" title=""></loading>
@@ -109,6 +110,10 @@
       getPageOrders() {
         let key = this.categorys[this.currentIndex].key;
         let status = key === 'all' ? '' : key;
+        let statusList = status.split('||');
+        if (statusList.length > 1) {
+          status = statusList;
+        }
         if (this.currentList.hasMore) {
           getPageOrders(this.currentList.start, this.currentList.limit, status).then((data) => {
             let _orderOri = this.orderList[key];
@@ -193,6 +198,9 @@
         this.text = '确认收货';
         this.curItem = item;
         this.$refs.confirm.show();
+      },
+      goAdviser() {
+        this.$router.push('/user/order/adviser');
       },
       showPayBtn(status) {
         if (status === '2') {
