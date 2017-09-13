@@ -2,15 +2,15 @@
   <transition name="slide">
     <div class="form-wrapper">
       <div class="form-item">
-        <div class="item-label">银行卡</div>
-        <div class="item-input-wrapper">
-          <select v-if="bankcardList" class="item-input" v-model="payCardNo">
-            <option v-for="bankcard in bankcardList" :key="bankcard.code" :value="bankcard">
-              {{bankcard.bankcardNumber}}
-            </option>
-          </select>
-          <i class="arrow"></i>
-        </div>
+        <div v-show="bankcardList && bankcardList.length" class="content">
+          <template v-for="bankcard in bankcardList">
+            <div class="bankname">{{bankcard.bankName}}</div>
+            <div class="bankcode">
+              <h2>借记卡</h2>
+              <p v-for="bankcard in bankcardList">{{bankcard.bankcardNumber}}</p>
+            </div>            
+          </template>
+        </div>        
       </div>
       <div class="form-item">
         <div class="item-label">可用金额</div>
@@ -270,6 +270,27 @@
       top: 50%;
       transform: translate(0, -50%);
     }
+
+  .content {
+      display: flex;
+      align-items: center;
+      height: 82px;
+      width: 100%;
+      padding: 0 26px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #eee;
+      justify-content: center;      
+
+      .bankcode {
+        flex: 1;
+        text-align: right;
+
+        h2 {
+          padding-bottom: 13px;
+        }
+      }
+    }    
 
     .rules {
       margin-top: 20px;

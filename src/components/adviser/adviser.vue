@@ -28,7 +28,7 @@
         </div>
         <button :disabled="disabled || !content" @click="sendMsg">发送</button>
       </div>
-      <confirm :isAlert="isAlert" :isHtml="isHtml" :text="text" ref='confirm'></confirm>
+      <confirm :isAlert="isAlert" :isHtml="isHtml" :text="text" ref='confirm' @confirm="isGoLt()"></confirm>
     </div>
   </transition>
 </template>
@@ -63,6 +63,7 @@
       this.listenScroll = true;
       this.probeType = 3;
       this.userId = getUserId();
+      this.ltName = '';
       this.getInitData();
     },
     computed: {
@@ -111,9 +112,13 @@
       },
       getCurAdviser() {
         getCurAdviser().then((data) => {
+          this.ltName = data.ltName;
           if (data.ltName) {
             setTitle(data.ltName);
             this.text = `<div>姓名：${data.ltName}</div><div>手机号：${data.ltMobile}</div>`;
+          } else {
+            this.text = `您还没有专属顾问,请先预约量体`;
+            this.$refs.confirm.show();
           }
         }).catch(() => {
           this.text = '暂时无法获取顾问信息';
@@ -159,6 +164,11 @@
           });
         }
       },
+      isGoLt() {
+        if (!this.ltName) {
+          this.$router.push('/book');
+        }
+      },
       ...mapMutations({
         'setUser': SET_USER_STATE
       })
@@ -179,7 +189,6 @@
     left: 0;
     width: 100%;
     bottom: 60px;
-    z-index: 101;
     background: #eee;
 
     .message-content {
