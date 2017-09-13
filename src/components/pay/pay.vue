@@ -13,6 +13,11 @@
           <div>余额支付 (余额：¥<label>{{(cnyAccount && cnyAccount.amount) | formatAmount}}</label>)</div>
           <i class="icon-chose" :class="{act:currentIndex===1}"></i>
         </div>
+        <div class="pay-item" @click="choseType(2)">
+          <i class="icon icon-hy"></i>
+          <div>合衣币支付 (余额：<label>{{(hybAccount && hybAccount.amount) | formatAmount}}</label>)</div>
+          <i class="icon-chose" :class="{act:currentIndex===2}"></i>
+        </div>        
       </div>
       <div class="split"></div>
       <div class="foot">
@@ -36,10 +41,11 @@
   import Loading from 'base/loading/loading';
   import Toast from 'base/toast/toast';
   import {mapGetters, mapMutations, mapActions} from 'vuex';
-  import {SET_CNY_ACCOUNT} from 'store/mutation-types';
+  import {SET_CNY_ACCOUNT, SET_HYB_ACCOUNT} from 'store/mutation-types';
   import {commonMixin} from 'common/js/mixin';
   import {initPay} from 'common/js/weixin';
 
+  const HYBPAY = '3';  // 合衣币支付
   const WXPAY = '2';  // 微信支付
   const YEPAY = '1';  // 余额支付
 
@@ -63,7 +69,8 @@
     },
     computed: {
       ...mapGetters([
-        'cnyAccount'
+        'cnyAccount',
+        'hybAccount'
       ])
     },
     methods: {
@@ -76,14 +83,18 @@
       getAccount() {
         if (!this.cnyAccount) {
           return getAccount().then((data) => {
-            let index = data.findIndex((item) => {
+            let index0 = data.findIndex((item) => {
               return item.currency === 'CNY';
             });
-            this.setCnyAccount(data[index]);
-            return Promise.resolve(data[index]);
+            let index1 = data.findIndex((item) => {
+              return item.currency === 'HYB';
+            });
+            this.setCnyAccount(data[index0]);
+            this.setHybAccount(data[index1]);
+            return Promise.resolve(data[index0], data[index1]);
           });
         }
-        return Promise.resolve(this.cnyAccount);
+        return Promise.resolve(this.cnyAccount, this.hybAccount);
       },
       choseType(type) {
         this.currentIndex = type;
@@ -98,7 +109,7 @@
             this.loadingFlag = false;
           });
         } else {
-          payOrder(code, YEPAY).then((data) => {
+          payOrder(code, this.currentIndex === 1 ? YEPAY : HYBPAY).then((data) => {
             this.loadingFlag = false;
             this.text = '支付成功';
             this.$refs.toast.show();
@@ -134,7 +145,8 @@
         }
       },
       ...mapMutations({
-        'setCnyAccount': SET_CNY_ACCOUNT
+        'setCnyAccount': SET_CNY_ACCOUNT,
+        'setHybAccount': SET_HYB_ACCOUNT
       }),
       ...mapActions([
         'editOrderListByPay'
@@ -186,6 +198,10 @@
           &.icon-re {
             @include bg-image('re-amount');
           }
+
+          &.icon-hy {
+            @include bg-image('re-amount');
+          }          
         }
 
         .icon-chose {

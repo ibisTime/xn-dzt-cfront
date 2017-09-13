@@ -71,7 +71,7 @@
             <h2>会员中心</h2>
             <i class="arrow"></i>
           </router-link>
-          <div v-else class="join-member" @click="showChosen">加入会员</div>
+          <div v-else class="join-member" @click="getVIPMoney">加入会员</div>
           <router-link to="/user/account" class="user-title border-bottom-1px" tag="div">
             <h2>我的账户</h2>
             <i class="arrow"></i>
@@ -88,13 +88,17 @@
       </div>
     </scroll>
     <toast ref="toast" :text="text"></toast>
-    <chosen class="chose-wrapper" ref="chosen">
+    <confirm :isAlert="!isAlert" :isHtml="isHtml" :text="text" ref='confirm' @confirm="showChosen()"></confirm>
+    <chosen class="chose-wrapper" ref="chosen">           
       <div class="item border-bottom-1px" @click="weixinPay">
         微信支付
-      </div>
+      </div> 
       <div class="item border-bottom-1px" @click="yePay">
-        余额支付（¥{{getAmount()}})
-      </div>
+        余额支付（¥{{getAmount('cnyAccount')}}）
+      </div> 
+      <div class="item border-bottom-1px" @click="hybPay">
+        合衣币支付（{{getAmount('hybAccount')}}）
+      </div>                 
     </chosen>
     <div v-show="loadingFlag" class="loading-container">
       <div class="loading-wrapper">
@@ -107,9 +111,9 @@
 <script>
   import Chosen from 'components/chosen/chosen';
   import {mapGetters, mapMutations} from 'vuex';
-  import {SET_USER_STATE, SET_CNY_ACCOUNT} from 'store/mutation-types';
+  import {SET_USER_STATE, SET_CNY_ACCOUNT, SET_HYB_ACCOUNT} from 'store/mutation-types';
   import {getUser, buyVIP} from 'api/user';
-  import {getDictList} from 'api/general';
+  import {getDictList, getBizSystemConfig} from 'api/general';
   import {getAccount} from 'api/account';
   import {setTitle, formatAmount, isUnDefined} from 'common/js/util';
   import {commonMixin} from 'common/js/mixin';
@@ -117,6 +121,7 @@
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
   import Toast from 'base/toast/toast';
+  import Confirm from 'base/confirm/confirm';
 
   export default {
     mixins: [commonMixin],
@@ -124,7 +129,10 @@
       return {
         text: '',
         loadingFlag: false,
-        cnyAccount: null
+        cnyAccount: null,
+        hybAccount: null,
+        isAlert: true,
+        isHtml: true
       };
     },
     created() {
@@ -185,7 +193,10 @@
             if (item.currency === 'CNY') {
               this.cnyAccount = item;
               this.setCnyAccount(item);
-            }
+            } else if (item.currency === 'HYB') {
+              this.hybAccount = item;
+              this.setHybAccount(item);
+            };
           });
           this.$refs.chosen.show();
         }).catch(() => {
@@ -209,6 +220,9 @@
       },
       yePay() {
         this.buyVIP(1);
+      },
+      hybPay() {
+        this.buyVIP(3);
       },
       wxPay(data) {
         if (data && data.signType) {
@@ -237,15 +251,24 @@
         };
         this.setUser(_user);
       },
-      getAmount() {
-        if (this.cnyAccount) {
+      getAmount(item) {
+        if (item === 'cnyAccount' && this.cnyAccount) {
           return formatAmount(this.cnyAccount.amount);
+        } else if(item === 'hybAccount' && this.hybAccount) {
+          return formatAmount(this.hybAccount.amount);
         } else {
           return '--';
         }
       },
+      getVIPMoney() {
+        getBizSystemConfig('HYF').then((data) => {
+          this.text = `<div>确认支付¥${data.cvalue}成为会员？</div>`;
+          this.$refs.confirm.show();
+        });
+      },
       ...mapMutations({
         setCnyAccount: SET_CNY_ACCOUNT,
+        setHybAccount: SET_HYB_ACCOUNT,
         setUser: SET_USER_STATE
       })
     },
@@ -256,7 +279,8 @@
       Scroll,
       Loading,
       Chosen,
-      Toast
+      Toast,
+      Confirm
     }
   };
 </script>
