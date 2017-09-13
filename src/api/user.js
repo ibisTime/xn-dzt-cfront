@@ -84,6 +84,14 @@ export function changeAvatar(photo) {
   });
 }
 
+// 修改用户生日
+export function changeBirthday (birthday) {
+  return fetch('', {
+    birthday,
+    userId: getUserId()
+  });
+}
+
 /**
  * 新增收件地址
  * @param params {addressee, mobile, province, city, district, detailAddress, isDefault?}

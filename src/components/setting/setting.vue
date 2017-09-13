@@ -21,16 +21,22 @@
               <span v-else>绑定手机号</span>
               <i class="arrow"></i>
             </div>
-            <div class="setting-item border-bottom-1px" @click="goTrade">
+            <router-link to="/user/setting/set-tradepwd" tag="div" class="setting-item border-bottom-1px">
               <h2>支付密码</h2>
               <span v-if="user && user.tradepwdFlag">修改密码</span>
               <span v-else>设置密码</span>
               <i class="arrow"></i>
-            </div>
-            <div class="setting-item border-bottom-1px" @click="goBankCode">
+            </router-link>
+            <router-link to="/user/setting/set-birthday" tag="div" class="setting-item border-bottom-1px">
+              <h2>生日</h2>
+              <span v-if="user && user.birthday">{{user.birthday | formatDate('MM月dd日')}}</span>
+              <span v-else>设置生日</span>
+              <i class="arrow"></i>
+            </router-link>
+            <router-link to="/user/setting/bankcard" tag="div" class="setting-item border-bottom-1px">
               <h2>我的银行卡</h2>
               <i class="arrow"></i>
-            </div>
+            </router-link>
             <router-link to="/user/setting/aboutus" class="setting-item border-bottom-1px" tag="div">
               <h2>关于我们</h2>
               <i class="arrow"></i>
@@ -41,9 +47,9 @@
             </router-link>
           </div>
         </div>
-        <!--<div class="set-btns">-->
-          <!--<button @click="logout">退出登录</button>-->
-        <!--</div>-->
+        <div class="set-btns">
+          <button @click="logout">退出登录</button>
+        </div>
       </scroll>
       <router-view></router-view>
     </div>
@@ -55,9 +61,11 @@
   import {getUser} from 'api/user';
   import {getAppId} from 'api/general';
   import {setTitle, clearUser, formatImg} from 'common/js/util';
+  import {commonMixin} from 'common/js/mixin';
   import Scroll from 'base/scroll/scroll';
 
   export default {
+    mixins: [commonMixin],
     created() {
       if (this.shouldGetData()) {
         this._getUser();
@@ -95,12 +103,6 @@
         } else {
           this.$router.push('/user/setting/bind-mobile');
         }
-      },
-      goTrade() {
-        this.$router.push('/user/setting/set-tradepwd');
-      },
-      goBankCode() {
-        this.$router.push('/user/setting/bankcard');
       },
       logout() {
         clearUser();

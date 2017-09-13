@@ -89,6 +89,9 @@
       },
       scrollToElement() {
         this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments);
+      },
+      maxScrollY() {
+        return this.scroll && this.scroll.maxScrollY || 0;
       }
     },
     watch: {

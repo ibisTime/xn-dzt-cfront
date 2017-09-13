@@ -4,7 +4,7 @@
       <scroll :data="flows" :pullup="pullup" @scrollToEnd="getPageFlow" class="flow-content">
         <div>
           <ul>
-            <li v-for="item in flows">
+            <li class="border-bottom-1px" v-for="item in flows">
               <div class="time">{{item.createDatetime | formatDate('yy/MM/dd')}}</div>
               <div class="info">
                 <p class="note">{{item.bizNote}}</p>
@@ -97,6 +97,7 @@
 </script>
 <style lang="scss" scoped>
   @import "~common/scss/variable";
+  @import "~common/scss/mixin";
 
   .flow-wrapper{
     position: fixed;
@@ -117,7 +118,7 @@
           display: flex;
           align-items: flex-start;
           padding: 18px 0 18px 18px;
-          border-bottom: 1px solid #a1a1a1;
+          @include border-bottom-1px($color-border);
 
           .time {
             font-size: 13px;

@@ -208,20 +208,31 @@ export function nicknameValid(nickname) {
   if (!nickname) {
     result.err = 1;
     result.msg = '不能为空';
-  } else if (nickname.length > 16) {
+  } else if (nickname.length > 6) {
     result.err = 1;
-    result.msg = '不能超过16位';
+    result.msg = '不能超过6位';
   }
   return result;
 }
 
 // 真实姓名校验
 export function realNameValid(realName) {
-  return nicknameValid(realName);
+  let result = {
+    err: 0,
+    msg: ''
+  };
+  if (!realName) {
+    result.err = 1;
+    result.msg = '不能为空';
+  } else if (realName.length > 16) {
+    result.err = 1;
+    result.msg = '不能超过16位';
+  }
+  return result;
 }
 // 银行名称校验
 export function bankNameValid(bankName) {
-  return nicknameValid(bankName);
+  return realNameValid(bankName);
 }
 // 支行校验
 export function subbranchValid(subbranch) {

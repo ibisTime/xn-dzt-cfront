@@ -42,7 +42,7 @@
           <section class="account-item">
             <router-link to="/user/account/hyb-flow" tag="div" class="title hyb-title">
               <label>合衣币账户</label>
-              <span>2310</span>
+              <span>2310.00</span>
             </router-link>
             <div class="main">
               <div class="item">
@@ -50,11 +50,11 @@
                 <p>5000.00</p>
               </div>
               <div class="item">
-                <h2>历史充值总额</h2>
+                <h2>已消费额</h2>
                 <p>5000.00</p>
               </div>
               <div class="item">
-                <h2>历史充值总额</h2>
+                <h2>最近一笔消费</h2>
                 <p>5000.00</p>
               </div>
             </div>
@@ -62,19 +62,19 @@
           <section class="account-item">
             <router-link to="/user/account/cny-flow" tag="div" class="title cny-title">
               <label>人民币账户</label>
-              <span>¥ 2310</span>
+              <span>¥ 2310.00</span>
             </router-link>
             <div class="main">
               <div class="item">
-                <h2>历史充值总额</h2>
+                <h2>已消费额</h2>
                 <p>¥5000.00</p>
               </div>
               <div class="item">
-                <h2>历史充值总额</h2>
+                <h2>已提现额</h2>
                 <p>¥5000.00</p>
               </div>
               <div class="item">
-                <h2>历史充值总额</h2>
+                <h2>最近一笔提现</h2>
                 <p>¥5000.00</p>
               </div>
             </div>
@@ -108,7 +108,7 @@
 </template>
 <script>
   import {mapGetters, mapMutations} from 'vuex';
-  import {SET_CNY_ACCOUNT, SET_USER_STATE} from 'store/mutation-types';
+  import {SET_CNY_ACCOUNT, SET_USER_STATE, SET_JF_ACCOUNT, SET_HYB_ACCOUNT} from 'store/mutation-types';
   import {getUser} from 'api/user';
   import {getAccount, getAccountInfo} from 'api/account';
   import {formatAmount, setTitle} from 'common/js/util';
@@ -154,12 +154,17 @@
           return this._getAccountInfo(this.cnyAccount.accountNumber);
         }
         return getAccount().then((data) => {
-          let index = data.findIndex((item) => {
-            return item.currency === 'CNY';
+          data.forEach((item) => {
+            if (item.currency === 'CNY') {
+              this._getAccountInfo(item.accountNumber);
+              this.setCnyAccount(item);
+              this.account = item;
+            } else if (item.currency === 'JF') {
+              this.setJfAccount(item);
+            } else if (item.currency === 'HYB') {
+              this.setHybAccount(item);
+            }
           });
-          this._getAccountInfo(data[index].accountNumber);
-          this.setCnyAccount(data[index]);
-          this.account = data[index];
         });
       },
       _getUser() {
@@ -183,11 +188,16 @@
             getAccount(),
             this._getAccountInfo(this.cnyAccount.accountNumber)
           ]).then(([data]) => {
-            let index = data.findIndex((item) => {
-              return item.currency === 'CNY';
+            data.forEach((item) => {
+              if (item.currency === 'CNY') {
+                this.setCnyAccount(item);
+                this.account = item;
+              } else if (item.currency === 'JF') {
+                this.setJfAccount(item);
+              } else if (item.currency === 'HYB') {
+                this.setHybAccount(item);
+              }
             });
-            this.setCnyAccount(data[index]);
-            this.account = data[index];
             this.loadingFlag = false;
           }).catch(() => {
             this.loadingFlag = false;
@@ -212,6 +222,8 @@
       },
       ...mapMutations({
         setCnyAccount: SET_CNY_ACCOUNT,
+        setJfAccount: SET_JF_ACCOUNT,
+        setHybAccount: SET_HYB_ACCOUNT,
         setUser: SET_USER_STATE
       })
     },

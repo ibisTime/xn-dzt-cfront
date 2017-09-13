@@ -2,15 +2,19 @@
   <transition name="slide">
     <div class="form-wrapper">
       <div class="form-item">
-        <div class="item-label">新昵称</div>
+        <div class="item-label">出生日期</div>
         <div class="item-input-wrapper">
-          <input type="text" class="item-input" v-model="nickname" @change="_nicknameValid" placeholder="请输入新昵称(最多6位)">
-          <span v-show="nickErr" class="error-tip">{{nickErr}}</span>
+          <date-picker class="item-input"
+                       :year="year"
+                       :month="month"
+                       :day="day"
+                       @change="updateDate"></date-picker>
+          <span v-show="yearErr" class="error-tip">{{yearErr}}</span>
         </div>
       </div>
 
       <div class="form-btn">
-        <button :disabled="setting" @click="_changeNickname">保存</button>
+        <button :disabled="setting" @click="_changeBirthday">保存</button>
       </div>
       <div v-show="!user" class="loading-container">
         <div class="loading-wrapper">
@@ -23,22 +27,25 @@
 </template>
 <script>
   import {mapGetters, mapMutations} from 'vuex';
-  import {SET_USER_STATE, SET_USER_NICKNAME} from 'store/mutation-types';
-  import {changeNickname, getUser} from 'api/user';
-  import {nicknameValid, setTitle} from 'common/js/util';
+  import {SET_USER_STATE, SET_USER_BIRTHDAY} from 'store/mutation-types';
+  import {changeBirthday, getUser} from 'api/user';
+  import {setTitle, emptyValid} from 'common/js/util';
   import Toast from 'base/toast/toast';
   import Loading from 'base/loading/loading';
+  import DatePicker from 'base/date-picker/date-picker';
 
   export default {
     data() {
       return {
         setting: false,
-        nickname: '',
-        nickErr: ''
+        year: '',
+        month: '',
+        day: '',
+        yearErr: ''
       };
     },
     created() {
-      setTitle('修改昵称');
+      setTitle('设置生日');
       this._getUser();
     },
     computed: {
@@ -50,44 +57,60 @@
       _getUser() {
         if (!this.user) {
           getUser().then((data) => {
-            this.nickname = data.nickname || '';
+            this.getBirthday(data);
             this.setUser(data);
           }).catch(() => {});
         } else {
-          this.nickname = this.user.nickname || '';
+          this.getBirthday(this.user);
         }
       },
-      _changeNickname() {
+      getBirthday(data) {
+        let birth = data.birthday;
+        if (birth) {
+          birth = birth.split('-');
+          this.year = birth[0];
+          this.month = birth[1];
+          this.day = birth[2];
+        }
+      },
+      updateDate (year, month, day) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        return this._yearValid();
+      },
+      _changeBirthday() {
         if (this._valid()) {
           this.setting = true;
-          changeNickname(this.nickname)
-            .then(() => {
-              this.$refs.toast.show();
-              this.setNickname(this.nickname);
-              setTimeout(() => {
-                this.$router.back();
-              }, 1000);
-            }).catch(() => {
-              this.setting = false;
-            });
+          let birth = `${this.year}-${this.month}-${this.day}`;
+          changeBirthday(birth).then(() => {
+            this.$refs.toast.show();
+            this.setBirthday(birth);
+            setTimeout(() => {
+              this.$router.back();
+            }, 1000);
+          }).catch(() => {
+            this.setting = false;
+          });
         }
       },
       _valid() {
-        return this._nicknameValid();
+        return this._yearValid();
       },
-      _nicknameValid() {
-        let result = nicknameValid(this.nickname);
-        this.nickErr = result.msg;
+      _yearValid() {
+        let result = emptyValid(this.year);
+        this.yearErr = result.msg;
         return !result.err;
       },
       ...mapMutations({
         setUser: SET_USER_STATE,
-        setNickname: SET_USER_NICKNAME
+        setBirthday: SET_USER_BIRTHDAY
       })
     },
     components: {
       Toast,
-      Loading
+      Loading,
+      DatePicker
     }
   };
 </script>

@@ -6,6 +6,8 @@ export const SET_USER_MOBILE = 'SET_USER_MOBILE';
 export const SET_USER_NICKNAME = 'SET_USER_NICKNAME';
 // 设置用户的支付密码标志
 export const SET_USER_TRADE_PWD_FLAG = 'SET_USER_TRADE_PWD_FLAG';
+// 设置用户的生日
+export const SET_USER_BIRTHDAY = 'SET_USER_BIRTHDAY';
 // 设置量体地址
 export const SET_ADDRESS_LIST = 'SET_ADDRESS_LIST';
 // 当前选择的量体地址code

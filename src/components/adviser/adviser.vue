@@ -1,7 +1,12 @@
 <template>
   <transition name="slide">
     <div class="message-wrapper">
-      <scroll :listenScroll="listenScroll" :probeType="probeType" @scroll="scroll" ref="scroll" :data="messages" class="message-content">
+      <scroll :listenScroll="listenScroll"
+              :probeType="probeType"
+              @scroll="scroll"
+              ref="scroll"
+              :data="messages"
+              class="message-content">
         <div>
           <div v-show="hasMore" class="loading-wrapper">
             <loading title=""></loading>
@@ -64,6 +69,8 @@
       this.probeType = 3;
       this.userId = getUserId();
       this.ltName = '';
+      this.timer = null;
+      this.sending = false;
       this.getInitData();
     },
     computed: {
@@ -101,13 +108,26 @@
                 this.$refs.scroll.scrollToElement(this.$refs.mesRef[this.messages.length - 1]);
                 setTimeout(() => {
                   this.first = false;
+                  this.fetching = false;
                 }, 200);
               }, 40);
             } else {
               this.first = false;
+              this.fetching = false;
             }
+            this.waitingMessage();
+          } else {
+            setTimeout(() => {
+              let _y = this.hasMore && -60 || 0;
+              this.$refs.scroll.scrollTo(0, _y);
+              setTimeout(() => {
+                this.fetching = false;
+              }, 200);
+            }, 40);
           }
           this.start++;
+        }).catch(() => {
+          this.fetching = false;
         });
       },
       getCurAdviser() {
@@ -126,6 +146,7 @@
       },
       sendMsg() {
         this.disabled = true;
+        this.sending = true;
         leaveMessage(this.content, 1).then((data) => {
           this.messages.push({
             code: data.code,
@@ -134,6 +155,7 @@
           });
           this.content = '';
           this.disabled = false;
+          this.sending = false;
           setTimeout(() => {
             this.$refs.scroll.scrollToElement(this.$refs.mesRef[this.messages.length - 1]);
           }, 40);
@@ -159,9 +181,38 @@
       scroll(pos) {
         if (pos.y > -20 && !this.fetching && !this.first && this.hasMore) {
           this.fetching = true;
-          this.getMessages().finally(() => {
-            this.fetching = false;
-          });
+          this.getMessages();
+        }
+      },
+      waitingMessage() {
+        if (!this.fetching) {
+          clearTimeout(this.timer);
+          this.timer = setTimeout(() => {
+            getPageMessages(1, LIMIT, 1).then((data) => {
+              if (data.list.length) {
+                let _newMsgs = [];
+                let lastMsg = this.messages[this.messages.length - 1];
+                for (let i = 0; i < data.list.length; i++) {
+                  if (data.list[i].code !== lastMsg.code) {
+                    _newMsgs.unshift(data.list[i]);
+                  } else {
+                    break;
+                  }
+                }
+                if (_newMsgs.length && !this.sending) {
+                  this.messages = this.messages.concat(_newMsgs);
+                  setTimeout(() => {
+                    this.$refs.scroll.scrollToElement(this.$refs.mesRef[this.messages.length - 1]);
+                  }, 40);
+                }
+                this.waitingMessage();
+              }
+            }).catch(() => {
+              this.waitingMessage();
+            });
+          }, 5000);
+        } else {
+          this.waitingMessage();
         }
       },
       isGoLt() {
@@ -172,6 +223,9 @@
       ...mapMutations({
         'setUser': SET_USER_STATE
       })
+    },
+    beforeDestroy() {
+      clearTimeout(this.timer);
     },
     components: {
       Scroll,
@@ -197,7 +251,7 @@
       background: #eee;
 
       .loading-wrapper {
-        padding-top: 20px;
+        padding-top: 30px;
       }
 
       .message-item {

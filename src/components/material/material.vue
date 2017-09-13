@@ -50,9 +50,13 @@
                 <i class="arrow"></i>
               </div>
             </div>
+            <div class="form-item">
+              <div class="item-label">产地</div>
+              <div class="item-input-wrapper"><input type="text" placeholder="请输入面料产地" class="item-input"></div>
+            </div>
           </div>
           <ul class="clearfix">
-            <li v-for="(item, index) in currentList" :key="index" @click="selectItem(item)">
+            <li v-for="(item,index) in currentList" :key="index" @click="selectItem(item)">
               <div class="inner">
                 <div class="inner-content">
                   <img v-lazy="formatImg(item.pic)"/>
@@ -360,6 +364,37 @@
               height: 15px;
               top: 50%;
               transform: translate(0, -50%);
+            }
+          }
+        }
+
+        .form-item {
+          display: flex;
+          align-items: center;
+          position: relative;
+          padding-left: 10px;
+          font-size: 14px;
+
+          .item-label {
+            padding-right: 14px;
+          }
+
+          .item-input-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            height: 40px;
+            border: 1px solid #9d9d9d;
+            border-radius: 8px;
+            padding: 0 8px;
+            background: #eee;
+            min-width: 128px;
+
+            .item-input {
+              flex: 1;
+              line-height: 1.6;
+              background: transparent;
             }
           }
         }

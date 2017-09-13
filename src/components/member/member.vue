@@ -35,14 +35,6 @@
             <h1>会员福利</h1>
             <i class="arrow"></i>
           </router-link>
-          <!--<router-link class="menu border-bottom-1px" tag="div" to="/user/member/flow">-->
-            <!--<h1>积分账单</h1>-->
-            <!--<i class="arrow"></i>-->
-          <!--</router-link>-->
-          <!--<router-link class="menu border-bottom-1px" tag="div" to="/user/member/jy-flow">-->
-            <!--<h1>经验明细</h1>-->
-            <!--<i class="arrow"></i>-->
-          <!--</router-link>-->
         </div>
       </scroll>
       <div v-show="loadingFlag" class="loading-container">
@@ -253,6 +245,9 @@
 
           h1 {
             margin-top: 17px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             text-align: center;
             font-size: $font-size-large-xx;
             color: #fff;

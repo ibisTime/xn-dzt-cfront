@@ -25,6 +25,11 @@ const mutations = {
     user.tradepwdFlag = tradepwdFlag;
     state.user = user;
   },
+  [types.SET_USER_BIRTHDAY](state, birthday) {
+    let user = state.user || {};
+    user.birthday = birthday;
+    state.user = user;
+  },
   [types.SET_ADDRESS_LIST](state, list) {
     state.addressList = list;
   },

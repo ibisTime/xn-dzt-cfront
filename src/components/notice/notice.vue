@@ -114,6 +114,7 @@
               margin-top: 15px;
               padding: 15px;
               border-radius: 6px;
+              line-height: 1.2;
               font-size: $font-size-small;
               color: #999;
               background: #f5f5f5;

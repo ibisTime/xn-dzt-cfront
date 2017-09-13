@@ -101,9 +101,9 @@ export function getPageCollections(start, limit, category) {
   });
 }
 
-// 分页查询型号
+// 分页查询样品
 export function getPageModel(start, limit, type, location) {
-  return fetch(620010, {
+  return fetch(620270, {
     start,
     limit,
     type,
@@ -114,12 +114,12 @@ export function getPageModel(start, limit, type, location) {
     orderDir: 'asc'
   });
 }
-// 列表查询型号
+// 列表查询样品
 export function getModelList(cache) {
   if (cache && getModelList.cache) {
     return Promise.resolve(getModelList.cache);
   }
-  return fetch(620012, {}).then((data) => {
+  return fetch(620272, {}).then((data) => {
     if (cache) {
       getModelList.cache = data;
     }
@@ -127,9 +127,9 @@ export function getModelList(cache) {
   });
 }
 
-// 详情查询型号
+// 详情查询样品
 export function getModel(code) {
-  return fetch(620013, {
+  return fetch(620271, {
     code,
     userId: getUserId()
   });

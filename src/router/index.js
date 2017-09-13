@@ -42,6 +42,8 @@ const ChangeMobile = () => import('components/change-mobile/change-mobile');
 const BindMobile = () => import('components/bind-mobile/bind-mobile');
 // 支付密码
 const TradePwd = () => import('components/trade-pwd/trade-pwd');
+// 修改生日
+const SetBirthday = () => import('components/set-birthday/set-birthday');
 // 银行卡列表
 const BankCard = () => import('components/bankcard/bankcard');
 // 新增、修改银行卡
@@ -208,6 +210,10 @@ export default new Router({
                   component: BindMobile
                 }
               ]
+            },
+            {
+              path: 'set-birthday',
+              component: SetBirthday
             },
             {
               path: 'bankcard',

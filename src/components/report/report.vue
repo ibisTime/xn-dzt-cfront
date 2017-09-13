@@ -160,6 +160,9 @@
 
         h2 {
           margin-top: 14px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
           text-align: center;
           font-size: $font-size-large-xx;
           color: #fff;

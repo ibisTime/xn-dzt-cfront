@@ -4,7 +4,7 @@
       <scroll :data="flows" :pullup="pullup" @scrollToEnd="getPageFlow" class="flow-content">
         <div>
           <ul>
-            <li v-for="item in flows">
+            <li class="border-bottom-1px" v-for="item in flows">
               <div class="time">{{item.createDatetime | formatDate('yy/MM/dd')}}</div>
               <div class="info">
                 <p class="note">{{item.bizNote}}</p>
@@ -97,8 +97,9 @@
 </script>
 <style lang="scss" scoped>
   @import "~common/scss/variable";
+  @import "~common/scss/mixin";
 
-  .flow-wrapper{
+  .flow-wrapper {
     position: fixed;
     top: 0;
     left: 0;
@@ -106,50 +107,50 @@
     height: 100%;
     background: #fff;
 
-  .flow-content {
-    position: relative;
-    height: 100%;
+    .flow-content {
+      position: relative;
+      height: 100%;
 
-  ul {
-    padding: 0 18px;
+      ul {
+        padding: 0 18px;
 
-  li {
-    display: flex;
-    align-items: flex-start;
-    padding: 18px 0 18px 18px;
-    border-bottom: 1px solid #a1a1a1;
+        li {
+          display: flex;
+          align-items: flex-start;
+          padding: 18px 0 18px 18px;
+          @include border-bottom-1px($color-border);
 
-  .time {
-    font-size: 13px;
-  }
+          .time {
+            font-size: 13px;
+          }
 
-  .info {
-    padding-left: 18px;
+          .info {
+            padding-left: 18px;
 
-  .note {
-    font-size: 13px;
-  }
+            .note {
+              font-size: 13px;
+            }
 
-  .trans-amount {
-    padding-top: 7px;
-    font-size: $font-size-medium-x;
-  }
-  }
-  }
+            .trans-amount {
+              padding-top: 7px;
+              font-size: $font-size-medium-x;
+            }
+          }
+        }
 
-  .loading {
-    padding-top: 20px;
-  }
-  }
-  }
+        .loading {
+          padding-top: 20px;
+        }
+      }
+    }
 
-  .no-result-wrapper {
-    position: absolute;
-    width: 100%;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-  }
+    .no-result-wrapper {
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+    }
   }
   .slide-enter-active, .slide-leave-active {
     transition: all 0.3s;

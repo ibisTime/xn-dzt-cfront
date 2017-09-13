@@ -1,7 +1,7 @@
 <template>
   <transition name="slide">
     <div class="rule-wrapper">
-      <scroll class="scroll-content">
+      <scroll ref="scroll" class="scroll-content">
         <div>
           <div ref="description" class="rich-text-description">
             <div v-html="content"></div>
@@ -33,6 +33,7 @@
     methods: {
       _refreshScroll() {
         setTimeout(() => {
+          this.$refs.scroll.refresh();
           let imgs = this.$refs.description.getElementsByTagName('img');
           for (let i = 0; i < imgs.length; i++) {
             let _img = imgs[i];
