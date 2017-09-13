@@ -181,7 +181,7 @@ export function receiveOrder(orderCode) {
 
 // 订单支付
 export function payOrder(orderCode, payType) {
-  return fetch(620206, {
+  return fetch(620204, {
     orderCode,
     payType
   });
