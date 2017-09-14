@@ -2,8 +2,9 @@ import fetch from 'common/js/fetch';
 import {getUserId} from 'common/js/util';
 
 // 列表查询面料
-export function getMaterialList() {
+export function getMaterialList(modelCode) {
   return fetch(620032, {
+    modelCode,
     orderColumn: 'order_no',
     orderDir: 'asc',
     status: 1,
