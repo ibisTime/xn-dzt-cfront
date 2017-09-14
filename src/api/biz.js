@@ -20,27 +20,13 @@ export function getMaterial(code) {
 }
 
 // 列表查询工艺
-export function getTechnologyList(cache) {
+export function getTechnologyList(modelCode) {
   return fetch(620052, {
+    modelCode,
     orderColumn: 'order_no',
     orderDir: 'asc',
     status: 1,
     modelStatus: 1
-  });
-}
-
-// 列表查工艺（map）
-export function getTechMapList() {
-  if (getTechMapList.data) {
-    return Promise.resolve(getTechMapList.data);
-  }
-  return fetch(620054, {
-    orderColumn: 'order_no',
-    orderDir: 'asc',
-    status: 1
-  }).then((data) => {
-    getTechMapList.data = data;
-    return Promise.resolve(data);
   });
 }
 
@@ -50,6 +36,11 @@ export function getTechnology(code) {
     code,
     userId: getUserId()
   });
+}
+
+// 列表查询工艺类型
+export function getTechTypeList () {
+  return fetch(620257, {});
 }
 
 // 分页查询文章
@@ -132,6 +123,13 @@ export function getModel(code) {
   return fetch(620271, {
     code,
     userId: getUserId()
+  });
+}
+
+// 列表查询产品
+export function getProductList () {
+  return fetch(620012, {
+    status: 1
   });
 }
 

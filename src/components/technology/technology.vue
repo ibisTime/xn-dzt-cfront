@@ -7,14 +7,7 @@
                          @select="selectCategory"
                          ref="categoryScroll"></category-scroll>
       </div>
-      <scroll ref="scroll"
-              @scroll="scroll"
-              :listen-scroll="listenScroll"
-              :probe-type="probeType"
-              :data="categorys"
-              :scrollEnd="scrollEnd"
-              @scrollToEnd="scrollToEnd"
-              class="technology-content">
+      <scroll ref="scroll" :data="categorys" class="technology-content">
         <div>
           <ul class="tech-content">
             <li v-for="(item, index) in categorys" class="tech-item" ref="techCate" :key="index">
@@ -29,10 +22,10 @@
                 </li>
               </ul>
             </li>
-            <loading class="tech-loading" v-show="hasMore" title=""></loading>
+            <loading class="tech-loading" v-show="loadingFlag" title=""></loading>
           </ul>
         </div>
-        <div v-show="!hasMore && !categorys.length" class="no-result-wrapper">
+        <div v-show="!techList.length" class="no-result-wrapper">
           <no-result title="抱歉，暂无相关工艺"></no-result>
         </div>
       </scroll>
@@ -53,28 +46,24 @@
   import Modal from 'base/modal/modal';
   import {formatImg, getShareImg, setTitle} from 'common/js/util';
   import {initShare} from 'common/js/weixin';
-  import {getTechnologyList, getTechnology, collection, cancelCollection} from 'api/biz';
-  import {getDictList} from 'api/general';
+  import {getTechnologyList, getTechnology, collection, cancelCollection, getProductList, getTechTypeList} from 'api/biz';
 
   export default {
     data() {
       return {
+        techMapData: {},
         currentIndex: 0,
-        scrollY: -1,
         categorys: [],
-        techList: null,
+        techList: [],
         hasMore: true,
-        isScrolling: false,
-        scrollEnd: true,
         currentLike: false,
-        currentItem: null
+        currentItem: null,
+        loadingFlag: true
       };
     },
     created() {
+      this.typeList = {};
       setTitle('精致工艺');
-      this.probeType = 3;
-      this.listenScroll = true;
-      this.listHeight = [];
       this.getInitData();
       initShare({
         title: document.title,
@@ -86,43 +75,57 @@
     methods: {
       getInitData() {
         Promise.all([
-          this.getTechList(),
-          this.getCraftTypeDict()
-        ]).then(([techList, craftList]) => {
-          let craftObj = {};
-          craftList.forEach((item) => {
-            craftObj[item.dkey] = {
-              use: false,
-              key: item.dkey,
-              value: item.dvalue
-            };
-          });
-          let cateList = [];
-          let techObj = {};
-          techList.forEach((item) => {
-            if (craftObj[item.type]) {
-              if (!craftObj[item.type].use) {
-                craftObj[item.type].use = true;
-                cateList.push(craftObj[item.type]);
-                techObj[item.type] = [];
-              }
-              techObj[item.type].push(item);
-            }
-          });
-          this.categorys = cateList;
-          this.techList = techObj;
-          this.hasMore = false;
+          this.getProductList(),
+          this.getTypeList()
+        ]).then(() => {
+          this.getTechnologyList(this.categorys[0].key);
         }).catch(() => {
-          this.hasMore = false;
+          this.loadingFlag = false;
         });
       },
-      // 工艺数据获取
-      getTechList() {
-        return getTechnologyList();
+      getProductList() {
+        return getProductList().then((data) => {
+          let _arr = [];
+          data.forEach((item) => {
+            _arr.push({
+              key: item.code,
+              value: item.name
+            });
+          });
+          this.categorys = _arr;
+        });
       },
-      // 工艺类型数据字典
-      getCraftTypeDict() {
-        return getDictList('craftwork_type');
+      getTypeList() {
+        return getTechTypeList().then((data) => {
+          data.forEach((item) => {
+            this.typeList[item.dkey] = item;
+          });
+        });
+      },
+      getTechnologyList() {
+        let modelCode = this.categorys[this.currentIndex].key;
+        if (this.techMapData[modelCode]) {
+          this.techList = this.techMapData[modelCode];
+        } else {
+          this.loadingFlag = true;
+          getTechnologyList(modelCode).then((data) => {
+            this.loadingFlag = false;
+            let _list = {
+              categorys: []
+            };
+            data.forEach((item) => {
+              if (!_list[item.type]) {
+                _list[item.type] = [];
+                _list.categorys.push(item.type);
+              }
+              _list[item.type].push(item);
+            });
+            this.techList = this.techMapData[modelCode] = _list;
+          }).catch(() => {
+            this.loadingFlag = false;
+            this.techList = this.techMapData[modelCode] = [];
+          });
+        }
       },
       // 详情获取工艺
       getTechnology(code) {
@@ -155,56 +158,12 @@
       },
       selectCategory(index) {
         this.currentIndex = index;
-        this.isScrolling = true;
         this.$refs.scroll.scrollToElement(this.$refs.techCate[index]);
-      },
-      scroll(pos) {
-        this.scrollY = pos.y;
-      },
-      scrollToEnd() {
-        if (this.scrollToEnd) {
-          this.isScrolling = false;
-        }
-      },
-      _calculateHeight() {
-        this.listHeight = [];
-        const list = this.$refs.techCate;
-        let height = 0;
-        this.listHeight.push(height);
-        for (let i = 0; i < list.length; i++) {
-          let item = list[i];
-          height += item.clientHeight;
-          this.listHeight.push(height);
-        }
       }
     },
     watch: {
-      scrollY(newY) {
-        if (this.isScrolling) {
-          return;
-        }
-        const listHeight = this.listHeight;
-        if (newY > 0) {
-          this.currentIndex = 0;
-          return;
-        }
-        for (let i = 0; i < listHeight.length - 2; i++) {
-          let height1 = listHeight[i];
-          let height2 = listHeight[i + 1];
-          if (-newY >= height1 && -newY < height2) {
-            this.currentIndex = i;
-            return;
-          }
-        }
-        this.currentIndex = listHeight.length - 2;
-      },
       currentIndex(newIndex) {
         this.$refs.categoryScroll.scrollToEleByIndex(newIndex);
-      },
-      techList() {
-        setTimeout(() => {
-          this._calculateHeight();
-        }, 20);
       }
     },
     components: {

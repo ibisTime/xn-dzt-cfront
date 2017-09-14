@@ -1,42 +1,6 @@
 <template>
   <transition name="slide">
-    <div class="account-wrapper" v-if="false">
-      <scroll class="account-content">
-        <div>
-          <div class="top-wrapper">
-            <h1>账户余额</h1>
-            <p>¥<span>{{_formatAmount(account && account.amount || 0)}}</span></p>
-            <router-link to="/user/account/cny-flow" tag="div">点击查看明细</router-link>
-          </div>
-          <div class="cates">
-            <div class="cate-item">
-              <h1>消费金额</h1>
-              <p>¥<span>{{_formatAmount(accountInfo && accountInfo.outAmount || 0)}}</span></p>
-            </div>
-            <div class="cate-item">
-              <h1>充值金额</h1>
-              <p>¥<span>{{_formatAmount(accountInfo && accountInfo.rechargeAmount || 0)}}</span></p>
-            </div>
-            <div class="cate-item">
-              <h1>已提现金额</h1>
-              <p>¥<span>{{_formatAmount(accountInfo && accountInfo.withdrawAmount || 0)}}</span></p>
-            </div>
-          </div>
-        </div>
-      </scroll>
-      <div class="acc-btns">
-        <button @click="goRecharge">充值</button>
-        <button @click="goWithdraw">提现</button>
-      </div>
-      <div v-show="!account || !user || !accountInfo || loadingFlag" class="loading-container">
-        <div class="loading-wrapper">
-          <loading></loading>
-        </div>
-      </div>
-      <confirm ref="confirm" text="未设置支付密码" :isAlert="isAlert" @confirm="goTrade"></confirm>
-      <router-view @amountUpdate="amountUpdate"></router-view>
-    </div>
-    <div v-else class="account-wrappers">
+    <div class="account-wrappers">
       <scroll class="scroll-content">
         <div>
           <section class="account-item">
