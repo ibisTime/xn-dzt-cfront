@@ -10,7 +10,7 @@
       <scroll ref="scroll" :data="techList.categorys" class="technology-content">
         <div>
           <ul class="tech-content">
-            <li v-for="(item, index) in techList.categorys" class="tech-item" ref="techCate" :key="index">
+            <li v-for="(item, index) in techList.categorys" class="tech-item" :key="index">
               <div class="head">{{typeList[item].dvalue}}</div>
               <ul class="clearfix">
                 <li v-for="tech in techList[item]" :key="tech.code" @click="selectItem(tech)">
@@ -164,7 +164,7 @@
       selectCategory(index) {
         this.currentIndex = index;
         this.getTechnologyList();
-        this.$refs.scroll.scrollToElement(this.$refs.techCate[index]);
+        this.$refs.scroll.scrollTo(0, 0);
       }
     },
     watch: {
