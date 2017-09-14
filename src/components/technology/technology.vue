@@ -7,13 +7,13 @@
                          @select="selectCategory"
                          ref="categoryScroll"></category-scroll>
       </div>
-      <scroll ref="scroll" :data="categorys" class="technology-content">
+      <scroll ref="scroll" :data="techList.categorys" class="technology-content">
         <div>
           <ul class="tech-content">
-            <li v-for="(item, index) in categorys" class="tech-item" ref="techCate" :key="index">
-              <div class="head">{{item.value}}</div>
+            <li v-for="(item, index) in techList.categorys" class="tech-item" ref="techCate" :key="index">
+              <div class="head">{{typeList[item].dvalue}}</div>
               <ul class="clearfix">
-                <li v-for="tech in techList[item.key]" :key="tech.code" @click="selectItem(tech)">
+                <li v-for="tech in techList[item]" :key="tech.code" @click="selectItem(tech)">
                   <div class="inner">
                     <div class="inner-content">
                       <img v-lazy="formatImg(tech.pic)"/>
@@ -25,7 +25,7 @@
             <loading class="tech-loading" v-show="loadingFlag" title=""></loading>
           </ul>
         </div>
-        <div v-show="!techList.length" class="no-result-wrapper">
+        <div v-show="!techList.categorys.length" class="no-result-wrapper">
           <no-result title="抱歉，暂无相关工艺"></no-result>
         </div>
       </scroll>
@@ -54,7 +54,9 @@
         techMapData: {},
         currentIndex: 0,
         categorys: [],
-        techList: [],
+        techList: {
+          categorys: []
+        },
         hasMore: true,
         currentLike: false,
         currentItem: null,
@@ -87,10 +89,12 @@
         return getProductList().then((data) => {
           let _arr = [];
           data.forEach((item) => {
-            _arr.push({
-              key: item.code,
-              value: item.name
-            });
+            if (item.kind === '0') {
+              _arr.push({
+                key: item.code,
+                value: item.name
+              });
+            }
           });
           this.categorys = _arr;
         });
@@ -100,6 +104,7 @@
           data.forEach((item) => {
             this.typeList[item.dkey] = item;
           });
+          console.log(this.typeList);
         });
       },
       getTechnologyList() {
@@ -158,6 +163,7 @@
       },
       selectCategory(index) {
         this.currentIndex = index;
+        this.getTechnologyList();
         this.$refs.scroll.scrollToElement(this.$refs.techCate[index]);
       }
     },
