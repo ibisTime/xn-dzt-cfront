@@ -6,47 +6,47 @@
           <section class="account-item">
             <router-link to="/user/account/hyb-flow" tag="div" class="title hyb-title">
               <label>合衣币账户</label>
-              <span>2310.00</span>
+              <span>{{hybAmount}}</span>
             </router-link>
             <div class="main">
               <div class="item">
                 <h2>历史充值总额</h2>
-                <p>5000.00</p>
+                <p>{{hybInTotalAmount}}</p>
               </div>
               <div class="item">
                 <h2>已消费额</h2>
-                <p>5000.00</p>
+                <p>{{hybOutTotalAmount}}</p>
               </div>
               <div class="item">
                 <h2>最近一笔消费</h2>
-                <p>5000.00</p>
+                <p>{{hybZjCash}}</p>
               </div>
             </div>
           </section>
           <section class="account-item">
             <router-link to="/user/account/cny-flow" tag="div" class="title cny-title">
               <label>人民币账户</label>
-              <span>¥ 2310.00</span>
+              <span>¥ {{cnyAmount}}</span>
             </router-link>
             <div class="main">
               <div class="item">
                 <h2>已消费额</h2>
-                <p>¥5000.00</p>
+                <p>¥{{cnyOutTotalAmount}}</p>
               </div>
               <div class="item">
                 <h2>已提现额</h2>
-                <p>¥5000.00</p>
+                <p>¥{{cnyTxTotalAmount}}</p>
               </div>
               <div class="item">
                 <h2>最近一笔提现</h2>
-                <p>¥5000.00</p>
+                <p>¥{{cnyZjConsume}}</p>
               </div>
             </div>
           </section>
           <section class="account-item">
             <router-link to="/user/account/jf-flow" tag="div" class="title jf-title">
               <label>积分账户</label>
-              <span>2310</span>
+              <span>{{jfAmount}}</span>
             </router-link>
             <div class="main jf-main">
               <router-link to="/user/account/jf-rules" tag="div" class="jf-item">积分规则</router-link>
@@ -85,7 +85,16 @@
       return {
         account: null,
         accountInfo: null,
-        loadingFlag: false
+        loadingFlag: false,
+        cnyAmount: '',
+        hybAmount: '',
+        jfAmount: '',
+        hybInTotalAmount: '',
+        hybOutTotalAmount: '',
+        hybZjCash: '',
+        cnyOutTotalAmount: '',
+        cnyTxTotalAmount: '',
+        cnyZjConsume: ''
       };
     },
     created() {
@@ -117,16 +126,23 @@
         if (this.cnyAccount && this.account) {
           return this._getAccountInfo(this.cnyAccount.accountNumber);
         }
+        if (this.hybAccount && this.account) {
+          return this._getHYBAccountInfo(this.hybAccount.accountNumber);
+        }
         return getAccount().then((data) => {
           data.forEach((item) => {
             if (item.currency === 'CNY') {
               this._getAccountInfo(item.accountNumber);
               this.setCnyAccount(item);
               this.account = item;
+              this.cnyAmount = formatAmount(item.amount);
             } else if (item.currency === 'JF') {
               this.setJfAccount(item);
+              this.jfAmount = formatAmount(item.amount);
             } else if (item.currency === 'HYB') {
+              this._getHYBAccountInfo(item.accountNumber);
               this.setHybAccount(item);
+              this.hybAmount = formatAmount(item.amount);
             }
           });
         });
@@ -143,6 +159,17 @@
       _getAccountInfo(accountNumber) {
         return getAccountInfo(accountNumber).then((data) => {
           this.accountInfo = data;
+          this.cnyOutTotalAmount = formatAmount(data.outTotalAmount);
+          this.cnyTxTotalAmount = formatAmount(data.txTotalAmount);
+          this.cnyZjConsume = formatAmount(data.zjConsume);
+        });
+      },
+      _getHYBAccountInfo(accountNumber) {
+        return getAccountInfo(accountNumber).then((data) => {
+          this.accountInfo = data;
+          this.hybInTotalAmount = formatAmount(data.inTotalAmount);
+          this.hybOutTotalAmount = formatAmount(data.outTotalAmount);
+          data.zjCash > 0 ? this.hybZjCash = formatAmount(data.zjCash) : this.hybZjCash = -formatAmount(data.zjCash);
         });
       },
       amountUpdate() {
@@ -150,7 +177,8 @@
           this.loadingFlag = true;
           Promise.all([
             getAccount(),
-            this._getAccountInfo(this.cnyAccount.accountNumber)
+            this._getAccountInfo(this.cnyAccount.accountNumber),
+            this._getHYBAccountInfo(this.hybAccount.accountNumber)
           ]).then(([data]) => {
             data.forEach((item) => {
               if (item.currency === 'CNY') {

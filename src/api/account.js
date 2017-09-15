@@ -10,7 +10,7 @@ export function getAccount() {
 
 // 获取取现和消费金额
 export function getAccountInfo(accountNumber) {
-  return fetch(802902, {
+  return fetch(802903, {
     accountNumber
   });
 }

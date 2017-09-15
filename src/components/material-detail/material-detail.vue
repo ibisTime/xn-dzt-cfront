@@ -12,7 +12,7 @@
                 </tr>
                 <tr>
                   <th>分类</th>
-                  <td>{{currentMaterial && currentMaterial._type || '--'}}</td>
+                  <td>{{currentMaterial && currentMaterial._modelCode || '--'}}</td>
                 </tr>
                 <tr>
                   <th>标号</th>

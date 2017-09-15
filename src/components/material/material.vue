@@ -7,7 +7,7 @@
                          @select="selectCategory"
                          ref="categoryScroll"></category-scroll>
       </div>
-      <scroll ref="scroll" :data="materialList" class="material-content">
+      <scroll ref="scroll" :data="currentList" class="material-content">
         <div>
           <div class="cate-infos clearfix">
             <div class="cate-info">
@@ -52,7 +52,7 @@
             </div>
             <div class="form-item">
               <div class="item-label">产地</div>
-              <div class="item-input-wrapper"><input type="text" placeholder="请输入面料产地" class="item-input"></div>
+              <div class="item-input-wrapper"><input type="text" v-model="area" placeholder="请输入面料产地" class="item-input"></div>
             </div>
           </div>
           <ul class="clearfix">
@@ -81,7 +81,7 @@
   import Loading from 'base/loading/loading';
   import {formatImg, setTitle, getShareImg} from 'common/js/util';
   import {initShare} from 'common/js/weixin';
-  import {getMaterialList} from 'api/biz';
+  import {getMaterialList, getProductList} from 'api/biz';
   import {getDictList} from 'api/general';
   import {mapMutations} from 'vuex';
   import {SET_CURRENT_MATERIAL} from 'store/mutation-types';
@@ -90,11 +90,9 @@
     data() {
       return {
         currentIndex: 0,
-        categorys: [{
-          key: 'all',
-          value: '全部'
-        }],
+        categorys: [],
         materialList: [],
+        materialMapData: {},
         hasMore: true,
         colorList: [],
         color: 'all',
@@ -104,7 +102,8 @@
         divide: 'all',
         yarn: 'all',
         yarnList: [],
-        fetching: false
+        fetching: false,
+        area: ''
       };
     },
     created() {
@@ -123,14 +122,18 @@
         if (!this.materialList.length) {
           return this.materialList;
         }
-        let _type = this.categorys[this.currentIndex].key;
+        let _modelCode = this.categorys[this.currentIndex].key;
         return this.materialList.filter((item) => {
-          let typeFlag = _type === 'all' ? true : item.type === _type;
+          let modelCodeFlag = item.modelCode === _modelCode;
           let colorFlag = this.color === 'all' ? true : this.color === item.color;
           let flowersFlag = this.design === 'all' ? true : this.design === item.flowers;
           let formFlag = this.divide === 'all' ? true : this.divide === item.form;
           let yarnFlag = this.yarn === 'all' ? true : this.yarn === item.yarn;
-          return typeFlag && colorFlag && flowersFlag && formFlag && yarnFlag;
+          let areaFlag = false;
+          if (item.area && item.area.indexOf(this.area) !== -1) {
+            areaFlag = true;
+          }
+          return modelCodeFlag && colorFlag && flowersFlag && formFlag && yarnFlag && areaFlag;
         });
       }
     },
@@ -155,36 +158,70 @@
         if (!this.fetching) {
           this.fetching = true;
           Promise.all([
-            this.getMaterialList(),
-            this.getFabricTypeDict(),
+            // this.getMaterialList(),
+            // this.getFabricTypeDict(),
+            this.getProductList(),
             this.getFabricColorDict(),
             this.getFabricDesignDict(),
             this.getFabricDivideDict(),
             this.getFabricYarnDict()
           ]).then(() => {
-            this.fetching = false;
-            this.hasMore = false;
+            this.getMaterialList();
           }).catch(() => {
             this.fetching = false;
+            this.hasMore = false;
+            this.loadingFlag = false;
           });
           this.getInitWXSDKConfig();
         }
       },
       getMaterialList() {
+        let modelCode = this.categorys[this.currentIndex].key;
+        if (this.materialMapData[modelCode]) {
+          this.materialList = this.materialMapData[modelCode];
+          this.loadingFlag = false;
+          this.fetching = false;
+          this.hasMore = false;
+        } else {
+          this.loadingFlag = true;
+          return getMaterialList(modelCode).then((data) => {
+            this.fetching = false;
+            this.loadingFlag = false;
+            this.hasMore = false;
+            this.materialList = this.materialMapData[modelCode] = data;
+          }).catch(() => {
+            this.loadingFlag = false;
+            this.fetching = false;
+          });
+        }
         return getMaterialList().then((data) => {
           this.materialList = data;
         });
       },
       // 面料类型数据字典
-      getFabricTypeDict() {
-        return getDictList('fabric_type').then((data) => {
-          let _arr = data.map((item) => {
-            return {
-              key: item.dkey,
-              value: item.dvalue
-            };
+      // getFabricTypeDict() {
+      //   return getDictList('fabric_type').then((data) => {
+      //     let _arr = data.map((item) => {
+      //       return {
+      //         key: item.dkey,
+      //         value: item.dvalue
+      //       };
+      //     });
+      //     this.categorys = this.categorys.concat(_arr);
+      //   });
+      // },
+      getProductList() {
+        return getProductList().then((data) => {
+          let _arr = [];
+          data.forEach((item) => {
+            if (item.kind === '0') {
+              _arr.push({
+                key: item.code,
+                value: item.name
+              });
+            }
           });
-          this.categorys = this.categorys.concat(_arr);
+          this.categorys = _arr;
         });
       },
       // 色系数据字典
@@ -216,6 +253,7 @@
       },
       selectCategory(index) {
         this.currentIndex = index;
+        this.getMaterialList();
         this.$refs.scroll.scrollTo(0, 0);
       },
       selectItem(item) {
@@ -241,9 +279,9 @@
           item._yarn = this.yarnList[index].dvalue;
 
           index = this.categorys.findIndex((cate) => {
-            return cate.key === item.type;
+            return cate.key === item.modelCode;
           });
-          item._type = this.categorys[index].value;
+          item._modelCode = this.categorys[index].value;
 
           item._advPic = item.advPic.split('||');
         }
