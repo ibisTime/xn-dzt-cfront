@@ -9,7 +9,7 @@
           <i class="icon-chose" :class="{act:currentIndex===0}"></i>
         </div>
         <div class="pay-item" @click="choseType(1)">
-          <i class="icon icon-re"></i>
+          <i class="icon icon-cny"></i>
           <div>余额支付 (余额：¥<label>{{(cnyAccount && cnyAccount.amount) | formatAmount}}</label>)</div>
           <i class="icon-chose" :class="{act:currentIndex===1}"></i>
         </div>
@@ -17,7 +17,7 @@
           <i class="icon icon-hy"></i>
           <div>合衣币支付 (余额：<label>{{(hybAccount && hybAccount.amount) | formatAmount}}</label>)</div>
           <i class="icon-chose" :class="{act:currentIndex===2}"></i>
-        </div>        
+        </div>
       </div>
       <div class="split"></div>
       <div class="foot">
@@ -195,13 +195,13 @@
             @include bg-image('weixin');
           }
 
-          &.icon-re {
-            @include bg-image('re-amount');
+          &.icon-cny {
+            @include bg-image('cny');
           }
 
           &.icon-hy {
-            @include bg-image('re-amount');
-          }          
+            @include bg-image('hyb');
+          }
         }
 
         .icon-chose {

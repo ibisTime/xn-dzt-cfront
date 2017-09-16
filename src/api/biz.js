@@ -148,7 +148,7 @@ export function book(params) {
 
 // 取消预约
 export function cancelBook(orderCode) {
-  return fetch(620216, {
+  return fetch(620213, {
     orderCode,
     updater: getUserId()
   });
@@ -172,7 +172,7 @@ export function getLatestOrder() {
 
 // 确认收货
 export function receiveOrder(orderCode) {
-  return fetch(620213, {
+  return fetch(620210, {
     orderCode,
     updater: getUserId()
   });
@@ -219,7 +219,7 @@ export function getOrderInMap(code) {
 
 // 评论
 export function ratingOrder(orderCode, content) {
-  return fetch(620214, {
+  return fetch(620211, {
     orderCode,
     content,
     commenter: getUserId()

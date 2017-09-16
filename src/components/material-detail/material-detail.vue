@@ -6,38 +6,42 @@
           <div class="table-wrapper">
             <table>
               <tbody>
-                <tr>
-                  <th>品牌</th>
-                  <td>{{currentMaterial && currentMaterial.brand || '--'}}</td>
-                </tr>
-                <tr>
-                  <th>分类</th>
-                  <td>{{currentMaterial && currentMaterial._modelCode || '--'}}</td>
-                </tr>
-                <tr>
-                  <th>标号</th>
-                  <td>{{currentMaterial && currentMaterial.modelNum || '--'}}</td>
-                </tr>
-                <tr>
-                  <th>成份</th>
-                  <td>{{currentMaterial && currentMaterial._form || '--'}}</td>
-                </tr>
-                <tr>
-                  <th>纱支</th>
-                  <td>{{currentMaterial && currentMaterial._yarn || '--'}}</td>
-                </tr>
-                <tr>
-                  <th>克重</th>
-                  <td>{{currentMaterial && currentMaterial.weight || '--'}}</td>
-                </tr>
-                <tr>
-                  <th>色系</th>
-                  <td>{{currentMaterial && currentMaterial._color || '--'}}</td>
-                </tr>
-                <tr>
-                  <th>花色</th>
-                  <td>{{currentMaterial && currentMaterial._flowers || '--'}}</td>
-                </tr>
+              <tr>
+                <th>品牌</th>
+                <td>{{currentMaterial && currentMaterial.brand || '--'}}</td>
+              </tr>
+              <tr>
+                <th>分类</th>
+                <td>{{currentMaterial && currentMaterial._type || '--'}}</td>
+              </tr>
+              <tr>
+                <th>标号</th>
+                <td>{{currentMaterial && currentMaterial.modelNum || '--'}}</td>
+              </tr>
+              <tr>
+                <th>成份</th>
+                <td>{{currentMaterial && currentMaterial._form || '--'}}</td>
+              </tr>
+              <tr>
+                <th>纱支</th>
+                <td>{{currentMaterial && currentMaterial._yarn || '--'}}</td>
+              </tr>
+              <tr>
+                <th>克重</th>
+                <td>{{currentMaterial && currentMaterial.weight || '--'}}</td>
+              </tr>
+              <tr>
+                <th>色系</th>
+                <td>{{currentMaterial && currentMaterial._color || '--'}}</td>
+              </tr>
+              <tr>
+                <th>花色</th>
+                <td>{{currentMaterial && currentMaterial._flowers || '--'}}</td>
+              </tr>
+              <tr>
+                <th>产地</th>
+                <td>{{currentMaterial && currentMaterial.area || '--'}}</td>
+              </tr>
               </tbody>
             </table>
             <i class="like" :class="{active:isSC}" @click="handleCollect"></i>

@@ -24,11 +24,11 @@ function _getOrderList(state, code, prevStatus, nextStatus) {
     }
   }
 
-  if (prevStatus === '3' || prevStatus === '4' || prevStatus === '5' || prevStatus === '6' || prevStatus === '7') {
-    prevStatus = '3||4||5||6||7';
+  if (prevStatus === '3' || prevStatus === '4' || prevStatus === '5' || prevStatus === '6') {
+    prevStatus = '3||4||5||6';
   }
-  if (nextStatus === '3' || nextStatus === '4' || nextStatus === '5' || nextStatus === '6' || nextStatus === '7') {
-    nextStatus = '3||4||5||6||7';
+  if (nextStatus === '3' || nextStatus === '4' || nextStatus === '5' || nextStatus === '6') {
+    nextStatus = '3||4||5||6';
   }
   // 如果有当前状态的数据，则删除这条订单
   if (state.orderList[prevStatus]) {

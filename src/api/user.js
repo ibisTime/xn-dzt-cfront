@@ -42,7 +42,7 @@ export function buyVIP(payType) {
 
 // 绑定手机号
 export function bindMobile(mobile, smsCaptcha, isSendSms = '0') {
-  return fetch('805060', {
+  return fetch(805060, {
     mobile,
     smsCaptcha,
     isSendSms,
@@ -52,7 +52,7 @@ export function bindMobile(mobile, smsCaptcha, isSendSms = '0') {
 
 // 修改手机号
 export function changeMobile(newMobile, smsCaptcha) {
-  return fetch('805061', {
+  return fetch(805061, {
     newMobile,
     smsCaptcha,
     userId: getUserId()
@@ -61,7 +61,7 @@ export function changeMobile(newMobile, smsCaptcha) {
 
 // 设置支付密码
 export function setTradePwd(tradePwd, smsCaptcha) {
-  return fetch('805066', {
+  return fetch(805066, {
     tradePwd,
     smsCaptcha,
     userId: getUserId()
@@ -70,7 +70,7 @@ export function setTradePwd(tradePwd, smsCaptcha) {
 
 // 修改昵称
 export function changeNickname(nickname) {
-  return fetch('805082', {
+  return fetch(805082, {
     nickname,
     userId: getUserId()
   });
@@ -78,7 +78,7 @@ export function changeNickname(nickname) {
 
 // 修改用户头像
 export function changeAvatar(photo) {
-  return fetch('805080', {
+  return fetch(805080, {
     photo,
     userId: getUserId()
   });
@@ -86,7 +86,7 @@ export function changeAvatar(photo) {
 
 // 修改用户生日
 export function changeBirthday (birthday) {
-  return fetch('', {
+  return fetch(805096, {
     birthday,
     userId: getUserId()
   });
@@ -97,7 +97,7 @@ export function changeBirthday (birthday) {
  * @param params {addressee, mobile, province, city, district, detailAddress, isDefault?}
  */
 export function addAddress(params) {
-  return fetch('805160', {
+  return fetch(805160, {
     userId: getUserId(),
     ...params
   });
@@ -105,7 +105,7 @@ export function addAddress(params) {
 
 // 删除收件地址
 export function deleteAddress(code) {
-  return fetch('805161', {code});
+  return fetch(805161, {code});
 }
 
 /**
@@ -113,7 +113,7 @@ export function deleteAddress(code) {
  * @param  params {code, addressee, mobile, province, city, district, detailAddress, isDefault?}
  */
 export function editAddress(params) {
-  return fetch('805162', {
+  return fetch(805162, {
     userId: getUserId(),
     ...params
   });
@@ -121,12 +121,12 @@ export function editAddress(params) {
 
 // 列表查询地址
 export function getAddressList() {
-  return fetch('805165', {
+  return fetch(805165, {
     userId: getUserId()
   });
 }
 
 // 详情查询地址
 export function getAddress(code) {
-  return fetch('805166', {code});
+  return fetch(805166, {code});
 }

@@ -52,7 +52,7 @@
             </div>
             <div class="form-item">
               <div class="item-label">产地</div>
-              <div class="item-input-wrapper"><input type="text" v-model="area" placeholder="请输入面料产地" class="item-input"></div>
+              <div class="item-input-wrapper"><input type="text" placeholder="请输入面料产地" v-model="area" class="item-input"></div>
             </div>
           </div>
           <ul class="clearfix">
@@ -63,10 +63,10 @@
                 </div>
               </div>
             </li>
-            <loading class="material-loading" v-show="hasMore" title=""></loading>
+            <loading class="material-loading" v-show="loadingFlag" title=""></loading>
           </ul>
         </div>
-        <div v-show="!hasMore && !currentList.length" class="no-result-wrapper">
+        <div v-show="!currentList.length" class="no-result-wrapper">
           <no-result title="抱歉，暂无相关面料"></no-result>
         </div>
       </scroll>
@@ -91,9 +91,8 @@
       return {
         currentIndex: 0,
         categorys: [],
-        materialList: [],
         materialMapData: {},
-        hasMore: true,
+        materialList: [],
         colorList: [],
         color: 'all',
         designList: [],
@@ -102,14 +101,13 @@
         divide: 'all',
         yarn: 'all',
         yarnList: [],
+        area: '',
         fetching: false,
-        area: ''
+        loadingFlag: true
       };
     },
     created() {
-      this.probeType = 3;
-      this.listenScroll = true;
-      this.listHeight = [];
+      this.fabricTypeList = [];
       this.isWxConfiging = false;
       this.wxData = null;
 
@@ -122,18 +120,16 @@
         if (!this.materialList.length) {
           return this.materialList;
         }
-        let _modelCode = this.categorys[this.currentIndex].key;
         return this.materialList.filter((item) => {
-          let modelCodeFlag = item.modelCode === _modelCode;
           let colorFlag = this.color === 'all' ? true : this.color === item.color;
           let flowersFlag = this.design === 'all' ? true : this.design === item.flowers;
           let formFlag = this.divide === 'all' ? true : this.divide === item.form;
           let yarnFlag = this.yarn === 'all' ? true : this.yarn === item.yarn;
           let areaFlag = false;
-          if (item.area && item.area.indexOf(this.area) !== -1) {
+          if (item.area && ~item.area.indexOf(this.area)) {
             areaFlag = true;
           }
-          return modelCodeFlag && colorFlag && flowersFlag && formFlag && yarnFlag && areaFlag;
+          return colorFlag && flowersFlag && formFlag && yarnFlag && areaFlag;
         });
       }
     },
@@ -142,10 +138,10 @@
         if (this.$route.path === '/home/material') {
           setTitle('高端面料');
           // 当前页面,并且微信sdk未初始化
-          if(!this.isWxConfiging && !this.wxData && !this.hasMore) {
+          if(!this.isWxConfiging && !this.wxData && !this.loadingFlag) {
             this.getInitWXSDKConfig();
           }
-          if (this.hasMore && !this.materialList.length) {
+          if (this.loadingFlag && !this.materialList.length) {
             return true;
           }
           return false;
@@ -157,10 +153,10 @@
       getInitData() {
         if (!this.fetching) {
           this.fetching = true;
+          console.log('init');
           Promise.all([
-            // this.getMaterialList(),
-            // this.getFabricTypeDict(),
             this.getProductList(),
+            this.getFabricTypeDict(),
             this.getFabricColorDict(),
             this.getFabricDesignDict(),
             this.getFabricDivideDict(),
@@ -168,48 +164,12 @@
           ]).then(() => {
             this.getMaterialList();
           }).catch(() => {
-            this.fetching = false;
-            this.hasMore = false;
             this.loadingFlag = false;
+            this.fetching = false;
           });
           this.getInitWXSDKConfig();
         }
       },
-      getMaterialList() {
-        let modelCode = this.categorys[this.currentIndex].key;
-        if (this.materialMapData[modelCode]) {
-          this.materialList = this.materialMapData[modelCode];
-          this.loadingFlag = false;
-          this.fetching = false;
-          this.hasMore = false;
-        } else {
-          this.loadingFlag = true;
-          return getMaterialList(modelCode).then((data) => {
-            this.fetching = false;
-            this.loadingFlag = false;
-            this.hasMore = false;
-            this.materialList = this.materialMapData[modelCode] = data;
-          }).catch(() => {
-            this.loadingFlag = false;
-            this.fetching = false;
-          });
-        }
-        return getMaterialList().then((data) => {
-          this.materialList = data;
-        });
-      },
-      // 面料类型数据字典
-      // getFabricTypeDict() {
-      //   return getDictList('fabric_type').then((data) => {
-      //     let _arr = data.map((item) => {
-      //       return {
-      //         key: item.dkey,
-      //         value: item.dvalue
-      //       };
-      //     });
-      //     this.categorys = this.categorys.concat(_arr);
-      //   });
-      // },
       getProductList() {
         return getProductList().then((data) => {
           let _arr = [];
@@ -222,6 +182,36 @@
             }
           });
           this.categorys = _arr;
+        });
+      },
+      getMaterialList() {
+        let modelCode = this.categorys[this.currentIndex].key;
+        if (this.materialMapData[modelCode]) {
+          this.materialList = this.materialMapData[modelCode];
+          this.loadingFlag = false;
+          this.fetching = false;
+        } else {
+          this.loadingFlag = true;
+          return getMaterialList(modelCode).then((data) => {
+            this.fetching = false;
+            this.loadingFlag = false;
+            this.materialList = this.materialMapData[modelCode] = data;
+          }).catch(() => {
+            this.loadingFlag = false;
+            this.fetching = false;
+          });
+        }
+      },
+      // 面料类型数据字典
+      getFabricTypeDict() {
+        return getDictList('fabric_type').then((data) => {
+          let _arr = data.map((item) => {
+            return {
+              key: item.dkey,
+              value: item.dvalue
+            };
+          });
+          this.fabricTypeList = _arr;
         });
       },
       // 色系数据字典
@@ -278,10 +268,10 @@
           });
           item._yarn = this.yarnList[index].dvalue;
 
-          index = this.categorys.findIndex((cate) => {
-            return cate.key === item.modelCode;
+          index = this.fabricTypeList.findIndex((cate) => {
+            return cate.key === item.type;
           });
-          item._modelCode = this.categorys[index].value;
+          item._type = this.fabricTypeList[index].value;
 
           item._advPic = item.advPic.split('||');
         }

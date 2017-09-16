@@ -191,13 +191,11 @@
       },
       handleUpdate(product) {
         let index = -1;
-        if (product.type === '0') {
-          index = this.modelList.findIndex((item) => {
-            return item.code === product.code;
-          });
-          if (~index) {
-            this.modelList.splice(index, 1, product);
-          }
+        index = this.modelList.findIndex((item) => {
+          return item.code === product.code;
+        });
+        if (~index) {
+          this.modelList.splice(index, 1, product);
         } else {
           index = this.hModelList.findIndex((item) => {
             return item.code === product.code;

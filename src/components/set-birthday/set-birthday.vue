@@ -29,7 +29,7 @@
   import {mapGetters, mapMutations} from 'vuex';
   import {SET_USER_STATE, SET_USER_BIRTHDAY} from 'store/mutation-types';
   import {changeBirthday, getUser} from 'api/user';
-  import {setTitle, emptyValid} from 'common/js/util';
+  import {setTitle, emptyValid, formatDate} from 'common/js/util';
   import Toast from 'base/toast/toast';
   import Loading from 'base/loading/loading';
   import DatePicker from 'base/date-picker/date-picker';
@@ -67,7 +67,7 @@
       getBirthday(data) {
         let birth = data.birthday;
         if (birth) {
-          birth = birth.split('-');
+          birth = formatDate(birth, 'yyyy-MM-dd').split('-');
           this.year = birth[0];
           this.month = birth[1];
           this.day = birth[2];

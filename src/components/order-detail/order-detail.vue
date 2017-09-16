@@ -4,7 +4,7 @@
       <scroll ref="scroll" class="order-content">
         <div>
           <h1>订单信息</h1>
-          <div class="order-info">
+          <div class="order-info border-top-1px">
             <p><label>订单编号</label>{{currentOrder && currentOrder.code}}</p>
             <p><label>下单时间</label>{{(currentOrder && currentOrder.createDatetime) | formatDate('yyyy-MM-dd hh:mm')}}</p>
             <p><label>订单状态</label><span class="status">{{(currentOrder && currentOrder.status) | formatStatus}}</span></p>
@@ -17,13 +17,13 @@
               <span class="btn" v-show="showAdviserBtn()" @click="goAdviser">联系顾问</span>
             </p>
           </div>
-          <div class="order-info">
-            <p><label>下单产品</label>{{getModel()}}</p>
+          <div class="order-info border-top-1px">
+            <p><label>下单产品</label>{{productInfo.modelName || '无'}}</p>
             <p><label>面料编号</label><span v-html="getMaterialCode()"></span></p>
             <p><label>订单价格</label><span v-if="getOriAmount()" class="ori-amount">{{getOriAmount()}}</span>{{getAmount()}}</p>
           </div>
           <h1>物流信息</h1>
-          <div class="order-info">
+          <div class="order-info border-top-1px">
             <div v-if="currentOrder && currentOrder.logisticsCompany">
               <p><label>物流公司</label>{{getCompany()}}</p>
               <p><label>发货时间</label>{{(currentOrder && currentOrder.deliveryDatetime) | formatDate('yyyy-MM-dd')}}</p>
@@ -35,36 +35,31 @@
             </div>
           </div>
           <h1>定制信息</h1>
-          <h2>衬衫定制信息</h2>
-          <div class="order-info1">
-            <div v-if="getTechName('1-01')">
-              <p><label>{{getLabelName('1-01')}}</label>{{getTechName('1-01')}}</p>
-              <p><label>{{getLabelName('1-03')}}</label>{{getTechName('1-03')}}</p>
-              <p><label>{{getLabelName('1-04')}}</label>{{getTechName('1-04')}}</p>
-              <p><label>{{getLabelName('1-05')}}</label>{{getTechName('1-05')}}</p>
-              <p><label>{{getLabelName('1-06')}}</label>{{getTechName('1-06')}}</p>
-              <p><label>{{getLabelName('1-07')}}</label>{{getTechName('1-07')}}</p>
-              <p><label>{{getLabelName('1-08')}}</label>{{getTechName('1-08')}}</p>
-            </div>
-            <div v-else>
-              <p>无</p>
-            </div>
+          <div class="order-head" v-if="productInfo.productVarList && productInfo.productVarList.length">
+            <div v-for="(item,index) in productInfo.productVarList"
+                 class="head-item"
+                 :class="{active:index===currentIndex}"
+                 @click="choseItem(index)">{{item.name}}</div>
           </div>
-          <h2>刺绣定制信息</h2>
           <div class="order-info1">
-            <div v-if="getCXCont()">
-              <p><label>刺绣内容</label>{{getCXCont()}}</p>
-              <p><label>{{getLabelName('5-03')}}</label>{{getTechName('5-03')}}</p>
-              <p><label>{{getLabelName('5-02')}}</label>{{getTechName('5-02')}}</p>
-              <p><label>{{getLabelName('5-04')}}</label>{{getTechName('5-04')}}</p>
+            <div v-if="productInfo.productVarList && productInfo.productVarList.length">
+              <template v-for="item in productInfo.productVarList[currentIndex].productCategory">
+                <p v-if="item.productCraft" class="border-bottom-1px">
+                  <label>{{item.dvalue}}</label>{{item.productCraft && item.productCraft.name}}
+                </p>
+                <p v-if="item.productCategory" class="border-bottom-1px">
+                  <label>{{item.productCategory.dvalue}}</label>{{item.productCategory.colorProductCraft && item.productCategory.colorProductCraft.name}}
+                </p>
+              </template>
+
             </div>
             <div v-else>
               <p>无</p>
             </div>
           </div>
           <h1>备注</h1>
-          <div class="remark">
-            <p>{{getRemark()}}</p>
+          <div class="remark border-top-1px">
+            <p class="border-bottom-1px">{{currentOrder && currentOrder.remark || '无'}}</p>
           </div>
         </div>
       </scroll>
@@ -84,8 +79,8 @@
   import Scroll from 'base/scroll/scroll';
   import Confirm from 'base/confirm/confirm';
   import Loading from 'base/loading/loading';
-  import {getOrder, cancelBook, receiveOrder, getTechMapList} from 'api/biz';
-  import {getBizDictMap, getDictList} from 'api/general';
+  import {getOrder, cancelBook, receiveOrder} from 'api/biz';
+  import {getDictList} from 'api/general';
   import {SET_CURRENT_ORDER} from 'store/mutation-types';
   import {ORDER_STATUS} from '../orders/config';
   import {isUnDefined, formatAmount, setTitle} from 'common/js/util';
@@ -97,19 +92,18 @@
     data() {
       return {
         loadingFlag: true,
-        productInfo: null,
+        productInfo: {},
         text: '',
-        loadingText: ''
+        loadingText: '',
+        order: {},
+        currentIndex: 0
       };
     },
     created() {
       setTitle('订单详情');
       this.first = true;
       this.code = this.$route.params.code;
-      this.techMap = null;
       this.wlComps = null;
-      this.dictMap = null;
-      this.fabricYarn = null;
       this.getInitData();
     },
     computed: {
@@ -131,17 +125,14 @@
       _getOrder() {
         Promise.all([
           getOrder(this.code),
-          getBizDictMap(),
-          getTechMapList(),
           getDictList('wl_company'),
           getDictList('fabric_yarn')
-        ]).then(([data, dictMap, techMap, wlComps, fabricYarn]) => {
+        ]).then(([data, wlComps, fabricYarn]) => {
           if (!this.currentOrder) {
             this.setCurrentOrder(data);
           }
-          this.productInfo = data.productList && data.productList.length && data.productList[0] || null;
-          this.dictMap = dictMap;
-          this.techMap = techMap;
+          this.order = data;
+          this.productInfo = data.product || {};
           this.wlComps = wlComps;
           this.fabricYarn = fabricYarn;
           this.loadingFlag = false;
@@ -151,6 +142,12 @@
         }).catch(() => {
           this.loadingFlag = false;
         });
+      },
+      choseItem(index) {
+        this.currentIndex = index;
+        setTimeout(() => {
+          this.$refs.scroll.refresh();
+        }, 20);
       },
       showPayBtn() {
         if (!this.currentOrder) {
@@ -194,26 +191,15 @@
       goAdviser() {
         this.$router.push(`${this.$route.path}/adviser`);
       },
-      getRemark() {
-        if (!this.productInfo) {
-          return '无';
-        }
-        let index = this._getIndexFromSpecsList('6-05');
-        return ~index ? this.productInfo.productSpecsList[index].code : '无';
-      },
       getMaterialCode() {
-        if (!this.productInfo) {
+        if (!this.productInfo.productVarList || !this.productInfo.productVarList.length) {
           return '无';
         }
-        let index = this._getIndexFromSpecsList('1-02');
-        if (~index) {
-          let _model = this.productInfo.productSpecsList[index];
-          let _index = this.fabricYarn.findIndex((item) => {
-            return item.dkey === _model.yarn;
-          });
-          return `${_model.modelNum} &nbsp;${this.fabricYarn[_index].dvalue}`;
-        }
-        return '无';
+        let _model = this.productInfo.productVarList[this.currentIndex].productSpecs[0];
+        let _index = this.fabricYarn.findIndex((item) => {
+          return item.dkey === _model.yarn;
+        });
+        return `${_model.modelNum} &nbsp;${this.fabricYarn[_index].dvalue}`;
       },
       getAmount() {
         if (!this.currentOrder || isUnDefined(this.currentOrder.amount)) {
@@ -247,55 +233,6 @@
         } else {
           return '未收货';
         }
-      },
-      getModel() {
-        if (!this.productInfo || !this.currentOrder) {
-          return '无';
-        }
-        return this.productInfo.modelName || '无';
-      },
-      getTechName(key) {
-        if (!this.productInfo || !this.currentOrder || !this.techMap) {
-          return '';
-        }
-        let index = this._getIndexFromSpecsList(key);
-        if (~index) {
-          let code = this.productInfo.productSpecsList[index].code;
-          let keyList = this.techMap[key];
-          if (!keyList) {
-            return '';
-          }
-          let _index = keyList.findIndex((item) => {
-            return item.code === code;
-          });
-          if (~_index) {
-            return keyList[_index].name;
-          }
-          return '';
-        }
-        return '';
-      },
-      getCXCont() {
-        if (!this.productInfo || !this.currentOrder) {
-          return '';
-        }
-        let index = this._getIndexFromSpecsList('5-01');
-        if (~index) {
-          return this.productInfo.productSpecsList[index].code;
-        }
-        return '';
-      },
-      getLabelName(key) {
-        if (!this.dictMap) {
-          return '';
-        }
-        return this.dictMap['measure'][key] || '未知';
-      },
-      _getIndexFromSpecsList(type) {
-        let specList = this.productInfo.productSpecsList;
-        return specList.findIndex((item) => {
-          return item.type === type;
-        });
       },
       _cancelOrder() {
         this.text = '确定取消订单吗';
@@ -394,6 +331,7 @@
 </script>
 <style lang="scss" scoped>
   @import "~common/scss/variable";
+  @import "~common/scss/mixin";
 
   .order-detail-wrapper {
     position: fixed;
@@ -419,8 +357,8 @@
       .order-info {
         padding-left: 30px;
         padding-bottom: 14px;
-        border-top: 1px solid #a1a1a1;
         font-size: $font-size-medium;
+        @include border-top-1px(#a1a1a1);
 
         p {
           padding-top: 16px;
@@ -453,7 +391,8 @@
         }
       }
 
-      h2 {
+      .order-head {
+        display: flex;
         width: 100%;
         height: 30px;
         line-height: 30px;
@@ -462,6 +401,14 @@
         font-size: $font-size-medium-x;
         color: #fff;
         background: $primary-color;
+
+        .head-item {
+          flex: 1;
+
+          &.active {
+            color: $second-color;
+          }
+        }
       }
 
       .order-info1 {
@@ -471,26 +418,26 @@
 
         p {
           padding: 16px 0 14px 16px;
-          border-bottom: 1px solid #d2d2d2;
+          @include border-bottom-1px(#d2d2d2);
 
           label {
             display: inline-block;
             padding-right: 19px;
-            min-width: 80px;
+            min-width: 110px;
             color: $primary-color;
           }
         }
       }
 
       .remark {
-        border-top: 1px solid #d2d2d2;
         padding: 21.5px 16px;
         font-size: $font-size-medium;
+        @include border-top-1px(#d2d2d2);
 
         p {
           padding-bottom: 2px;
           line-height: 1.2;
-          border-bottom: 1px solid #d6d6d6;
+          @include border-bottom-1px(#d6d6d6);
         }
       }
     }

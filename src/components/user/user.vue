@@ -28,15 +28,15 @@
               <div class="type order-dzf"></div>
               <p>待支付</p>
             </div>
-            <div class="order-type" @click="goOrder(3)">
+            <div class="order-type" @click="goOrder(4)">
               <div class="type order-dsh"></div>
               <p>待收货</p>
             </div>
-            <div class="order-type" @click="goOrder(4)">
+            <div class="order-type" @click="goOrder(5)">
               <div class="type order-dpj"></div>
               <p>待评价</p>
             </div>
-            <div class="order-type" @click="goOrder(5)">
+            <div class="order-type" @click="goOrder(6)">
               <div class="type order-shz"></div>
               <p>售后中</p>
             </div>
@@ -88,17 +88,17 @@
       </div>
     </scroll>
     <toast ref="toast" :text="text"></toast>
-    <confirm :isAlert="!isAlert" :isHtml="isHtml" :text="text" ref='confirm' @confirm="showChosen()"></confirm>
-    <chosen class="chose-wrapper" ref="chosen">           
+    <confirm :isAlert="!isAlert" :isHtml="isHtml" :text="text" confirmBtnText="确认" ref='confirm' @confirm="showChosen()"></confirm>
+    <chosen class="chose-wrapper" ref="chosen">
       <div class="item border-bottom-1px" @click="weixinPay">
         微信支付
-      </div> 
+      </div>
       <div class="item border-bottom-1px" @click="yePay">
         余额支付（¥{{getAmount('cnyAccount')}}）
-      </div> 
+      </div>
       <div class="item border-bottom-1px" @click="hybPay">
         合衣币支付（{{getAmount('hybAccount')}}）
-      </div>                 
+      </div>
     </chosen>
     <div v-show="loadingFlag" class="loading-container">
       <div class="loading-wrapper">
@@ -262,7 +262,7 @@
       },
       getVIPMoney() {
         getBizSystemConfig('HYF').then((data) => {
-          this.text = `<div>确认支付¥${data.cvalue}成为会员？</div>`;
+          this.text = `<div>确认支付¥${data.cvalue}成为会员吗？</div>`;
           this.$refs.confirm.show();
         });
       },
