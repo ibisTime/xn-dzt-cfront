@@ -1,5 +1,5 @@
 import * as types from './mutation-types';
-import {saveAvatar, deleteAvatar, clearAvatar} from 'common/js/cache';
+import {saveAvatar, deleteAvatar, clearAvatar, editAvatar} from 'common/js/cache';
 
 function _getOrderList(state, code, prevStatus, nextStatus) {
   let allList = null;
@@ -129,12 +129,15 @@ export const addAddrAndSetCur = function({commit, state}, {address}) {
   commit(types.SET_CURRENT_ADDR_CODE, address.code);
 };
 // 设置头像的列表，并保存到localStorage
-export const saveAvatarHistory = function ({commit}, query) {
-  commit(types.SET_AVATARS, saveAvatar(query));
+export const saveAvatarHistory = function ({commit}, avatars) {
+  commit(types.SET_AVATARS, saveAvatar(avatars));
 };
 // 删除头像的列表中的某条数据，并保存到localStorage
-export const deleteAvatarHistory = function ({commit}, query) {
-  commit(types.SET_AVATARS, deleteAvatar(query));
+export const deleteAvatarHistory = function ({commit}, avatars) {
+  commit(types.SET_AVATARS, deleteAvatar(avatars));
+};
+export const editAvatarHistory = function ({commit}, avatars) {
+  commit(types.SET_AVATARS, editAvatar(avatars));
 };
 // 删除头像的列表，并保存到localStorage
 export const clearAvatarHistory = function ({commit}) {

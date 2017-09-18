@@ -64,6 +64,11 @@ export function formatImg(imgs, suffix = '?imageMogr2/auto-orient') {
   let img = imgs.split(/\|\|/)[0];
 
   if (!/^http|^data:image/i.test(img)) {
+    let index = img.indexOf('?imageMogr2');
+    if (index !== -1) {
+      suffix = img.substr(index);
+      img = img.substr(0, index);
+    }
     img = PIC_PREFIX + encodeURIComponent(img) + suffix;
   }
   return img;

@@ -46,6 +46,7 @@
           <loading title=""></loading>
         </div>
       </div>
+      <clip-avatar @choseImage="updateAvatar" ref="clipAvatar" :imgUrl="formatImg(this.currentItem && this.currentItem.key || '')"></clip-avatar>
       <toast ref="toast" :text="text"></toast>
     </div>
   </transition>
@@ -61,6 +62,7 @@
   import {mapGetters, mapMutations, mapActions} from 'vuex';
   import {SET_USER_STATE} from 'store/mutation-types';
   import Chosen from 'components/chosen/chosen';
+  import ClipAvatar from 'components/clip-avatar/clip-avatar';
 
   export default {
     data() {
@@ -69,6 +71,7 @@
         files: [],
         text: '',
         curImg: '',
+        currentItem: null,
         loadingFlag: true
       };
     },
@@ -76,7 +79,6 @@
       this.click = false;
       this.multiple = false;
       this.uploadUrl = 'http://up-z0.qiniu.com';
-      this.currentItem = null;
       this.getInitData();
       this.getQiniuToken();
     },
@@ -130,10 +132,31 @@
           this.$refs.toast.show();
           return;
         }
+        this.$refs.clipAvatar.show();
+      },
+      updateAvatar(info) {
+        let suffix = `?imageMogr2/auto-orient/thumbnail/${info.outerWidth}x${info.outerHeight}!/crop/!${info.width}x${info.height}a${info.x}a${info.y}`;
         this.loadingFlag = true;
-        changeAvatar(this.currentItem.key).then(() => {
+        let index = this.currentItem.key.indexOf('?imageMogr2');
+        let _key = this.currentItem.key;
+        if (index !== -1) {
+          _key = _key.substr(0, index);
+        }
+        _key += suffix;
+        changeAvatar(_key).then(() => {
           this.loadingFlag = false;
-          this.curImg = this.currentItem.key;
+//          this.deleteAvatarHistory(this.currentItem);
+          this.curImg = _key;
+          let oriKey = this.currentItem.key;
+          this.currentItem = {
+            ...this.currentItem,
+            key: _key,
+            oriKey: oriKey
+          };
+          console.log(this.currentItem);
+          this.editAvatarHistory(this.currentItem);
+          this.files = [...this.avatars];
+//          this.saveAvatarHistory(this.currentItem);
           this.setUser({
             ...this.user,
             photo: this.currentItem.key
@@ -209,7 +232,8 @@
       }),
       ...mapActions([
         'saveAvatarHistory',
-        'deleteAvatarHistory'
+        'deleteAvatarHistory',
+        'editAvatarHistory'
       ])
     },
     watch: {
@@ -231,7 +255,8 @@
       Toast,
       Scroll,
       Loading,
-      Chosen
+      Chosen,
+      ClipAvatar
     }
   };
 </script>
