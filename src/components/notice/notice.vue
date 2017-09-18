@@ -4,7 +4,7 @@
       <scroll :data="notices" :pullup="pullup" @scrollToEnd="getPageNotices" class="scroll-content">
         <div>
           <div class="list-content clearfix">
-            <div v-for="item in notices" class="item">
+            <div v-for="item in notices" class="item border-bottom-1px">
               <div class="img"><i></i></div>
               <div class="content">
                 <div class="title">{{item.smsTitle}}</div>
@@ -59,6 +59,7 @@
 </script>
 <style lang="scss" scoped>
   @import "~common/scss/variable";
+  @import "~common/scss/mixin";
 
   .notice-wrapper {
     position: fixed;
@@ -80,7 +81,7 @@
           align-items: top;
           padding: 25px 18px;
           padding-left: 0;
-          border-bottom: 1px solid #a1a1a1;
+          @include border-bottom-1px($color-border);
 
           .img {
             width: 32px;

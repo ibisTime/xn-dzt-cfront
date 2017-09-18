@@ -40,6 +40,8 @@
       this.touch = {};
       this.maxTop = 0;
       this.minTop = 0;
+      this.clipX = 0;
+      this.clipY = top;
     },
     methods: {
       show() {
@@ -54,9 +56,12 @@
               this.maxTop = (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
               this.minTop = this.maxTop - (this.$refs.clipBox.offsetHeight - this.$refs.clipImg.offsetHeight);
               top = 0;
+              bottom = this.$refs.clipImg.offsetHeight;
             } else {
               this.minTop = (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
               this.maxTop = this.minTop + this.$refs.clipImg.offsetHeight - this.$refs.clipBox.offsetHeight;
+              top -= (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
+              bottom -= (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
             }
             this.$refs.clipImg.style.clip = `rect(${top}px,${right}px,${bottom}px,0)`;
           }, 20);
@@ -85,28 +90,27 @@
         let bottom = this.$refs.clipBox.offsetHeight + top;
         if (this.$refs.clipImg.offsetHeight < this.$refs.clipBox.offsetHeight) {
           top = 0;
+          bottom = this.$refs.clipImg.offsetHeight;
+        } else {
+          top -= (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
+          bottom -= (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
         }
+        this.clipY = top;
         this.$refs.clipImg.style.clip = `rect(${top}px,${right}px,${bottom}px,0)`;
       },
       choseImg() {
-        console.log('xx');
         let outerHeight = this.$refs.clipImg.offsetHeight;
         let outerWidth = this.$refs.clipImg.offsetWidth;
         let width = outerWidth;
         let height = this.$refs.clipBox.offsetHeight;
-        let x = 0;
-        let y = Number.parseFloat(this.$refs.clipBox.style.top);
-        if (outerHeight < height) {
-          y = 0;
-        }
         this.hide();
         this.$emit('choseImage', {
           outerWidth,
           outerHeight,
           width,
           height,
-          x,
-          y
+          x: this.clipX,
+          y: this.clipY
         });
       }
     }

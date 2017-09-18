@@ -145,7 +145,6 @@
         _key += suffix;
         changeAvatar(_key).then(() => {
           this.loadingFlag = false;
-//          this.deleteAvatarHistory(this.currentItem);
           this.curImg = _key;
           let oriKey = this.currentItem.key;
           this.currentItem = {
@@ -156,7 +155,6 @@
           console.log(this.currentItem);
           this.editAvatarHistory(this.currentItem);
           this.files = [...this.avatars];
-//          this.saveAvatarHistory(this.currentItem);
           this.setUser({
             ...this.user,
             photo: this.currentItem.key
