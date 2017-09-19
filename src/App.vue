@@ -26,6 +26,10 @@
       };
     },
     created() {
+//      setUser({
+//        token: 'TCDZT201700000000000001TK201709180540313056785',
+//        userId: 'U1111111111111111'
+//      });
       if (!isLogin()) {
         if (/code=([^&]+)&state=/.exec(location.href)) {
           let code = RegExp.$1;

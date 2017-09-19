@@ -2,19 +2,19 @@
   <transition name="slide">
     <div class="collection-wrapper">
       <div class="type-wrapper">
-        <router-link to="/user/collection/product" tag="div" class="type">
+        <router-link to="/user/collection/product" tag="div" class="type needsclick">
           <h2>样品</h2>
           <i class="arrow"></i>
         </router-link>
-        <router-link to="/user/collection/material" tag="div" class="type">
+        <router-link to="/user/collection/material" tag="div" class="type needsclick">
           <h2>面料</h2>
           <i class="arrow"></i>
         </router-link>
-        <router-link to="/user/collection/tech" tag="div" class="type">
+        <router-link to="/user/collection/tech" tag="div" class="type needsclick">
           <h2>工艺</h2>
           <i class="arrow"></i>
         </router-link>
-        <router-link to="/user/collection/find" tag="div" class="type">
+        <router-link to="/user/collection/find" tag="div" class="type needsclick">
           <h2>文章</h2>
           <i class="arrow"></i>
         </router-link>

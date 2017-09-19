@@ -4,7 +4,7 @@
       <scroll :data="materialList" :pullup="pullup" @scrollToEnd="getPageMaterials" class="material-content">
         <div>
           <ul class="clearfix">
-            <li v-for="(item, index) in materialList" :key="index" @click="selectItem(item,index)">
+            <li v-for="(item, index) in materialList" class="needsclick" :key="index" @click="selectItem(item,index)">
               <div class="inner">
                 <div class="inner-content">
                   <img v-lazy="formatImg(item.cloth.pic)"/>

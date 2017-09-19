@@ -4,7 +4,7 @@
       <scroll :data="products" :pullup="pullup" @scrollToEnd="getPageProducts" class="scroll-content">
         <div>
           <div class="list-content clearfix">
-            <div v-for="(item,index) in products" @click="selectItem(item,index)" :key="item.code" class="item">
+            <div v-for="(item,index) in products" @click="selectItem(item,index)" :key="item.code" class="item needsclick">
               <div class="inner">
                 <div class="inner-content" :style="getImgSyl(item.specimen.pic)"></div>
               </div>

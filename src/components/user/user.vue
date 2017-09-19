@@ -2,7 +2,7 @@
   <div class="user-wrapper">
     <scroll class="user-content">
       <div>
-        <div @click="goSet" class="avatar-wrapper" ref="bgImage">
+        <div @click="goSet" class="avatar-wrapper needsclick" ref="bgImage">
           <div class="avatar">
             <img :src="(user && user.photo) | formatAvatar"/>
           </div>
@@ -20,23 +20,23 @@
             </div>
           </div>
           <div class="order-types">
-            <div class="order-type" @click="goOrder(1)">
+            <div class="order-type needsclick" @click="goOrder(1)">
               <div class="type order-dlt"></div>
               <p>待量体</p>
             </div>
-            <div class="order-type" @click="goOrder(2)">
+            <div class="order-type needsclick" @click="goOrder(2)">
               <div class="type order-dzf"></div>
               <p>待支付</p>
             </div>
-            <div class="order-type" @click="goOrder(4)">
+            <div class="order-type needsclick" @click="goOrder(4)">
               <div class="type order-dsh"></div>
               <p>待收货</p>
             </div>
-            <div class="order-type" @click="goOrder(5)">
+            <div class="order-type needsclick" @click="goOrder(5)">
               <div class="type order-dpj"></div>
               <p>待评价</p>
             </div>
-            <div class="order-type" @click="goOrder(6)">
+            <div class="order-type needsclick" @click="goOrder(6)">
               <div class="type order-shz"></div>
               <p>售后中</p>
             </div>
@@ -50,37 +50,37 @@
             </div>
           </div>
           <div class="service-types">
-            <router-link class="service-type" tag="div" to="/user/report">
+            <router-link class="service-type needsclick" tag="div" to="/user/report">
               <div class="type service-zsbg"></div>
               <p>专属报告</p>
             </router-link>
-            <router-link to="/user/adviser" class="service-type" tag="div">
+            <router-link to="/user/adviser" class="service-type needsclick" tag="div">
               <div class="type service-zzgw"></div>
               <p>着装顾问</p>
             </router-link>
-            <router-link to="/user/service" class="service-type" tag="div">
+            <router-link to="/user/service" class="service-type needsclick" tag="div">
               <div class="type service-kfts"></div>
               <p>客服投诉</p>
             </router-link>
-            <router-link to="/user/question" class="service-type" tag="div">
+            <router-link to="/user/question" class="service-type needsclick" tag="div">
               <div class="type service-cjwt"></div>
               <p>常见问题</p>
             </router-link>
           </div>
-          <router-link v-if="user && user.level!=='1'" to="/user/member" class="user-title border-bottom-1px user-title-top border-top-1px" tag="div">
+          <router-link v-if="user && user.level!=='1'" to="/user/member" class="user-title border-bottom-1px user-title-top border-top-1px needsclick" tag="div">
             <h2>会员中心</h2>
             <i class="arrow"></i>
           </router-link>
-          <div v-else class="join-member" @click="getVIPMoney">加入会员</div>
-          <router-link to="/user/account" class="user-title border-bottom-1px" tag="div">
+          <div v-else class="join-member needsclick" @click="getVIPMoney">加入会员</div>
+          <router-link to="/user/account" class="user-title border-bottom-1px needsclick" tag="div">
             <h2>我的账户</h2>
             <i class="arrow"></i>
           </router-link>
-          <router-link to="/user/recommend" class="user-title border-bottom-1px" tag="div">
+          <router-link to="/user/recommend" class="user-title border-bottom-1px needsclick" tag="div">
             <h2>我的推荐</h2>
             <i class="arrow"></i>
           </router-link>
-          <router-link to="/user/collection" class="user-title border-bottom-1px" tag="div">
+          <router-link to="/user/collection" class="user-title border-bottom-1px needsclick" tag="div">
             <h2>我的收藏</h2>
             <i class="arrow"></i>
           </router-link>

@@ -56,7 +56,7 @@
             </div>
           </div>
           <ul class="clearfix">
-            <li v-for="(item,index) in currentList" :key="index" @click="selectItem(item)">
+            <li v-for="(item,index) in currentList" :key="index" class="needsclick" @click="selectItem(item)">
               <div class="inner">
                 <div class="inner-content">
                   <img v-lazy="formatImg(item.pic)"/>
@@ -153,7 +153,6 @@
       getInitData() {
         if (!this.fetching) {
           this.fetching = true;
-          console.log('init');
           Promise.all([
             this.getProductList(),
             this.getFabricTypeDict(),

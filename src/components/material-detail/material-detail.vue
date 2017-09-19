@@ -44,7 +44,7 @@
               </tr>
               </tbody>
             </table>
-            <i class="like" :class="{active:isSC}" @click="handleCollect"></i>
+            <i class="like" :class="{active:isSC,needsclick:true}" @click="handleCollect"></i>
           </div>
           <div v-if="currentMaterial" class="description" ref="description">
             <img v-for="item in currentMaterial._advPic" width="100%" :src="item | formatImg" />
@@ -204,7 +204,10 @@
       getFabricYarnDict() {
         return getDictList('fabric_yarn');
       },
-      handleCollect() {
+      handleCollect(event) {
+        if (!event._constructed) {
+          return;
+        }
         if (this.isSC) {
           this.isSC = false;
           cancelCollection(this.$route.params.id).then(() => {

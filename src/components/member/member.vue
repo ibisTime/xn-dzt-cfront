@@ -13,11 +13,11 @@
           </div>
         </div>
         <div class="member-infos">
-          <router-link to="/user/member/jf-flow" tag="div">
-          <div class="info">
-            <h3>会员积分</h3>
-            <p>{{getJF()}}</p>
-          </div>
+          <router-link to="/user/member/jf-flow" class="needsclick" tag="div">
+            <div class="info">
+              <h3>会员积分</h3>
+              <p>{{getJF()}}</p>
+            </div>
           </router-link>
           <div class="info">
             <h3>会员经验</h3>
@@ -29,11 +29,11 @@
           </div>
         </div>
         <div class="menus">
-          <router-link class="menu border-bottom-1px border-top-1px" tag="div" to="/user/member/introduce">
+          <router-link class="menu border-bottom-1px border-top-1px needsclick" tag="div" to="/user/member/introduce">
             <h1>会员介绍</h1>
             <i class="arrow"></i>
           </router-link>
-          <router-link class="menu border-bottom-1px" tag="div" to="/user/member/welfare">
+          <router-link class="menu border-bottom-1px needsclick" tag="div" to="/user/member/welfare">
             <h1>会员福利</h1>
             <i class="arrow"></i>
           </router-link>

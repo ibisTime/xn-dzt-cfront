@@ -7,7 +7,7 @@
               class="technology-content">
         <div>
           <ul class="tech-content">
-            <li v-for="(tech,index) in techList" :key="tech.code" @click="selectItem(tech,index)">
+            <li v-for="(tech,index) in techList" class="needsclick" :key="tech.code" @click="selectItem(tech,index)">
               <div class="inner">
                 <div class="inner-content">
                   <img v-lazy="formatImg(tech.craft.pic)"/>

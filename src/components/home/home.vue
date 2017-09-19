@@ -11,23 +11,23 @@
             </slider>
           </div>
           <div class="home-category">
-            <router-link tag="div" class="cate-item cate-material" to="/home/material">
+            <router-link tag="div" class="cate-item cate-material needsclick" to="/home/material">
               <h2>高端面料</h2>
             </router-link>
-            <router-link tag="div" class="cate-item cate-technology" to="/home/technology">
+            <router-link tag="div" class="cate-item cate-technology needsclick" to="/home/technology">
               <h2>精致工艺</h2>
             </router-link>
           </div>
           <div class="home-list">
             <div class="head clearfix">
               <span>合衣衬衫</span>
-              <router-link to="/home/shirt">查看全部</router-link>
+              <router-link to="/home/shirt" class="needsclick">查看全部</router-link>
             </div>
             <div class="list-content clearfix">
-              <div v-for="(item,index) in modelList" @click="selectItem(item)" :key="item.code" class="item">
+              <div v-for="(item,index) in modelList" @click="selectItem(item)" :key="item.code" class="item needsclick">
                 <div class="inner">
                   <div class="inner-content" :style="getImgSyl(item.pic)">
-                    <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index)"></div>
+                    <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index, false, $event)"></div>
                   </div>
                 </div>
               </div>
@@ -36,13 +36,13 @@
             </div>
             <div class="head clearfix">
               <span>H+</span>
-              <router-link to="/home/clothes">查看全部</router-link>
+              <router-link to="/home/clothes" class="needsclick">查看全部</router-link>
             </div>
             <div class="list-content clearfix">
-              <div v-for="(item,index) in hModelList" @click="selectItem(item)" :key="item.code" class="item">
+              <div v-for="(item,index) in hModelList" @click="selectItem(item)" :key="item.code" class="item needsclick">
                 <div class="inner">
                   <div class="inner-content" :style="getImgSyl(item.pic)">
-                    <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index,true)"></div>
+                    <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index,true, $event)"></div>
                   </div>
                 </div>
               </div>
@@ -129,11 +129,17 @@
       getModelList() {
         return getPageModel(START, LIMIT, TYPE_NORMAL, HOT_LOCATION).then((data) => {
           this.modelList = data.list;
+          setTimeout(() => {
+            this.$refs.scroll.refresh();
+          }, 20);
         });
       },
       getHModelList() {
         return getPageModel(START, LIMIT, TYPE_H, HOT_LOCATION).then((data) => {
           this.hModelList = data.list;
+          setTimeout(() => {
+            this.$refs.scroll.refresh();
+          }, 20);
         });
       },
       getBannerList() {
@@ -164,7 +170,10 @@
         this.setCurModel(item);
         this.$router.push(`/home/${item.code}`);
       },
-      handleCollect(item, index, isH) {
+      handleCollect(item, index, isH, event) {
+        if (event._constructed) {
+          return;
+        }
         if (item.isSC === '1') {
           item.isSC = '0';
           cancelCollection(item.code).catch(() => {

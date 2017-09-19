@@ -37,7 +37,7 @@
           <h1>定制信息</h1>
           <div class="order-head" v-if="productInfo.productVarList && productInfo.productVarList.length">
             <div v-for="(item,index) in productInfo.productVarList"
-                 class="head-item"
+                 class="head-item needsclick"
                  :class="{active:index===currentIndex}"
                  @click="choseItem(index)">{{item.name}}</div>
           </div>
@@ -188,7 +188,10 @@
       showAdviserBtn() {
         return this.currentOrder && this.currentOrder.status === '10';
       },
-      goAdviser() {
+      goAdviser(event) {
+        if (event._constructed) {
+          return;
+        }
         this.$router.push(`${this.$route.path}/adviser`);
       },
       getMaterialCode() {
@@ -234,7 +237,10 @@
           return '未收货';
         }
       },
-      _cancelOrder() {
+      _cancelOrder(event) {
+        if (event._constructed) {
+          return;
+        }
         this.text = '确定取消订单吗';
         this.$refs.confirm.show();
       },
@@ -282,13 +288,22 @@
           });
         }
       },
-      payOrder() {
+      payOrder(event) {
+        if (event._constructed) {
+          return;
+        }
         this.$router.push(`${this.$route.path}/pay?code=${this.code}`);
       },
-      ratingOrder() {
+      ratingOrder(event) {
+        if (event._constructed) {
+          return;
+        }
         this.$refs.rating.show();
       },
-      receiveOrder() {
+      receiveOrder(event) {
+        if (event._constructed) {
+          return;
+        }
         this.text = '确认收货';
         this.$refs.confirm.show();
       },

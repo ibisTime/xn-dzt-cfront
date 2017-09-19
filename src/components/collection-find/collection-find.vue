@@ -4,7 +4,7 @@
       <scroll :data="findList" :pullup="pullup" @scrollToEnd="getPageArticle" class="find-content">
         <div>
           <ul>
-            <li v-for="(item,index) in findList" @click="selectItem(item,index)" :key="item.code">
+            <li v-for="(item,index) in findList" class="needsclick" @click="selectItem(item,index)" :key="item.code">
               <div class="img">
                 <div :style="getImgSyl(item.article.pic)"></div>
               </div>

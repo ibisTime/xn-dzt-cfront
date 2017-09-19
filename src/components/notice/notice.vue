@@ -12,6 +12,7 @@
                 <div class="desc">{{item.smsContent}}</div>
               </div>
             </div>
+            <loading class="loading" v-show="hasMore" title=""></loading>
           </div>
         </div>
       </scroll>
@@ -20,6 +21,7 @@
 </template>
 <script>
   import Scroll from 'base/scroll/scroll';
+  import Loading from 'base/loading/loading';
   import {setTitle} from 'common/js/util';
   import {getPageSysNotices} from 'api/general';
   import {commonMixin} from 'common/js/mixin';
@@ -53,7 +55,8 @@
       }
     },
     components: {
-      Scroll
+      Scroll,
+      Loading
     }
   };
 </script>

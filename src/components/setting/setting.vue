@@ -4,44 +4,44 @@
       <scroll class="user-content">
         <div>
           <div class="setting-wrapper">
-            <router-link to="/user/setting/avatar" tag="div" class="setting-item border-bottom-1px">
+            <router-link to="/user/setting/avatar" tag="div" class="setting-item border-bottom-1px needsclick">
               <h2>头像</h2>
               <img :src="getAvatar()"/>
               <i class="arrow"></i>
             </router-link>
-            <div class="setting-item border-bottom-1px" @click="goNick">
+            <div class="setting-item border-bottom-1px needsclick" @click="goNick">
               <h2>昵称</h2>
               <span v-if="user && user.nickname">{{user.nickname}}</span>
               <span v-else>设置昵称</span>
               <i class="arrow"></i>
             </div>
-            <div class="setting-item border-bottom-1px" @click="goMobile">
+            <div class="setting-item border-bottom-1px needsclick" @click="goMobile">
               <h2>手机号</h2>
               <span v-if="user && user.mobile">{{user.mobile}}</span>
               <span v-else>绑定手机号</span>
               <i class="arrow"></i>
             </div>
-            <router-link to="/user/setting/set-tradepwd" tag="div" class="setting-item border-bottom-1px">
+            <router-link to="/user/setting/set-tradepwd" tag="div" class="setting-item border-bottom-1px needsclick">
               <h2>支付密码</h2>
               <span v-if="user && user.tradepwdFlag">修改密码</span>
               <span v-else>设置密码</span>
               <i class="arrow"></i>
             </router-link>
-            <router-link to="/user/setting/set-birthday" tag="div" class="setting-item border-bottom-1px">
+            <router-link to="/user/setting/set-birthday" tag="div" class="setting-item border-bottom-1px needsclick">
               <h2>生日</h2>
               <span v-if="user && user.birthday">{{user.birthday | formatDate('MM月dd日')}}</span>
               <span v-else>设置生日</span>
               <i class="arrow"></i>
             </router-link>
-            <router-link to="/user/setting/bankcard" tag="div" class="setting-item border-bottom-1px">
+            <router-link to="/user/setting/bankcard" tag="div" class="setting-item border-bottom-1px needsclick">
               <h2>我的银行卡</h2>
               <i class="arrow"></i>
             </router-link>
-            <router-link to="/user/setting/aboutus" class="setting-item border-bottom-1px" tag="div">
+            <router-link to="/user/setting/aboutus" class="setting-item border-bottom-1px needsclick" tag="div">
               <h2>关于我们</h2>
               <i class="arrow"></i>
             </router-link>
-            <router-link to="/user/setting/notice" class="setting-item border-bottom-1px" tag="div">
+            <router-link to="/user/setting/notice" class="setting-item border-bottom-1px needsclick" tag="div">
               <h2>系统消息</h2>
               <i class="arrow"></i>
             </router-link>

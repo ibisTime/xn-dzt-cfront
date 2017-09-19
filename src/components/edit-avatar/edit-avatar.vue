@@ -10,7 +10,7 @@
             <h2>修改您的头像</h2>
           </div>
           <div class="avatar-content clearfix">
-            <div v-for="item in files" class="avatar" @click="showChosen(item)">
+            <div v-for="item in files" class="avatar needsclick" @click="showChosen(item, $event)">
               <div class="inner-content">
                 <img :src="getImg(item)"/>
                 <div v-show="!item.ok" class="inner-loading">
@@ -27,7 +27,7 @@
                        :token="token"
                        :uploadUrl="uploadUrl"></qiniu>
                 <div class="add-icon">
-                  <input class="input-file"
+                  <input class="input-file needsclick"
                          type="file"
                          :multiple="multiple"
                          ref="fileInput"
@@ -55,6 +55,7 @@
       <clip-avatar @choseImage="updateAvatar"
                    ref="clipAvatar"
                    @cancel="cancelItem"
+                   :imgType="this.currentItem && this.currentItem.type || ''"
                    :imgUrl="this.currentItem && this.currentItem.preview || ''"></clip-avatar>
       <toast ref="toast" :text="text"></toast>
     </div>
@@ -85,7 +86,7 @@
       };
     },
     created() {
-      this.click = false;
+      this.click = true;
       this.multiple = false;
       this.uploadUrl = 'http://up-z0.qiniu.com';
       this.getInitData();
@@ -132,7 +133,10 @@
           this.token = data.uploadToken;
         });
       },
-      showChosen(item) {
+      showChosen(item, event) {
+        if (event._constructed) {
+          return;
+        }
         if (this.curImg !== item.key) {
           this.currentItem = item;
           this.$refs.chosen.show();
@@ -159,7 +163,8 @@
         let preview = URL.createObjectURL(file);
         let item = {
           preview,
-          ok: false
+          ok: false,
+          type: file.type
         };
         this.currentItem = item;
         this.files.push(item);

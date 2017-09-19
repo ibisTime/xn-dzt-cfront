@@ -13,7 +13,7 @@
             <li v-for="(item, index) in techList.categorys" class="tech-item" :key="index">
               <div class="head">{{typeList[item].dvalue}}</div>
               <ul class="clearfix">
-                <li v-for="tech in techList[item]" :key="tech.code" @click="selectItem(tech)">
+                <li v-for="tech in techList[item]" :key="tech.code" class="needsclick" @click="selectItem(tech)">
                   <div class="inner">
                     <div class="inner-content">
                       <img v-lazy="formatImg(tech.pic)"/>
@@ -25,7 +25,7 @@
             <loading class="tech-loading" v-show="loadingFlag" title=""></loading>
           </ul>
         </div>
-        <div v-show="!techList.categorys.length" class="no-result-wrapper">
+        <div v-show="!loadingFlag && !techList.categorys.length" class="no-result-wrapper">
           <no-result title="抱歉，暂无相关工艺"></no-result>
         </div>
       </scroll>
@@ -113,6 +113,7 @@
           this.techList = this.techMapData[modelCode];
         } else {
           this.loadingFlag = true;
+          this.techList = [];
           getTechnologyList(modelCode).then((data) => {
             this.loadingFlag = false;
             let _list = {

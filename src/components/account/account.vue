@@ -4,7 +4,7 @@
       <scroll class="scroll-content">
         <div>
           <section class="account-item">
-            <router-link to="/user/account/hyb-flow" tag="div" class="title hyb-title">
+            <router-link to="/user/account/hyb-flow" tag="div" class="title hyb-title needsclick">
               <label>合衣币账户</label>
               <span>{{hybAmount}}</span>
             </router-link>
@@ -24,7 +24,7 @@
             </div>
           </section>
           <section class="account-item">
-            <router-link to="/user/account/cny-flow" tag="div" class="title cny-title">
+            <router-link to="/user/account/cny-flow" tag="div" class="title cny-title needsclick">
               <label>人民币账户</label>
               <span>¥ {{cnyAmount}}</span>
             </router-link>
@@ -44,14 +44,14 @@
             </div>
           </section>
           <section class="account-item">
-            <router-link to="/user/account/jf-flow" tag="div" class="title jf-title">
+            <router-link to="/user/account/jf-flow" tag="div" class="title jf-title needsclick">
               <label>积分账户</label>
               <span>{{jfAmount}}</span>
             </router-link>
             <div class="main jf-main">
-              <router-link to="/user/account/jf-rules" tag="div" class="jf-item">积分规则</router-link>
-              <router-link to="/user/account/jf-flow" tag="div" class="jf-item">积分账单</router-link>
-              <router-link to="/user/account/jf-exchange" tag="div" class="jf-item">积分兑换</router-link>
+              <router-link to="/user/account/jf-rules" tag="div" class="jf-item needsclick">积分规则</router-link>
+              <router-link to="/user/account/jf-flow" tag="div" class="jf-item needsclick">积分账单</router-link>
+              <router-link to="/user/account/jf-exchange" tag="div" class="jf-item needsclick">积分兑换</router-link>
             </div>
           </section>
         </div>

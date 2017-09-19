@@ -4,7 +4,7 @@
       <img ref="oriImg" crossOrigin="anonymous" :src="imgSrc"/>
       <div v-show="showFlag" ref="wrapper" class="clip-wrapper">
         <img class="origin" :src="imgSrc"/>
-        <img ref="clipImg" :src="imgSrc"/>
+        <img ref="clipImg" @load="handleLoad" :src="imgSrc"/>
         <div ref="clipBox"
              class="clip-box"
              @touchstart="handleTouchStart"
@@ -21,6 +21,10 @@
   export default {
     props: {
       imgUrl: {
+        type: String,
+        default: ''
+      },
+      imgType: {
         type: String,
         default: ''
       }
@@ -50,6 +54,11 @@
       this.clipY = 0;
     },
     methods: {
+      handleLoad() {
+        if (this.showFlag) {
+          this.calculate();
+        }
+      },
       getPixelRatio(context) {
         let backingStore = context.backingStorePixelRatio ||
           context.webkitBackingStorePixelRatio ||
@@ -59,35 +68,38 @@
           context.backingStorePixelRatio || 1;
         return (window.devicePixelRatio || 1) / backingStore;
       },
+      calculate() {
+        let ratio = 1;
+        if (this.$refs.canvas.getContext) {
+          let context = this.$refs.canvas.getContext('2d');
+          ratio = this.getPixelRatio(context);
+        }
+        this.cWidth = this.$refs.wrapper.offsetWidth * ratio / 2;
+        let top = this.$refs.clipBox.offsetTop;
+        let right = this.$refs.clipBox.offsetWidth;
+        let bottom = this.$refs.clipBox.offsetHeight + top;
+        if (this.$refs.clipImg.offsetHeight < this.$refs.clipBox.offsetHeight) {
+          this.cHeight = this.$refs.clipImg.offsetHeight * ratio / 2;
+          this.maxTop = (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
+          this.minTop = this.maxTop - (this.$refs.clipBox.offsetHeight - this.$refs.clipImg.offsetHeight);
+          top = 0;
+          bottom = this.$refs.clipImg.offsetHeight;
+        } else {
+          this.cHeight = this.cWidth;
+          this.minTop = (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
+          this.maxTop = this.minTop + this.$refs.clipImg.offsetHeight - this.$refs.clipBox.offsetHeight;
+          top -= (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
+          bottom -= (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
+        }
+        this.clipY = top;
+        this.$refs.clipImg.style.clip = `rect(${top}px,${right}px,${bottom}px,0)`;
+      },
       show() {
         this.showFlag = true;
         setTimeout(() => {
           this.$refs.clipBox.style.top = (this.$refs.wrapper.offsetHeight - this.$refs.clipBox.offsetHeight) / 2 + 'px';
-          let ratio = 1;
-          if (this.$refs.canvas.getContext) {
-            let context = this.$refs.canvas.getContext('2d');
-            ratio = this.getPixelRatio(context);
-          }
-          this.cWidth = this.$refs.wrapper.offsetWidth * ratio / 2;
           setTimeout(() => {
-            let top = this.$refs.clipBox.offsetTop;
-            let right = this.$refs.clipBox.offsetWidth;
-            let bottom = this.$refs.clipBox.offsetHeight + top;
-            if (this.$refs.clipImg.offsetHeight < this.$refs.clipBox.offsetHeight) {
-              this.cHeight = this.$refs.clipImg.offsetHeight * ratio / 2;
-              this.maxTop = (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
-              this.minTop = this.maxTop - (this.$refs.clipBox.offsetHeight - this.$refs.clipImg.offsetHeight);
-              top = 0;
-              bottom = this.$refs.clipImg.offsetHeight;
-            } else {
-              this.cHeight = this.cWidth;
-              this.minTop = (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
-              this.maxTop = this.minTop + this.$refs.clipImg.offsetHeight - this.$refs.clipBox.offsetHeight;
-              top -= (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
-              bottom -= (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
-            }
-            this.clipY = top;
-            this.$refs.clipImg.style.clip = `rect(${top}px,${right}px,${bottom}px,0)`;
+            this.calculate();
           }, 20);
         }, 20);
       },
@@ -146,7 +158,7 @@
           var ratio = this.getPixelRatio(context);
           context.clearRect(0, 0, canvasWidth * ratio, canvasHeight * ratio);
           context.drawImage(this.$refs.oriImg, this.clipX * rateW, this.clipY * rateH, width * rateW, height * rateH, 0, 0, this.cWidth, this.cHeight);
-          base64 = this.$refs.canvas.toDataURL();
+          base64 = this.$refs.canvas.toDataURL(this.imgType || '');
         }
         this.$emit('choseImage', {
           outerWidth,
