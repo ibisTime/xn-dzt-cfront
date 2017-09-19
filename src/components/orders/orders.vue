@@ -184,6 +184,7 @@
             this.fetching = false;
           });
         } else if (item.status === '8') {
+          this.fetching = false;
           this.$refs.rating.show();
         } else {
           cancelBook(item.code).then(() => {

@@ -14,7 +14,7 @@
                 <p>{{hybInTotalAmount}}</p>
               </div>
               <div class="item">
-                <h2>已消费额</h2>
+                <h2>已消费</h2>
                 <p>{{hybOutTotalAmount}}</p>
               </div>
               <div class="item">
@@ -30,11 +30,11 @@
             </router-link>
             <div class="main">
               <div class="item">
-                <h2>已消费额</h2>
+                <h2>已消费</h2>
                 <p>¥{{cnyOutTotalAmount}}</p>
               </div>
               <div class="item">
-                <h2>已提现额</h2>
+                <h2>已提现金额</h2>
                 <p>¥{{cnyTxTotalAmount}}</p>
               </div>
               <div class="item">
@@ -138,7 +138,7 @@
               this.cnyAmount = formatAmount(item.amount);
             } else if (item.currency === 'JF') {
               this.setJfAccount(item);
-              this.jfAmount = formatAmount(item.amount);
+              this.jfAmount = (item.amount / 1000);
             } else if (item.currency === 'HYB') {
               this._getHYBAccountInfo(item.accountNumber);
               this.setHybAccount(item);
