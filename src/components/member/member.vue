@@ -13,10 +13,12 @@
           </div>
         </div>
         <div class="member-infos">
+          <router-link to="/user/member/jf-flow" tag="div">
           <div class="info">
             <h3>会员积分</h3>
             <p>{{getJF()}}</p>
           </div>
+          </router-link>
           <div class="info">
             <h3>会员经验</h3>
             <p>{{getJY()}}</p>

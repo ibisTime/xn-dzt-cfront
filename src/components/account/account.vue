@@ -19,7 +19,7 @@
               </div>
               <div class="item">
                 <h2>最近一笔消费</h2>
-                <p>{{hybZjCash}}</p>
+                <p>{{hybZjConsume}}</p>
               </div>
             </div>
           </section>
@@ -39,7 +39,7 @@
               </div>
               <div class="item">
                 <h2>最近一笔提现</h2>
-                <p>¥{{cnyZjConsume}}</p>
+                <p>¥{{cnyZjCash}}</p>
               </div>
             </div>
           </section>
@@ -91,10 +91,10 @@
         jfAmount: '',
         hybInTotalAmount: '',
         hybOutTotalAmount: '',
-        hybZjCash: '',
+        hybZjConsume: '',
         cnyOutTotalAmount: '',
         cnyTxTotalAmount: '',
-        cnyZjConsume: ''
+        cnyZjCash: ''
       };
     },
     created() {
@@ -161,7 +161,7 @@
           this.accountInfo = data;
           this.cnyOutTotalAmount = formatAmount(data.outTotalAmount);
           this.cnyTxTotalAmount = formatAmount(data.txTotalAmount);
-          this.cnyZjConsume = formatAmount(data.zjConsume);
+          this.cnyZjCash = formatAmount(data.zjCash);
         });
       },
       _getHYBAccountInfo(accountNumber) {
@@ -169,7 +169,7 @@
           this.accountInfo = data;
           this.hybInTotalAmount = formatAmount(data.inTotalAmount);
           this.hybOutTotalAmount = formatAmount(data.outTotalAmount);
-          data.zjCash > 0 ? this.hybZjCash = formatAmount(data.zjCash) : this.hybZjCash = -formatAmount(data.zjCash);
+          data.zjConsume > 0 ? this.hybZjConsume = formatAmount(data.zjConsume) : this.hybZjConsume = -formatAmount(data.zjConsume);
         });
       },
       amountUpdate() {
@@ -222,6 +222,7 @@
     computed: {
       ...mapGetters([
         'cnyAccount',
+        'hybAccount',
         'user'
       ])
     },

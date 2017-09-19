@@ -6,14 +6,14 @@
           <div class="list-content clearfix">
             <div v-for="(item,index) in products" @click="selectItem(item,index)" :key="item.code" class="item">
               <div class="inner">
-                <div class="inner-content" :style="getImgSyl(item.model.pic)"></div>
+                <div class="inner-content" :style="getImgSyl(item.specimen.pic)"></div>
               </div>
             </div>
             <loading class="loading-wrapper" v-show="hasMore" title=""></loading>
           </div>
         </div>
         <div v-show="!hasMore && !products.length" class="no-result-wrapper">
-          <no-result title="抱歉，暂无收藏的产品"></no-result>
+          <no-result title="抱歉，暂无收藏的样品"></no-result>
         </div>
       </scroll>
       <router-view @update="handleUpdate"></router-view>
@@ -53,7 +53,7 @@
     methods: {
       shouldGetData() {
         if (this.$route.path === '/user/collection/product') {
-          setTitle('产品列表');
+          setTitle('样品列表');
           if (this.hasMore && !this.products.length) {
             return true;
           }
@@ -63,7 +63,7 @@
       },
       getPageProducts() {
         if (this.hasMore) {
-          getPageCollections(this.start, LIMIT, 2).then((data) => {
+          getPageCollections(this.start, LIMIT, 5).then((data) => {
             if (data.totalCount <= LIMIT || data.list.length < LIMIT) {
               this.hasMore = false;
             }
@@ -77,24 +77,24 @@
       selectItem(item, index) {
         this.curCode = item.code;
         this.curIndex = index;
-        if (!item.model._advPic) {
-          item.model._advPic = item.model.advPic.split('||');
+        if (!item.specimen._advPic) {
+          item.specimen._advPic = item.specimen.advPic.split('||');
         }
-        this.setCurModel(item.model);
-        this.$router.push(`/user/collection/product/${item.model.code}`);
+        this.setCurModel(item.specimen);
+        this.$router.push(`/user/collection/product/${item.specimen.code}`);
       },
       handleUpdate(item) {
         if (this.curCode) {
           let _curItem = this.products[this.curIndex];
           if (item.isSC === '1') {
-            if (!_curItem || _curItem.model.code !== item.code) {
+            if (!_curItem || _curItem.specimen.code !== item.code) {
               this.products.splice(this.curIndex, 0, {
-                model: item,
+                specimen: item,
                 code: this.curCode
               });
             }
           } else {
-            if (_curItem.model.code === item.code) {
+            if (_curItem.specimen.code === item.code) {
               this.products.splice(this.curIndex, 1);
             }
           }

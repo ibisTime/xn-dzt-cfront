@@ -244,6 +244,7 @@
     width: 100%;
     bottom: 60px;
     background: #eee;
+    z-index: 100;
 
     .message-content {
       height: 100%;

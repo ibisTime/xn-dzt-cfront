@@ -380,6 +380,10 @@ export default new Router({
             {
               path: 'introduce',
               component: MemberIntroduce
+            },
+            {
+              path: 'jf-flow',
+              component: JfFlow
             }
           ]
         },

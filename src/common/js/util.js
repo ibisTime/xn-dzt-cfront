@@ -212,10 +212,10 @@ export function nicknameValid(nickname) {
   };
   if (!nickname) {
     result.err = 1;
-    result.msg = '不能为空';
+    result.msg = '昵称不能为空';
   } else if (nickname.length > 6) {
     result.err = 1;
-    result.msg = '不能超过6位';
+    result.msg = '昵称不能超过6位';
   }
   return result;
 }

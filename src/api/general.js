@@ -125,7 +125,8 @@ export function getBizDictMap() {
 // 获取banner
 export function getBannerList() {
   return fetch(805806, {
-    type: 2
+    type: 2,
+    belong: 0
   });
 }
 

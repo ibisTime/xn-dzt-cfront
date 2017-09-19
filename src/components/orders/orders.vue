@@ -174,10 +174,17 @@
             this.fetching = false;
             this.editOrderListByReceived({
               code: item.code
+            }).then(() => {
+              this.currentCode = item.code;
+              item.status = '8';
+              this.text = '收货成功，确定立即评价吗？';
+              this.$refs.confirm.show();
             });
           }).catch(() => {
             this.fetching = false;
           });
+        } else if (item.status === '8') {
+          this.$refs.rating.show();
         } else {
           cancelBook(item.code).then(() => {
             this.fetching = false;

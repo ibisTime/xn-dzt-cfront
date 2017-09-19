@@ -79,6 +79,7 @@
       };
     },
     created() {
+      setTitle('样品详情');
       this.showDots = false;
       this.probeType = 3;
       this.listenScroll = true;
@@ -107,9 +108,9 @@
     },
     methods: {
       _getModel() {
-        if (this.currentModel) {
-          setTitle(this.currentModel.name);
-        }
+        // if (this.currentModel) {
+        //   setTitle(this.currentModel.name);
+        // }
         return getModel(this.$route.params.id).then((data) => {
           if (data.isSC === '1') {
             this.isSC = true;

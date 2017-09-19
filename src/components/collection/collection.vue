@@ -3,7 +3,7 @@
     <div class="collection-wrapper">
       <div class="type-wrapper">
         <router-link to="/user/collection/product" tag="div" class="type">
-          <h2>产品</h2>
+          <h2>样品</h2>
           <i class="arrow"></i>
         </router-link>
         <router-link to="/user/collection/material" tag="div" class="type">

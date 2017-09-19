@@ -254,9 +254,13 @@
                 code: this.code
               });
             }
+            this.text = '收货成功，确定立即评价吗？';
+            this.$refs.confirm.show();
           }).catch(() => {
             this.loadingFlag = false;
           });
+        } else if (this.currentOrder.status === '8') {
+          this.$refs.rating.show();
         } else {
           this.loadingText = '取消中';
           cancelBook(this.code).then(() => {
