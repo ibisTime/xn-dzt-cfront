@@ -16,7 +16,7 @@
               class="orders-content">
         <div>
           <ul v-if="currentList">
-            <li v-for="(item, index) in currentList.data" :key="index" @click="goDetail(item)">
+            <li v-for="(item, index) in currentList.data" class="needsclick" :key="index" @click="goDetail(item)">
               <p class="clearfix time">
                 <span class="fl">{{item.createDatetime | formatDate}}</span>
                 <span class="fr">{{item.type | formatType}}</span>
@@ -27,11 +27,11 @@
               </p>
               <p class="clearfix">
                 <span class="status fl">{{item.status | formatStatus}}</span>
-                <span class="btn fr" v-show="showPayBtn(item.status)" @click.stop="payOrder(item)">立即支付</span>
-                <span class="btn cancel fr" v-show="showCancelBtn(item.status)" @click.stop="cancelOrder(item)">取消订单</span>
-                <span class="btn fr" v-show="showRatingBtn(item.status)" @click.stop="ratingOrder(item)">立即评价</span>
-                <span class="btn fr" v-show="showReceiveBtn(item.status)" @click.stop="receiveOrder(item)">确认收货</span>
-                <span class="btn fr" v-show="item.status==='10'" @click.stop="goAdviser()">联系顾问</span>
+                <span class="btn fr needsclick" v-show="showPayBtn(item.status)" @click.stop="payOrder(item)">立即支付</span>
+                <span class="btn cancel fr needsclick" v-show="showCancelBtn(item.status)" @click.stop="cancelOrder(item)">取消订单</span>
+                <span class="btn fr needsclick" v-show="showRatingBtn(item.status)" @click.stop="ratingOrder(item)">立即评价</span>
+                <span class="btn fr needsclick" v-show="showReceiveBtn(item.status)" @click.stop="receiveOrder(item)">确认收货</span>
+                <span class="btn fr needsclick" v-show="item.status==='10'" @click.stop="goAdviser">联系顾问</span>
               </p>
             </li>
             <loading class="orders-loading" v-show="currentList.hasMore" title=""></loading>
@@ -43,7 +43,7 @@
       </scroll>
       <div v-show="fetching" class="loading-container">
         <div class="loading-wrapper">
-          <loading title="取消中..."></loading>
+          <loading title=""></loading>
         </div>
       </div>
       <confirm ref="confirm" :text="text" @confirm="handleConfirm"></confirm>

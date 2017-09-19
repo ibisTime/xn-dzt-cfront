@@ -56,6 +56,7 @@
     methods: {
       handleLoad() {
         if (this.showFlag) {
+          console.log('load');
           this.calculate();
         }
       },
@@ -155,7 +156,7 @@
           let canvasWidth = this.$refs.wrapper.offsetWidth;
           let canvasHeight = this.$refs.wrapper.offsetHeight;
           let context = this.$refs.canvas.getContext('2d');
-          var ratio = this.getPixelRatio(context);
+          let ratio = this.getPixelRatio(context);
           context.clearRect(0, 0, canvasWidth * ratio, canvasHeight * ratio);
           context.drawImage(this.$refs.oriImg, this.clipX * rateW, this.clipY * rateH, width * rateW, height * rateH, 0, 0, this.cWidth, this.cHeight);
           base64 = this.$refs.canvas.toDataURL(this.imgType || '');

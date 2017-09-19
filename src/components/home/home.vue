@@ -27,7 +27,7 @@
               <div v-for="(item,index) in modelList" @click="selectItem(item)" :key="item.code" class="item needsclick">
                 <div class="inner">
                   <div class="inner-content" :style="getImgSyl(item.pic)">
-                    <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index, false, $event)"></div>
+                    <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index, false)"></div>
                   </div>
                 </div>
               </div>
@@ -42,7 +42,7 @@
               <div v-for="(item,index) in hModelList" @click="selectItem(item)" :key="item.code" class="item needsclick">
                 <div class="inner">
                   <div class="inner-content" :style="getImgSyl(item.pic)">
-                    <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index,true, $event)"></div>
+                    <div class="like" :class="{active:item.isSC === '1'}" @click.stop.prevent="handleCollect(item,index,true)"></div>
                   </div>
                 </div>
               </div>
@@ -170,10 +170,7 @@
         this.setCurModel(item);
         this.$router.push(`/home/${item.code}`);
       },
-      handleCollect(item, index, isH, event) {
-        if (event._constructed) {
-          return;
-        }
+      handleCollect(item, index, isH) {
         if (item.isSC === '1') {
           item.isSC = '0';
           cancelCollection(item.code).catch(() => {

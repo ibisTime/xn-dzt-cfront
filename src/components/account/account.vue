@@ -4,7 +4,7 @@
       <scroll class="scroll-content">
         <div>
           <section class="account-item">
-            <router-link to="/user/account/hyb-flow" tag="div" class="title hyb-title">
+            <router-link to="/user/account/hyb-flow" tag="div" class="title hyb-title needsclick">
               <label>合衣币账户</label>
               <span>{{hybAmount}}</span>
             </router-link>
@@ -14,7 +14,7 @@
                 <p>{{hybInTotalAmount}}</p>
               </div>
               <div class="item">
-                <h2>已消费</h2>
+                <h2>已消费金额</h2>
                 <p>{{hybOutTotalAmount}}</p>
               </div>
               <div class="item">
@@ -24,13 +24,13 @@
             </div>
           </section>
           <section class="account-item">
-            <router-link to="/user/account/cny-flow" tag="div" class="title cny-title">
+            <router-link to="/user/account/cny-flow" tag="div" class="title cny-title needsclick">
               <label>人民币账户</label>
               <span>¥ {{cnyAmount}}</span>
             </router-link>
             <div class="main">
               <div class="item">
-                <h2>已消费</h2>
+                <h2>已消费金额</h2>
                 <p>¥{{cnyOutTotalAmount}}</p>
               </div>
               <div class="item">
@@ -44,14 +44,14 @@
             </div>
           </section>
           <section class="account-item">
-            <router-link to="/user/account/jf-flow" tag="div" class="title jf-title">
+            <router-link to="/user/account/jf-flow" tag="div" class="title jf-title needsclick">
               <label>积分账户</label>
               <span>{{jfAmount}}</span>
             </router-link>
             <div class="main jf-main">
-              <router-link to="/user/account/jf-rules" tag="div" class="jf-item">积分规则</router-link>
-              <router-link to="/user/account/jf-flow" tag="div" class="jf-item">积分账单</router-link>
-              <router-link to="/user/account/jf-exchange" tag="div" class="jf-item">积分兑换</router-link>
+              <router-link to="/user/account/jf-rules" tag="div" class="jf-item needsclick">积分规则</router-link>
+              <router-link to="/user/account/jf-flow" tag="div" class="jf-item needsclick">积分账单</router-link>
+              <router-link to="/user/account/jf-exchange" tag="div" class="jf-item needsclick">积分兑换</router-link>
             </div>
           </section>
         </div>
@@ -126,9 +126,6 @@
         if (this.cnyAccount && this.account) {
           return this._getAccountInfo(this.cnyAccount.accountNumber);
         }
-        if (this.hybAccount && this.account) {
-          return this._getHYBAccountInfo(this.hybAccount.accountNumber);
-        }
         return getAccount().then((data) => {
           data.forEach((item) => {
             if (item.currency === 'CNY') {
@@ -138,7 +135,7 @@
               this.cnyAmount = formatAmount(item.amount);
             } else if (item.currency === 'JF') {
               this.setJfAccount(item);
-              this.jfAmount = (item.amount / 1000);
+              this.jfAmount = formatAmount(item.amount, 0);
             } else if (item.currency === 'HYB') {
               this._getHYBAccountInfo(item.accountNumber);
               this.setHybAccount(item);
@@ -169,11 +166,11 @@
           this.accountInfo = data;
           this.hybInTotalAmount = formatAmount(data.inTotalAmount);
           this.hybOutTotalAmount = formatAmount(data.outTotalAmount);
-          data.zjConsume > 0 ? this.hybZjConsume = formatAmount(data.zjConsume) : this.hybZjConsume = -formatAmount(data.zjConsume);
+          this.hybZjConsume = formatAmount(data.zjConsume);
         });
       },
       amountUpdate() {
-        if (this.cnyAccount && this.account) {
+        if (this.cnyAccount && this.hybAccount && this.account) {
           this.loadingFlag = true;
           Promise.all([
             getAccount(),
@@ -184,6 +181,7 @@
               if (item.currency === 'CNY') {
                 this.setCnyAccount(item);
                 this.account = item;
+                this.cnyAmount = formatAmount(item.amount);
               } else if (item.currency === 'JF') {
                 this.setJfAccount(item);
               } else if (item.currency === 'HYB') {

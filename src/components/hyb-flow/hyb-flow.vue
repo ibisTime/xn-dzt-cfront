@@ -29,7 +29,7 @@
   import Loading from 'base/loading/loading';
   import NoResult from 'base/no-result/no-result';
   import {commonMixin} from 'common/js/mixin';
-  import {setTitle} from 'common/js/util';
+  import {setTitle, formatAmount} from 'common/js/util';
 
   const LIMIT = 20;
 
@@ -82,7 +82,7 @@
       },
       formatAmount(amount) {
         let prefix = +amount > 0 ? '+' : '';
-        return prefix + (+amount / 1000).toFixed(0);
+        return prefix + formatAmount(amount);
       },
       ...mapMutations({
         'setHybAccount': SET_HYB_ACCOUNT

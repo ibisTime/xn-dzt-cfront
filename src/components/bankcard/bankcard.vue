@@ -4,7 +4,7 @@
       <scroll class="bankcard-content">
         <div>
           <ul>
-            <li v-for="(item,index) in bankcardList" :key="item.code">
+            <li v-for="(item,index) in bankcardList" class="needsclick" :key="item.code">
               <div class="content"
                    ref="bankcard"
                    @click="selectItem(item)"

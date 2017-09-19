@@ -99,13 +99,14 @@ export function getShareImg(imgs) {
 }
 
 // 格式化金额
-export function formatAmount(amount) {
+export function formatAmount(amount, len = 2) {
   if (isUnDefined(amount)) {
     return '--';
   }
   amount = (+amount / 1000).toString();
-  amount = +amount.replace(/(\.\d\d)\d+/ig, '$1');
-  return amount.toFixed(2);
+  let reg = new RegExp('(\\.\\d{' + len + '})\\d*', 'ig');
+  amount = +amount.replace(reg, '$1');
+  return amount.toFixed(len);
 }
 
 // 判断是否 ios

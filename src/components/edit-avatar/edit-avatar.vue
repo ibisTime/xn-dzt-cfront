@@ -10,7 +10,7 @@
             <h2>修改您的头像</h2>
           </div>
           <div class="avatar-content clearfix">
-            <div v-for="item in files" class="avatar needsclick" @click="showChosen(item, $event)">
+            <div v-for="item in files" class="avatar needsclick" @click="showChosen(item)">
               <div class="inner-content">
                 <img :src="getImg(item)"/>
                 <div v-show="!item.ok" class="inner-loading">
@@ -73,6 +73,7 @@
   import {SET_USER_STATE} from 'store/mutation-types';
   import Chosen from 'components/chosen/chosen';
   import ClipAvatar from 'components/clip-avatar/clip-avatar';
+  import EXIF from 'exif-js';
 
   export default {
     data() {
@@ -133,10 +134,7 @@
           this.token = data.uploadToken;
         });
       },
-      showChosen(item, event) {
-        if (event._constructed) {
-          return;
-        }
+      showChosen(item) {
         if (this.curImg !== item.key) {
           this.currentItem = item;
           this.$refs.chosen.show();
@@ -160,19 +158,77 @@
         }
         files = Array.prototype.slice.call(files, 0, 1);
         let file = files[0];
-        let preview = URL.createObjectURL(file);
-        let item = {
-          preview,
-          ok: false,
-          type: file.type
+        let orientation;
+        let self = this;
+        EXIF.getData(file, function() {
+          orientation = EXIF.getTag(this, 'Orientation');
+        });
+        let reader = new FileReader();
+        reader.onload = function(e) {
+          self.getImgData(file.type, this.result, orientation, function(data) {
+            let item = {
+              preview: data,
+              ok: false,
+              type: file.type
+            };
+            self.currentItem = item;
+            self.files.push(item);
+            self.$refs.clipAvatar.show();
+            self.$refs.fileInput.value = null;
+          });
         };
-        this.currentItem = item;
-        this.files.push(item);
-        this.$refs.clipAvatar.show();
-        this.$refs.fileInput.value = null;
+        reader.readAsDataURL(file);
+      },
+      getImgData(fileType, img, dir, next) {
+        let image = new Image();
+        image.onload = function() {
+          let degree = 0;
+          let drawWidth;
+          let drawHeight;
+          let width;
+          let height;
+          drawWidth = this.naturalWidth;
+          drawHeight = this.naturalHeight;
+          let canvas = document.createElement('canvas');
+          canvas.width = width = drawWidth;
+          canvas.height = height = drawHeight;
+          let context = canvas.getContext('2d');
+          // 判断图片方向，重置canvas大小，确定旋转角度，iphone默认的是home键在右方的横屏拍摄方式
+          switch(dir) {
+            // iphone横屏拍摄，此时home键在左侧
+            case 3:
+              degree = 180;
+              drawWidth = -width;
+              drawHeight = -height;
+              break;
+            // iphone竖屏拍摄，此时home键在下方(正常拿手机的方向)
+            case 6:
+              canvas.width = height;
+              canvas.height = width;
+              degree = 90;
+              drawWidth = width;
+              drawHeight = -height;
+              break;
+            // iphone竖屏拍摄，此时home键在上方
+            case 8:
+              canvas.width = height;
+              canvas.height = width;
+              degree = 270;
+              drawWidth = -width;
+              drawHeight = height;
+              break;
+          }
+          // 使用canvas旋转校正
+          context.rotate(degree * Math.PI / 180);
+          context.drawImage(this, 0, 0, drawWidth, drawHeight);
+          // 返回校正图片
+          next(canvas.toDataURL(fileType, 0.8));
+        };
+        image.src = img;
       },
       updateAvatar(info) {
         if (info.base64) {
+          this.currentItem.preview = info.base64;
           this.$refs.qiniu.uploadByBase64(info.base64).then((data) => {
             this._changeAvatar(data.body.key);
           }).catch((err) => {

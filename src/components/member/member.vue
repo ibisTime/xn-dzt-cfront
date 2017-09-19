@@ -13,11 +13,9 @@
           </div>
         </div>
         <div class="member-infos">
-          <router-link to="/user/member/jf-flow" class="needsclick" tag="div">
-            <div class="info">
-              <h3>会员积分</h3>
-              <p>{{getJF()}}</p>
-            </div>
+          <router-link to="/user/member/jf-flow" class="needsclick info" tag="div">
+            <h3>会员积分</h3>
+            <p>{{getJF()}}</p>
           </router-link>
           <div class="info">
             <h3>会员经验</h3>
@@ -134,7 +132,7 @@
                 return item.ckey === ckey;
               });
               let maxValue = +levelJY[index].cvalue + 1;
-              this.sjjy = Math.ceil((+maxValue) - (+this.jyAccount.amount / 1000));
+              this.sjjy = Math.floor((+maxValue) - (+this.jyAccount.amount / 1000));
             }
           }
           this.setUser(userData);
@@ -152,20 +150,13 @@
         if (!this.jfAccount) {
           return '-';
         }
-        return (+this.jfAccount.amount / 1000).toFixed(0);
+        return formatAmount(this.jfAccount.amount, 0);
       },
       getJY() {
         if (!this.jyAccount) {
           return '-';
         }
-        return (+this.jyAccount.amount / 1000).toFixed(0);
-      },
-      getAmount() {
-        if (this.cnyAccount) {
-          return formatAmount(this.cnyAccount.amount);
-        } else {
-          return '--';
-        }
+        return formatAmount(this.jyAccount.amount, 0);
       },
       back() {
         this.$router.back();

@@ -188,10 +188,7 @@
       showAdviserBtn() {
         return this.currentOrder && this.currentOrder.status === '10';
       },
-      goAdviser(event) {
-        if (event._constructed) {
-          return;
-        }
+      goAdviser() {
         this.$router.push(`${this.$route.path}/adviser`);
       },
       getMaterialCode() {
@@ -237,10 +234,7 @@
           return '未收货';
         }
       },
-      _cancelOrder(event) {
-        if (event._constructed) {
-          return;
-        }
+      _cancelOrder() {
         this.text = '确定取消订单吗';
         this.$refs.confirm.show();
       },
@@ -288,22 +282,13 @@
           });
         }
       },
-      payOrder(event) {
-        if (event._constructed) {
-          return;
-        }
+      payOrder() {
         this.$router.push(`${this.$route.path}/pay?code=${this.code}`);
       },
-      ratingOrder(event) {
-        if (event._constructed) {
-          return;
-        }
+      ratingOrder() {
         this.$refs.rating.show();
       },
-      receiveOrder(event) {
-        if (event._constructed) {
-          return;
-        }
+      receiveOrder() {
         this.text = '确认收货';
         this.$refs.confirm.show();
       },

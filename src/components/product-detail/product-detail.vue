@@ -58,7 +58,7 @@
   import {commonMixin} from 'common/js/mixin';
   import {prefixStyle} from 'common/js/dom';
   import {initShare} from 'common/js/weixin';
-  import {getShareImg, setTitle} from 'common/js/util';
+  import {getShareImg, setTitle, clearTag} from 'common/js/util';
   import ModelBook from 'components/model-book/model-book';
   import GoHome from 'components/go-home/go-home';
 
@@ -108,22 +108,17 @@
     },
     methods: {
       _getModel() {
-        // if (this.currentModel) {
-        //   setTitle(this.currentModel.name);
-        // }
         return getModel(this.$route.params.id).then((data) => {
           if (data.isSC === '1') {
             this.isSC = true;
           }
           initShare({
-            title: data.model.name,
-            desc: data.model.name,
+            title: '样品详情',
+            desc: clearTag(data.description),
             link: location.href,
-            imgUrl: getShareImg(data.model.advPic)
+            imgUrl: getShareImg(data.advPic)
           });
           if (!this.currentModel) {
-            data = data.model;
-            setTitle(data.name);
             data._advPic = data.advPic.split('||');
             this.setCurModel(data);
           }

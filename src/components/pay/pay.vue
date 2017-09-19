@@ -104,12 +104,12 @@
         let code = this.$route.query.code;
         if (this.currentIndex === 0) {
           payOrder(code, WXPAY).then((data) => {
-            this.wxPay(data);
+            this.wxPay(data, code);
           }).catch(() => {
             this.loadingFlag = false;
           });
         } else {
-          payOrder(code, this.currentIndex === 1 ? YEPAY : HYBPAY).then((data) => {
+          payOrder(code, this.currentIndex === 1 ? YEPAY : HYBPAY).then(() => {
             this.loadingFlag = false;
             this.text = '支付成功';
             this.$refs.toast.show();
@@ -122,12 +122,13 @@
           });
         }
       },
-      wxPay(data) {
+      wxPay(data, code) {
         if (data && data.signType) {
           initPay(data, () => {
             this.loadingFlag = false;
             this.text = '支付成功';
             this.$refs.toast.show();
+            this.editOrderListByPay({code});
             setTimeout(() => {
               this.$router.back();
             }, 1000);
