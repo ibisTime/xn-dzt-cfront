@@ -1,5 +1,5 @@
 import * as types from './mutation-types';
-import {saveAvatar, deleteAvatar, clearAvatar, editAvatar} from 'common/js/cache';
+import {saveAvatar, deleteAvatar, clearAvatar} from 'common/js/cache';
 
 function _getOrderList(state, code, prevStatus, nextStatus) {
   let allList = null;
@@ -135,9 +135,6 @@ export const saveAvatarHistory = function ({commit}, avatars) {
 // 删除头像的列表中的某条数据，并保存到localStorage
 export const deleteAvatarHistory = function ({commit}, avatars) {
   commit(types.SET_AVATARS, deleteAvatar(avatars));
-};
-export const editAvatarHistory = function ({commit}, avatars) {
-  commit(types.SET_AVATARS, editAvatar(avatars));
 };
 // 删除头像的列表，并保存到localStorage
 export const clearAvatarHistory = function ({commit}) {

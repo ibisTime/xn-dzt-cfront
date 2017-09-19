@@ -51,7 +51,6 @@
       },
       open() {
         this.$refs.fileInput.value = null;
-        // this.$refs.fileInput.click();
       },
       onDragLeave() {
         this.isDragActive = false;
@@ -114,6 +113,15 @@
           r.on('progress', file.onprogress);
         }
         return r;
+      },
+      uploadByBase64(base64) {
+        console.log(base64);
+        base64 = base64.substr(base64.indexOf('base64,') + 7);
+        return request.post('http://upload.qiniu.com/putb64/-1')
+          .set('Content-Type', 'application/octet-stream')
+          .set('Authorization', `UpToken ${this.token}`)
+          .send(base64)
+          .promise();
       },
       _formatMaxSize(size) {
         size = size.toString().toUpperCase();

@@ -13,7 +13,7 @@
             <div v-for="item in files" class="avatar" @click="showChosen(item)">
               <div class="inner-content">
                 <img :src="getImg(item)"/>
-                <div v-show="item.status!==200" class="inner-loading">
+                <div v-show="!item.ok" class="inner-loading">
                   <loading class="in-loading" title=""></loading>
                 </div>
                 <i v-show="curImg===item.key" class="chose-icon"></i>
@@ -22,13 +22,19 @@
             <div v-show="token" class="avatar" ref="fileChose">
               <div class="inner-content">
                 <qiniu class="add-icon"
+                       style="visibility: hidden;position: absolute;"
+                       ref="qiniu"
                        :token="token"
-                       :uploadUrl="uploadUrl"
-                       :multiple="multiple"
-                       @upload="onUpload"
-                       @drop="onDrop"
-                       @error="onUploadError"></qiniu>
+                       :uploadUrl="uploadUrl"></qiniu>
+                <div class="add-icon">
+                  <input class="input-file"
+                         type="file"
+                         :multiple="multiple"
+                         ref="fileInput"
+                         @change="fileChange"
+                         accept="image/*"/>
                 </div>
+              </div>
             </div>
           </div>
         </div>
@@ -46,7 +52,10 @@
           <loading title=""></loading>
         </div>
       </div>
-      <clip-avatar @choseImage="updateAvatar" ref="clipAvatar" :imgUrl="formatImg(this.currentItem && this.currentItem.key || '')"></clip-avatar>
+      <clip-avatar @choseImage="updateAvatar"
+                   ref="clipAvatar"
+                   @cancel="cancelItem"
+                   :imgUrl="this.currentItem && this.currentItem.preview || ''"></clip-avatar>
       <toast ref="toast" :text="text"></toast>
     </div>
   </transition>
@@ -97,8 +106,9 @@
           this.loadingFlag = false;
           if (this.user.photo) {
             let _file = {
-              status: 200,
-              key: this.user.photo
+              ok: true,
+              key: this.user.photo,
+              preview: this.getImg(this.user.photo)
             };
             this.saveAvatarHistory(_file);
             this.files = [...this.avatars];
@@ -123,36 +133,68 @@
         });
       },
       showChosen(item) {
-        this.currentItem = item;
-        this.$refs.chosen.show();
+        if (this.curImg !== item.key) {
+          this.currentItem = item;
+          this.$refs.chosen.show();
+        }
       },
       choseItem() {
-        if (this.currentItem.status !== 200) {
-          this.text = '头像还未上传完成';
-          this.$refs.toast.show();
-          return;
+        if (this.currentItem.ok) {
+          this._changeAvatar(this.currentItem.key);
         }
+      },
+      cancelItem() {
+        let idx = this._findFileIndex(this.currentItem, 'preview');
+        this.files.splice(idx, 1);
+      },
+      fileChange(e) {
+        let files;
+        if (e.dataTransfer) {
+          files = e.dataTransfer.files;
+        } else if (e.target) {
+          files = e.target.files;
+        }
+        files = Array.prototype.slice.call(files, 0, 1);
+        let file = files[0];
+        let preview = URL.createObjectURL(file);
+        let item = {
+          preview,
+          ok: false
+        };
+        this.currentItem = item;
+        this.files.push(item);
         this.$refs.clipAvatar.show();
+        this.$refs.fileInput.value = null;
       },
       updateAvatar(info) {
-        let suffix = `?imageMogr2/auto-orient/thumbnail/${info.outerWidth}x${info.outerHeight}!/crop/!${info.width}x${info.height}a${info.x}a${info.y}`;
-        this.loadingFlag = true;
-        let index = this.currentItem.key.indexOf('?imageMogr2');
-        let _key = this.currentItem.key;
-        if (index !== -1) {
-          _key = _key.substr(0, index);
+        if (info.base64) {
+          this.$refs.qiniu.uploadByBase64(info.base64).then((data) => {
+            this._changeAvatar(data.body.key);
+          }).catch((err) => {
+            this.onUploadError(err);
+          });
+        } else {
+          let suffix = `?imageMogr2/auto-orient/thumbnail/${info.outerWidth}x${info.outerHeight}!/crop/!${info.width}x${info.height}a${info.x}a${info.y}`;
+          this.loadingFlag = true;
+          let index = this.currentItem.key.indexOf('?imageMogr2');
+          let _key = this.currentItem.key;
+          if (index !== -1) {
+            _key = _key.substr(0, index);
+          }
+          _key += suffix;
+          this._changeAvatar(_key);
         }
-        _key += suffix;
+      },
+      _changeAvatar(_key) {
         changeAvatar(_key).then(() => {
           this.loadingFlag = false;
           this.curImg = _key;
-          let oriKey = this.currentItem.key;
           this.currentItem = {
             ...this.currentItem,
-            key: _key,
-            oriKey: oriKey
+            ok: true,
+            key: _key
           };
-          this.editAvatarHistory(this.currentItem);
+          this.saveAvatarHistory(this.currentItem);
           this.files = [...this.avatars];
           this.setUser({
             ...this.user,
@@ -165,44 +207,15 @@
       deleteAvatar() {
         let idx = this._findFileIndex(this.currentItem);
         this.files.splice(idx, 1);
-        if (this.currentItem.status === 200) {
+        if (this.currentItem.ok) {
           this.deleteAvatarHistory(this.currentItem);
         }
-      },
-      /**
-       * 处理图片上传前的事件
-       * @param files    上传图片
-       */
-      onUpload(files) {
-        for (let i = 0; i < files.length; i++) {
-          let file = files[i];
-          file.onprogress = (e) => {
-            file.status = e.srcElement.status;
-            let idx = this._findFileIndex(file);
-            if (idx > -1) {
-              this.files.splice(idx, 1, file);
-              if (file.status === 200) {
-                this.saveAvatarHistory({
-                  key: file.key,
-                  status: 200
-                });
-              }
-            }
-          };
-        }
-      },
-      /**
-       * 处理添加图片事件，把新加入的图片拼到files数组里
-       * @param newFiles    新加入的图片
-       */
-      onDrop(newFiles) {
-        this.files = this.files.concat(newFiles);
       },
       /**
        * 处理图片上传错误事件
        * @param error 错误信息
        */
-      onUploadError(error, file) {
+      onUploadError(error) {
         this.text = error.body && error.body.error || `${error.message}:10M` || '图片上传出错';
         this.$refs.toast.show();
       },
@@ -210,13 +223,13 @@
        * 根据file找到在files里的下标
        * @param file    需要寻找下标的file
        */
-      _findFileIndex(file) {
+      _findFileIndex(file, key = 'key') {
         return this.files.findIndex((item) => {
-          return item.key === file.key;
+          return item[key] === file[key];
         });
       },
       getImg(item) {
-        if (item.status !== 200) {
+        if (!item.ok) {
           return item.preview;
         }
         return formatAvatar(item.key);
@@ -229,8 +242,7 @@
       }),
       ...mapActions([
         'saveAvatarHistory',
-        'deleteAvatarHistory',
-        'editAvatarHistory'
+        'deleteAvatarHistory'
       ])
     },
     watch: {
@@ -350,6 +362,16 @@
               background-position: center;
               background-repeat: no-repeat;
               background-size: 70%;
+            }
+
+            .input-file {
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              left: 0;
+              top: 0;
+              opacity: 0;
+              z-index: 1;
             }
           }
 

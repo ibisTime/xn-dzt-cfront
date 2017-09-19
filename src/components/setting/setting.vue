@@ -56,7 +56,7 @@
   </transition>
 </template>
 <script>
-  import {mapGetters, mapMutations} from 'vuex';
+  import {mapGetters, mapMutations, mapActions} from 'vuex';
   import {SET_USER_STATE} from 'store/mutation-types';
   import {getUser} from 'api/user';
   import {getAppId} from 'api/general';
@@ -106,6 +106,7 @@
       },
       logout() {
         clearUser();
+        this.clearAvatarHistory();
         this._reloadPage();
       },
       getAvatar() {
@@ -127,7 +128,10 @@
       },
       ...mapMutations({
         setUser: SET_USER_STATE
-      })
+      }),
+      ...mapActions([
+        'clearAvatarHistory'
+      ])
     },
     components: {
       Scroll

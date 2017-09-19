@@ -1,14 +1,18 @@
 <template>
   <transition name="opacity">
-    <div v-show="showFlag" ref="wrapper" class="clip-wrapper">
-      <img class="origin" :src="imgSrc"/>
-      <img ref="clipImg" :src="imgSrc"/>
-      <div ref="clipBox"
-           class="clip-box"
-           @touchstart="handleTouchStart"
-           @touchmove.stop.prevent="handleTouchMove"></div>
-      <div class="bottom">
-        <span class="cancel" @click.stop="hide">取消</span><span class="chose" @click.stop="choseImg">完成</span>
+    <div>
+      <img ref="oriImg" crossOrigin="anonymous" :src="imgSrc"/>
+      <div v-show="showFlag" ref="wrapper" class="clip-wrapper">
+        <img class="origin" :src="imgSrc"/>
+        <img ref="clipImg" :src="imgSrc"/>
+        <div ref="clipBox"
+             class="clip-box"
+             @touchstart="handleTouchStart"
+             @touchmove.stop.prevent="handleTouchMove"></div>
+        <div class="bottom">
+          <span class="cancel" @click.stop="cancel">取消</span><span class="chose" @click.stop="choseImg">完成</span>
+        </div>
+        <canvas :width="cWidth" :height="cHeight" class="canvas" ref="canvas"></canvas>
       </div>
     </div>
   </transition>
@@ -23,6 +27,8 @@
     },
     data() {
       return {
+        cWidth: 0,
+        cHeight: 0,
         showFlag: false
       };
     },
@@ -44,25 +50,43 @@
       this.clipY = 0;
     },
     methods: {
+      getPixelRatio(context) {
+        let backingStore = context.backingStorePixelRatio ||
+          context.webkitBackingStorePixelRatio ||
+          context.mozBackingStorePixelRatio ||
+          context.msBackingStorePixelRatio ||
+          context.oBackingStorePixelRatio ||
+          context.backingStorePixelRatio || 1;
+        return (window.devicePixelRatio || 1) / backingStore;
+      },
       show() {
         this.showFlag = true;
         setTimeout(() => {
           this.$refs.clipBox.style.top = (this.$refs.wrapper.offsetHeight - this.$refs.clipBox.offsetHeight) / 2 + 'px';
+          let ratio = 1;
+          if (this.$refs.canvas.getContext) {
+            let context = this.$refs.canvas.getContext('2d');
+            ratio = this.getPixelRatio(context);
+          }
+          this.cWidth = this.$refs.wrapper.offsetWidth * ratio / 2;
           setTimeout(() => {
             let top = this.$refs.clipBox.offsetTop;
             let right = this.$refs.clipBox.offsetWidth;
             let bottom = this.$refs.clipBox.offsetHeight + top;
             if (this.$refs.clipImg.offsetHeight < this.$refs.clipBox.offsetHeight) {
+              this.cHeight = this.$refs.clipImg.offsetHeight * ratio / 2;
               this.maxTop = (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
               this.minTop = this.maxTop - (this.$refs.clipBox.offsetHeight - this.$refs.clipImg.offsetHeight);
               top = 0;
               bottom = this.$refs.clipImg.offsetHeight;
             } else {
+              this.cHeight = this.cWidth;
               this.minTop = (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
               this.maxTop = this.minTop + this.$refs.clipImg.offsetHeight - this.$refs.clipBox.offsetHeight;
               top -= (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
               bottom -= (this.$refs.wrapper.offsetHeight - this.$refs.clipImg.offsetHeight) / 2;
             }
+            this.clipY = top;
             this.$refs.clipImg.style.clip = `rect(${top}px,${right}px,${bottom}px,0)`;
           }, 20);
         }, 20);
@@ -70,8 +94,11 @@
       hide() {
         this.showFlag = false;
       },
+      cancel() {
+        this.hide();
+        this.$emit('cancel');
+      },
       handleTouchStart(e) {
-        console.log('start');
         let firstTouch = e.touches[0];
         this.touch.y1 = firstTouch.pageY;
       },
@@ -99,16 +126,34 @@
         this.$refs.clipImg.style.clip = `rect(${top}px,${right}px,${bottom}px,0)`;
       },
       choseImg() {
+        let oriImgWidth = this.$refs.oriImg.offsetWidth;
+        let oriImgHeight = this.$refs.oriImg.offsetHeight;
         let outerHeight = this.$refs.clipImg.offsetHeight;
         let outerWidth = this.$refs.clipImg.offsetWidth;
+        let rateW = oriImgWidth / outerWidth;
+        let rateH = oriImgHeight / outerHeight;
         let width = outerWidth;
         let height = this.$refs.clipBox.offsetHeight;
+        if (height > outerHeight) {
+          height = outerHeight;
+        }
         this.hide();
+        let base64 = '';
+        if (this.$refs.canvas.getContext) {
+          let canvasWidth = this.$refs.wrapper.offsetWidth;
+          let canvasHeight = this.$refs.wrapper.offsetHeight;
+          let context = this.$refs.canvas.getContext('2d');
+          var ratio = this.getPixelRatio(context);
+          context.clearRect(0, 0, canvasWidth * ratio, canvasHeight * ratio);
+          context.drawImage(this.$refs.oriImg, this.clipX * rateW, this.clipY * rateH, width * rateW, height * rateH, 0, 0, this.cWidth, this.cHeight);
+          base64 = this.$refs.canvas.toDataURL();
+        }
         this.$emit('choseImage', {
           outerWidth,
           outerHeight,
           width,
           height,
+          base64,
           x: this.clipX,
           y: this.clipY
         });
@@ -172,6 +217,15 @@
           float: right;
         }
       }
+    }
+
+    .canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      visibility: hidden;
     }
   }
   .opacity-enter-active, .opacity-leave-active {

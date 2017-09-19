@@ -21,14 +21,6 @@ function deleteFromArray(arr, compare) {
   }
 }
 
-function editFromArray(arr, val, compare) {
-  const index = arr.findIndex(compare);
-  if (index === -1) {
-    return;
-  }
-  arr.splice(index, 1, val);
-}
-
 export function saveAvatar(avatar) {
   let avatars = storage.get(AVATAR_KEY, []);
   insertArray(avatars, avatar, (item) => {
@@ -42,15 +34,6 @@ export function deleteAvatar(avatar) {
   let avatars = storage.get(AVATAR_KEY, []);
   deleteFromArray(avatars, (item) => {
     return item.key === avatar.key;
-  });
-  storage.set(AVATAR_KEY, avatars);
-  return avatars;
-}
-
-export function editAvatar (avatar) {
-  let avatars = storage.get(AVATAR_KEY, []);
-  editFromArray(avatars, avatar, (item) => {
-    return item.key === avatar.oriKey;
   });
   storage.set(AVATAR_KEY, avatars);
   return avatars;
