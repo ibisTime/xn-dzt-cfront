@@ -41,7 +41,7 @@
       this.maxTop = 0;
       this.minTop = 0;
       this.clipX = 0;
-      this.clipY = top;
+      this.clipY = 0;
     },
     methods: {
       show() {

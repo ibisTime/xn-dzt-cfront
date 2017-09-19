@@ -23,7 +23,6 @@ function deleteFromArray(arr, compare) {
 
 function editFromArray(arr, val, compare) {
   const index = arr.findIndex(compare);
-  console.log(index);
   if (index === -1) {
     return;
   }

@@ -152,7 +152,6 @@
             key: _key,
             oriKey: oriKey
           };
-          console.log(this.currentItem);
           this.editAvatarHistory(this.currentItem);
           this.files = [...this.avatars];
           this.setUser({
