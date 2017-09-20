@@ -108,6 +108,9 @@
     },
     methods: {
       _getModel() {
+        if (this.currentModel) {
+          this._refreshScroll();
+        }
         return getModel(this.$route.params.id).then((data) => {
           if (data.isSC === '1') {
             this.isSC = true;
@@ -121,6 +124,7 @@
           if (!this.currentModel) {
             data._advPic = data.advPic.split('||');
             this.setCurModel(data);
+            this._refreshScroll();
           }
         });
       },
@@ -181,17 +185,17 @@
         this.scrollY = pos.y;
       },
       loadImage() {
-        if(!this.checkLoaded) {
-          setTimeout(() => {
+        setTimeout(() => {
+          let newTop = this.$refs.sliderWrapper.clientHeight + 'px';
+          if (this.$refs.scrollWrapper.style.top !== newTop) {
             this.$refs.scrollWrapper.style.top = this.$refs.sliderWrapper.clientHeight + 'px';
-            this.checkLoaded = true;
             this.imageHeight = this.$refs.sliderWrapper.clientHeight;
             this.minTranslateY = -this.imageHeight + RESERVED_HEIGHT;
             setTimeout(() => {
               this.$refs.scroll.refresh();
             }, 20);
-          }, 20);
-        }
+          }
+        }, 20);
       },
       _refreshScroll() {
         setTimeout(() => {
@@ -200,12 +204,14 @@
             let _img = imgs[i];
             if (_img.complete) {
               setTimeout(() => {
+                console.log('refresh');
                 this.$refs.scroll.refresh();
               }, 20);
               continue;
             }
             _img.onload = () => {
               setTimeout(() => {
+                console.log('refresh');
                 this.$refs.scroll.refresh();
               }, 20);
             };
@@ -220,9 +226,6 @@
       })
     },
     watch: {
-      currentModel() {
-        this._refreshScroll();
-      },
       scrollY(newY) {
         let translateY = Math.max(this.minTranslateY, newY);
         let zIndex = 0;

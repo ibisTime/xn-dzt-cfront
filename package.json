@@ -1,8 +1,8 @@
 {
   "name": "xn-dzt-cfront",
   "version": "2.0.0",
-  "description": "A Vue.js project",
-  "author": "wulq <wlqsltz@163.com>",
+  "description": "A project",
+  "author": "",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",

@@ -16,12 +16,16 @@
           </div>
         </div>
       </scroll>
+      <div v-show="!hasMore && !notices.length" class="no-result-wrapper">
+        <no-result title="抱歉，暂无消息"></no-result>
+      </div>
     </div>
   </transition>
 </template>
 <script>
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
+  import NoResult from 'base/no-result/no-result';
   import {setTitle} from 'common/js/util';
   import {getPageSysNotices} from 'api/general';
   import {commonMixin} from 'common/js/mixin';
@@ -56,7 +60,8 @@
     },
     components: {
       Scroll,
-      Loading
+      Loading,
+      NoResult
     }
   };
 </script>
@@ -126,6 +131,14 @@
           }
         }
       }
+    }
+
+    .no-result-wrapper {
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
     }
   }
 </style>

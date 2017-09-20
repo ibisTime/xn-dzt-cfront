@@ -226,25 +226,13 @@
         };
         image.src = img;
       },
-      updateAvatar(info) {
-        if (info.base64) {
-          this.currentItem.preview = info.base64;
-          this.$refs.qiniu.uploadByBase64(info.base64).then((data) => {
-            this._changeAvatar(data.body.key);
-          }).catch((err) => {
-            this.onUploadError(err);
-          });
-        } else {
-          let suffix = `?imageMogr2/auto-orient/thumbnail/${info.outerWidth}x${info.outerHeight}!/crop/!${info.width}x${info.height}a${info.x}a${info.y}`;
-          this.loadingFlag = true;
-          let index = this.currentItem.key.indexOf('?imageMogr2');
-          let _key = this.currentItem.key;
-          if (index !== -1) {
-            _key = _key.substr(0, index);
-          }
-          _key += suffix;
-          this._changeAvatar(_key);
-        }
+      updateAvatar(base64) {
+        this.currentItem.preview = base64;
+        this.$refs.qiniu.uploadByBase64(base64).then((data) => {
+          this._changeAvatar(data.body.key);
+        }).catch((err) => {
+          this.onUploadError(err);
+        });
       },
       _changeAvatar(_key) {
         changeAvatar(_key).then(() => {

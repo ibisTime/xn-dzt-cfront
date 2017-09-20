@@ -47,16 +47,16 @@
             </router-link>
           </div>
         </div>
-        <div class="set-btns">
+        <!-- <div class="set-btns">
           <button @click="logout">退出登录</button>
-        </div>
+        </div> -->
       </scroll>
       <router-view></router-view>
     </div>
   </transition>
 </template>
 <script>
-  import {mapGetters, mapMutations, mapActions} from 'vuex';
+  import {mapGetters, mapMutations} from 'vuex';
   import {SET_USER_STATE} from 'store/mutation-types';
   import {getUser} from 'api/user';
   import {getAppId} from 'api/general';
@@ -106,7 +106,6 @@
       },
       logout() {
         clearUser();
-        this.clearAvatarHistory();
         this._reloadPage();
       },
       getAvatar() {
@@ -128,10 +127,7 @@
       },
       ...mapMutations({
         setUser: SET_USER_STATE
-      }),
-      ...mapActions([
-        'clearAvatarHistory'
-      ])
+      })
     },
     components: {
       Scroll

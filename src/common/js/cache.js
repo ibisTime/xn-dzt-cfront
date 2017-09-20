@@ -26,7 +26,11 @@ export function saveAvatar(avatar) {
   insertArray(avatars, avatar, (item) => {
     return item.key === avatar.key;
   }, AVATAR_MAX_LEN);
-  storage.set(AVATAR_KEY, avatars);
+  try {
+    storage.set(AVATAR_KEY, avatars);
+  } catch (e) {
+    console.log('err', e);
+  }
   return avatars;
 }
 
@@ -35,12 +39,20 @@ export function deleteAvatar(avatar) {
   deleteFromArray(avatars, (item) => {
     return item.key === avatar.key;
   });
-  storage.set(AVATAR_KEY, avatars);
+  try {
+    storage.set(AVATAR_KEY, avatars);
+  } catch (e) {
+    console.log('err', e);
+  }
   return avatars;
 }
 
 export function clearAvatar() {
-  storage.remove(AVATAR_KEY);
+  try {
+    storage.remove(AVATAR_KEY);
+  } catch (e) {
+    console.log('err', e);
+  }
   return [];
 }
 

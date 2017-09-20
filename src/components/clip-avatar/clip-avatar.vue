@@ -12,7 +12,7 @@
         <div class="bottom">
           <span class="cancel" @click.stop="cancel">取消</span><span class="chose" @click.stop="choseImg">完成</span>
         </div>
-        <canvas :width="cWidth" :height="cHeight" class="canvas" ref="canvas"></canvas>
+        <canvas class="canvas" ref="canvas"></canvas>
       </div>
     </div>
   </transition>
@@ -31,8 +31,6 @@
     },
     data() {
       return {
-        cWidth: 0,
-        cHeight: 0,
         showFlag: false
       };
     },
@@ -52,11 +50,12 @@
       this.minTop = 0;
       this.clipX = 0;
       this.clipY = 0;
+      this.cWidth = 0;
+      this.cHeight = 0;
     },
     methods: {
       handleLoad() {
         if (this.showFlag) {
-          console.log('load');
           this.calculate();
         }
       },
@@ -150,26 +149,22 @@
         if (height > outerHeight) {
           height = outerHeight;
         }
-        this.hide();
         let base64 = '';
         if (this.$refs.canvas.getContext) {
-          let canvasWidth = this.$refs.wrapper.offsetWidth;
-          let canvasHeight = this.$refs.wrapper.offsetHeight;
-          let context = this.$refs.canvas.getContext('2d');
-          let ratio = this.getPixelRatio(context);
-          context.clearRect(0, 0, canvasWidth * ratio, canvasHeight * ratio);
-          context.drawImage(this.$refs.oriImg, this.clipX * rateW, this.clipY * rateH, width * rateW, height * rateH, 0, 0, this.cWidth, this.cHeight);
-          base64 = this.$refs.canvas.toDataURL(this.imgType || '');
+          let self = this;
+          let image = new Image();
+          image.onload = function() {
+            let canvas = document.createElement('canvas');
+            canvas.width = self.cWidth;
+            canvas.height = self.cHeight;
+            let context1 = canvas.getContext('2d');
+            context1.drawImage(this, self.clipX * rateW, self.clipY * rateH, width * rateW, height * rateH, 0, 0, self.cWidth, self.cHeight);
+            base64 = canvas.toDataURL(self.imgType);
+            self.hide();
+            self.$emit('choseImage', base64);
+          };
+          image.src = this.imgUrl;
         }
-        this.$emit('choseImage', {
-          outerWidth,
-          outerHeight,
-          width,
-          height,
-          base64,
-          x: this.clipX,
-          y: this.clipY
-        });
       }
     }
   };

@@ -66,7 +66,7 @@
             <loading class="material-loading" v-show="loadingFlag" title=""></loading>
           </ul>
         </div>
-        <div v-show="!currentList.length" class="no-result-wrapper">
+        <div v-show="!currentList.length && !loadingFlag" class="no-result-wrapper">
           <no-result title="抱歉，暂无相关面料"></no-result>
         </div>
       </scroll>
@@ -191,6 +191,7 @@
           this.fetching = false;
         } else {
           this.loadingFlag = true;
+          this.materialList = [];
           return getMaterialList(modelCode).then((data) => {
             this.fetching = false;
             this.loadingFlag = false;

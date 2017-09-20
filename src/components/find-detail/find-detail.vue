@@ -103,6 +103,7 @@
       this.probeType = 3;
       this.listenScroll = true;
       if (this.currentArticle) {
+        this._refreshScroll();
         setTitle(this.currentArticle.title);
       }
       this.getArticle();
@@ -138,6 +139,7 @@
             setTitle(data.article.title);
             data.article._advPic = data.article.advPic.split('||');
             this.setCurArticle(data.article);
+            this._refreshScroll();
           }
         });
       },
@@ -197,17 +199,17 @@
         this.$router.back();
       },
       loadImage() {
-        if(!this.checkLoaded) {
-          setTimeout(() => {
-            this.$refs.scrollWrapper.style.top = this.$refs.sliderWrapper.clientHeight + 'px';
-            this.checkLoaded = true;
+        setTimeout(() => {
+          let newTop = this.$refs.sliderWrapper.clientHeight + 'px';
+          if (this.$refs.scrollWrapper.style.top !== newTop) {
+            this.$refs.scrollWrapper.style.top = newTop;
             this.imageHeight = this.$refs.sliderWrapper.clientHeight;
             this.minTranslateY = -this.imageHeight + RESERVED_HEIGHT;
             setTimeout(() => {
               this.$refs.scroll.refresh();
             }, 20);
-          }, 40);
-        }
+          }
+        }, 20);
       },
       ...mapMutations({
         setCurArticle: SET_CURRENT_ARTICLE,
@@ -215,9 +217,6 @@
       })
     },
     watch: {
-      currentArticle() {
-        this._refreshScroll();
-      },
       scrollY(newY) {
         let _title = this.$refs.rTitle.getBoundingClientRect();
         if (_title.top <= 0) {

@@ -101,9 +101,11 @@
           this.getInitData(),
           this._getLatestOrder()
         ]).then(() => {
+          this._refreshScroll();
           this.loading = false;
         });
       } else {
+        this._refreshScroll();
         Promise.all([
           this.getMaterial(),
           this._getLatestOrder()
@@ -262,11 +264,6 @@
       ...mapMutations({
         setCurMaterial: SET_CURRENT_MATERIAL
       })
-    },
-    watch: {
-      currentMaterial() {
-        this._refreshScroll();
-      }
     },
     components: {
       Scroll,
