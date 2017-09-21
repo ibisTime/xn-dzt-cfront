@@ -339,7 +339,13 @@ export default new Router({
               children: [
                 {
                   path: ':id',
-                  component: FindDetail
+                  component: FindDetail,
+                  children: [
+                    {
+                      path: 'rating',
+                      component: FindRatings
+                    }
+                  ]
                 }
               ]
             },
