@@ -140,21 +140,21 @@
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 18px;
+    padding: 0.36rem;
     z-index: 102;
     background: #fff;
 
     .close {
       position: absolute;
-      width: 40px;
-      height: 40px;
+      width: 0.8rem;
+      height: 0.8rem;
 
       .close-icon {
         position: absolute;
-        width: 3px;
-        height: 30px;
+        width: 0.06rem;
+        height: 0.6rem;
         background: #666;
-        left: 18px;
+        left: 0.36rem;
 
         &.close-icon0 {
           transform: rotateZ(45deg);
@@ -167,37 +167,38 @@
     }
 
     .rating-form {
-      margin-top: 50px;
+      margin-top: 1rem;
 
       .item {
         position: relative;
-        margin-top: 15px;
+        margin-top: 0.3rem;
+        font-size: 0;
 
         textarea {
           border: 1px solid #9d9d9d;
-          border-radius: 4px;
+          border-radius: 0.08rem;
           width: 100%;
           line-height: 1.3;
           font-size: $font-size-medium;
-          padding: 6px;
+          padding: 0.12rem;
         }
 
         .error {
           display: inline-block;
-          padding-top: 6px;
+          padding-top: 0.12rem;
           font-size: $font-size-medium;
           color: #ff0000;
         }
       }
 
       .btn {
-        margin-top: 20px;
+        margin-top: 0.4rem;
 
         button {
           display: block;
           width: 100%;
-          line-height: 40px;
-          border-radius: 6px;
+          line-height: 0.8rem;
+          border-radius: 0.12rem;
           font-size: $font-size-medium-x;
           background: #9ba9b5;
           color: #fff;

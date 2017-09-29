@@ -276,7 +276,7 @@
     }
 
     .split {
-      height: 10px;
+      height: 0.2rem;
       background: #f2f2f2;
     }
 
@@ -285,11 +285,11 @@
         position: fixed;
         left: 0;
         top: 0;
-        width: 62px;
-        height: 62px;
+        width: 1.24rem;
+        height: 1.24rem;
         background-position: center;
         background-repeat: no-repeat;
-        background-size: 12px;
+        background-size: 0.24rem;
         z-index: 102;
         @include bg-image('back');
       }
@@ -301,7 +301,7 @@
       overflow: hidden;
 
       .in-slider {
-        min-height: 62px;
+        min-height: 1.24rem;
       }
 
       img {
@@ -322,7 +322,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      bottom: 42px;
+      bottom: 0.84rem;
 
       .scroll-content {
         position: relative;
@@ -332,14 +332,14 @@
       .rating-content {
         .item {
           display: flex;
-          align-items: top;
-          padding: 11px 15px;
+          align-items: flex-start;
+          padding: 0.22rem 0.3rem;
           border-bottom: 1px solid #eee;
 
           .avatar {
-            width: 50px;
-            height: 50px;
-            flex: 0 0 50px;
+            width: 1rem;
+            height: 1rem;
+            flex: 0 0 1rem;
             border-radius: 50%;
             overflow: hidden;
 
@@ -351,16 +351,16 @@
 
           .inner-content {
             flex: 1;
-            padding-left: 10px;
+            padding-left: 0.2rem;
 
             .top {
               display: flex;
-              margin-bottom: 10px;
+              margin-bottom: 0.2rem;
 
               label {
                 flex: 1;
                 line-height: 1.1;
-                font-size: 15px;
+                font-size: 0.3rem;
               }
 
               span {
@@ -376,17 +376,17 @@
           }
         }
         .find-loading {
-          padding-top: 20px;
+          padding-top: 0.4rem;
         }
       }
 
       .rating-label {
-        margin-top: 10px;
+        margin-top: 0.2rem;
         text-align: right;
 
         span {
           display: inline-block;
-          padding: 10px 18px;
+          padding: 0.2rem 0.36rem;
           font-size: $font-size-medium;
           color: #b3b3b3;
         }
@@ -395,9 +395,9 @@
 
     .title {
       position: relative;
-      padding: 0 18px;
-      height: 40px;
-      line-height: 40px;
+      padding: 0 0.36rem;
+      height: 0.8rem;
+      line-height: 0.8rem;
       border-bottom: 1px solid #eee;
       background: #fff;
 
@@ -410,13 +410,14 @@
       }
 
       label {
-        font-size: 15px;
+        float: left;
+        font-size: 0.3rem;
       }
 
       span {
         float: right;
-        margin-right: 14px;
-        font-size: 13px;
+        margin-right: 0.28rem;
+        font-size: 0.26rem;
         color: #999;
       }
 
@@ -424,11 +425,11 @@
         position: absolute;
         right: 0;
         top: 0;
-        width: 34px;
+        width: 0.68rem;
         height: 100%;
         background-repeat: no-repeat;
         background-position: center;
-        background-size: 10px;
+        background-size: 0.2rem;
         @include bg-image('more');
       }
     }

@@ -39,20 +39,23 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+  @import "~common/scss/variable";
+
   .loading-module-cont {
-    min-width: 60px;
-    border-radius: 4px;
-    color: #fff;
-    background-color: rgba(58,58,58,.9);
-    line-height: 1.5;
-    padding: 9px 15px;
+    position: absolute;
     top: 40%;
     left: 50%;
+    padding: 0.18rem 0.3rem;
+    line-height: 1.5;
     transform: translate(-50%, -50%);
-    position: absolute;
+    min-width: 1.2rem;
     max-width: 60%;
+    border-radius: 0.08rem;
     z-index: 998;
     word-wrap: break-word;
+    font-size: 0;
+    color: #fff;
+    background-color: rgba(58,58,58,.9);
 
     &.toast-fade-enter-active {
       animation: toast-fadein 0.3s;
@@ -62,7 +65,7 @@ export default {
     }
 
     .loading-module-text{
-      font-size: 14px;
+      font-size: $font-size-medium;
     }
   }
   @keyframes toast-fadein {

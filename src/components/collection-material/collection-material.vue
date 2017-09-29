@@ -128,7 +128,7 @@
 
     .material-content {
       height: 100%;
-      padding: 20px;
+      padding: 0.4rem;
 
       ul {
         li {
@@ -137,17 +137,17 @@
           width: 50%;
           height: 0;
           padding-top: 50%;
-          border-radius: 8px;
+          border-radius: 0.16rem;
 
           &:nth-child(2n+1) {
             .inner {
-              padding-right: 10px;
+              padding-right: 0.2rem;
             }
           }
 
           &:nth-child(2n) {
             .inner {
-              padding-left: 10px;
+              padding-left: 0.2rem;
             }
           }
 
@@ -157,7 +157,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            padding-bottom: 17px;
+            padding-bottom: 0.34rem;
 
             .inner-content {
               width: 100%;
@@ -174,7 +174,7 @@
 
       .material-loading {
         clear: both;
-        padding-top: 20px;
+        padding-top: 0.4rem;
       }
 
       .no-result-wrapper {

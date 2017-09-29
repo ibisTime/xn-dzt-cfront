@@ -29,7 +29,7 @@
     left: 0;
     display: flex;
     align-items: center;
-    height: 49px;
+    height: 0.98rem;
     width: 100%;
     border-top: 1px solid #a1a1a1;
     opacity: 0.9;
@@ -38,8 +38,8 @@
 
     .foot-item {
       flex: 1;
-      margin: 10px 0;
-      height: 25px;
+      margin: 0.2rem 0;
+      height: 0.5rem;
       background-repeat: no-repeat;
       background-size: contain;
       background-position: center;

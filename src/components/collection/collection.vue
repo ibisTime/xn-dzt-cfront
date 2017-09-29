@@ -55,12 +55,12 @@
     background: #fff;
 
     .type-wrapper {
-      padding: 0 18px;
+      padding: 0 0.36rem;
 
       .type {
         position: relative;
-        height: 39px;
-        line-height: 39px;
+        height: 0.78rem;
+        line-height: 0.78rem;
         border-bottom: 1px solid #a1a1a1;
         font-size: $font-size-medium;
       }
@@ -69,11 +69,11 @@
         position: absolute;
         right: 0;
         top: 0;
-        width: 34px;
+        width: 0.68rem;
         height: 100%;
         background-repeat: no-repeat;
         background-position: center;
-        background-size: 10px;
+        background-size: 0.2rem;
         @include bg-image('more');
       }
     }

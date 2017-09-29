@@ -251,9 +251,8 @@
     position: fixed;
     top: 0;
     left: 0;
-    // bottom: 49px;
     bottom: 0;
-    padding: 0 19px;
+    padding: 0 0.38rem;
     width: 100%;
     background: #fff;
 
@@ -264,26 +263,26 @@
 
       .loading-wrapper {
         clear: both;
-        padding-top: 20px;
+        padding-top: 0.4rem;
       }
 
       .slider-wrapper {
         position: relative;
-        height: 204px;
+        height: 4.08rem;
 
         .slider {
-          padding-top: 15px;
-          height: 204px;
+          padding-top: 0.3rem;
+          height: 4.08rem;
         }
 
         .home-slider {
-          height: 189px;
+          height: 3.78rem;
         }
 
         a {
           display: block;
           height: 100%;
-          border-radius: 6px;
+          border-radius: 0.12rem;
           background-repeat: no-repeat;
           background-position: center;
           background-size: cover;
@@ -291,24 +290,24 @@
       }
 
       .home-category {
-        margin: 32px 0 9px;
+        margin: 0.64rem 0 0.18rem;
         display: flex;
         .cate-item {
           position: relative;
           flex: 1;
-          height: 60px;
-          border-radius: 6px;
+          height: 1.2rem;
+          border-radius: 0.12rem;
           color: #fff;
           background-repeat: no-repeat;
           background-position: center;
           background-size: cover;
 
           &.cate-material {
-            margin-right: 6px;
+            margin-right: 0.12rem;
             @include bg-image('material');
           }
           &.cate-technology {
-            margin-left: 6px;
+            margin-left: 0.12rem;
             @include bg-image('technology');
           }
 
@@ -323,10 +322,10 @@
       }
 
       .home-list {
-        padding-bottom: 15px;
+        padding-bottom: 0.3rem;
 
         .head {
-          margin-top: 25px;
+          margin-top: 0.5rem;
 
           span {
             float: left;
@@ -335,14 +334,14 @@
 
           a {
             float: right;
-            margin-top: 1px;
+            margin-top: 0.02rem;
             font-size: $font-size-small;
             color: #adadad;
           }
         }
 
         .list-content {
-          padding-top: 2px;
+          padding-top: 0.04rem;
 
           .item {
             position: relative;
@@ -350,7 +349,7 @@
             width: 50%;
             height: 0;
             padding-top: 75%;
-            border-radius: 6px;
+            border-radius: 0.12rem;
 
             .inner {
               position: absolute;
@@ -363,7 +362,7 @@
                 position: relative;
                 width: 100%;
                 height: 100%;
-                border-radius: 6px;
+                border-radius: 0.12rem;
                 overflow: hidden;
                 background-repeat: no-repeat;
                 background-size: cover;
@@ -373,15 +372,15 @@
 
             &:nth-child(even) {
               .inner {
-                padding-top: 12px;
-                padding-left: 6px;
+                padding-top: 0.24rem;
+                padding-left: 0.12rem;
               }
             }
 
             &:nth-child(odd) {
               .inner {
-                padding-top: 12px;
-                padding-right: 6px;
+                padding-top: 0.24rem;
+                padding-right: 0.12rem;
               }
             }
 
@@ -394,12 +393,12 @@
               position: absolute;
               left: 0;
               bottom: 0;
-              width: 36px;
-              height: 36px;
-              padding: 9px;
+              width: 0.72rem;
+              height: 0.72rem;
+              padding: 0.18rem;
               background-position: center;
               background-repeat: no-repeat;
-              background-size: 18px;
+              background-size: 0.36rem;
               @include bg-image('like');
 
               &.active {
@@ -411,7 +410,7 @@
       }
 
       .spilt-div {
-        height: 49px;
+        height: 0.98rem;
       }
     }
   }

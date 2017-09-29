@@ -114,6 +114,7 @@
             this.text = '支付成功';
             this.$refs.toast.show();
             this.editOrderListByPay({code});
+            this.$emit('updateNum', 'toPayOrder');
             setTimeout(() => {
               this.$router.back();
             }, 1000);
@@ -129,6 +130,7 @@
             this.text = '支付成功';
             this.$refs.toast.show();
             this.editOrderListByPay({code});
+            this.$emit('updateNum', 'toPayOrder');
             setTimeout(() => {
               this.$router.back();
             }, 1000);
@@ -169,14 +171,14 @@
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 0 18px;
+    padding: 0 0.36rem;
     z-index: 102;
     background: #fff;
 
     .title {
-      padding: 12px 0;
+      padding: 0.24rem 0;
       border-bottom: 1px solid #a1a1a1;
-      font-size: 16px;
+      font-size: $font-size-medium-x;
       color: #062745;
     }
 
@@ -184,13 +186,13 @@
       .pay-item {
         display: flex;
         align-items: center;
-        padding: 6px;
+        padding: 0.12rem;
 
         .icon {
           display: inline-block;
-          width: 32px;
-          height: 32px;
-          background-size: 32px 32px;
+          width: 0.64rem;
+          height: 0.64rem;
+          background-size: 0.64rem 0.64rem;
 
           &.icon-wx {
             @include bg-image('weixin');
@@ -207,9 +209,9 @@
 
         .icon-chose {
           display: inline-block;
-          width: 22px;
-          height: 22px;
-          background-size: 22px 22px;
+          width: 0.44rem;
+          height: 0.44rem;
+          background-size: 0.44rem 0.44rem;
           @include bg-image('un-select');
 
           &.act {
@@ -218,18 +220,19 @@
         }
 
         div {
-          padding-left: 10px;
+          padding-left: 0.2rem;
           flex: 1;
+          font-size: 0.32rem;
         }
       }
     }
 
     .split {
       position: absolute;
-      bottom: 45px;
+      bottom: 0.9rem;
       left: 0;
       width: 100%;
-      height: 10px;
+      height: 0.2rem;
       background: #f5f5f5;
     }
 
@@ -255,24 +258,24 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 45px;
-      padding: 0 0 0 18px;
+      height: 0.9rem;
+      padding: 0 0 0 0.36rem;
       font-size: $font-size-medium-x;
 
       .amount-wrap {
         flex: 1;
 
         .amount {
-          padding-left: 10px;
+          padding-left: 0.2rem;
           font-size: $font-size-large;
           color: $primary-color;
         }
       }
 
       button {
-        height: 45px;
-        line-height: 45px;
-        padding: 0 30px;
+        height: 0.9rem;
+        line-height: 0.9rem;
+        padding: 0 0.6rem;
         font-size: $font-size-medium-x;
         color: #fff;
         background: $primary-color;

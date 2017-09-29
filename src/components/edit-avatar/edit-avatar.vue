@@ -338,9 +338,9 @@
         border-bottom: 1px solid #a1a1a1;
 
         .avatar {
-          width: 88px;
-          height: 88px;
-          margin: 40px auto 48px;
+          width: 1.76rem;
+          height: 1.76rem;
+          margin: 0.8rem auto 0.96rem;
           border-radius: 50%;
           overflow: hidden;
 
@@ -351,7 +351,7 @@
         }
 
         h2 {
-          margin-bottom: 20px;
+          margin-bottom: 0.4rem;
           text-align: center;
           font-size: $font-size-medium;
           color: #b3b3b3;
@@ -359,8 +359,8 @@
       }
 
       .avatar-content {
-        padding-top: 18px;
-        padding-left: 28px;
+        padding-top: 0.36rem;
+        padding-left: 0.56rem;
 
         .avatar {
           position: relative;
@@ -373,8 +373,8 @@
             position: absolute;
             top: 0;
             left: 0;
-            right: 28px;
-            bottom: 28px;
+            right: 0.56rem;
+            bottom: 0.56rem;
             border-radius: 50%;
             overflow: hidden;
 
@@ -453,8 +453,9 @@
 
     .chose-wrapper {
       .item {
-        padding: 14px 10px;
+        padding: 0.28rem 0.2rem;
         @include border-bottom-1px($color-border);
+        font-size: 0.32rem;
 
         &:last-child {
           @include border-none();

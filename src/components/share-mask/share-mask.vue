@@ -48,7 +48,7 @@
 
     .content {
       position: absolute;
-      top: 90px;
+      top: 1.8rem;
       left: 30%;
       text-align: center;
       color: #fff;
@@ -58,9 +58,9 @@
 
     .arrow {
       position: absolute;
-      top: 10px;
-      right: 20px;
-      width: 80px;
+      top: 0.2rem;
+      right: 0.4rem;
+      width: 1.6rem;
     }
   }
 </style>

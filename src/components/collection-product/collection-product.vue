@@ -130,16 +130,16 @@
     .scroll-content {
       height: 100%;
       position: relative;
-      padding: 0 18px;
+      padding: 0 0.36rem;
 
       .loading-wrapper {
         clear: both;
-        padding-top: 20px;
+        padding-top: 0.4rem;
       }
 
       .list-content {
-        padding-bottom: 15px;
-        padding-top: 3px;
+        padding-bottom: 0.3rem;
+        padding-top: 0.06rem;
 
         .item {
           position: relative;
@@ -147,7 +147,7 @@
           width: 50%;
           height: 0;
           padding-top: 75%;
-          border-radius: 6px;
+          border-radius: 0.12rem;
 
           .inner {
             position: absolute;
@@ -160,7 +160,7 @@
               position: relative;
               width: 100%;
               height: 100%;
-              border-radius: 6px;
+              border-radius: 0.12rem;
               overflow: hidden;
               background-repeat: no-repeat;
               background-size: cover;
@@ -170,15 +170,15 @@
 
           &:nth-child(even) {
             .inner {
-              padding-top: 12px;
-              padding-left: 6px;
+              padding-top: 0.24rem;
+              padding-left: 0.12rem;
             }
           }
 
           &:nth-child(odd) {
             .inner {
-              padding-top: 12px;
-              padding-right: 6px;
+              padding-top: 0.24rem;
+              padding-right: 0.12rem;
             }
           }
 

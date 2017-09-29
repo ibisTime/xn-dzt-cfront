@@ -20,9 +20,10 @@
   .loading {
     width: 100%;
     text-align: center;
+    font-size: 0;
 
     .desc {
-      line-height: 20px;
+      line-height: 0.4rem;
       font-size: $font-size-small;
       color: $color-text-l;
     }

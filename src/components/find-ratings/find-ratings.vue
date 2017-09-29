@@ -86,14 +86,14 @@
     .rating-content {
       .item {
         display: flex;
-        align-items: top;
-        padding: 11px 15px;
+        align-items: flex-start;
+        padding: 0.22rem 0.3rem;
         border-bottom: 1px solid #eee;
 
         .avatar {
-          width: 50px;
-          height: 50px;
-          flex: 0 0 50px;
+          width: 1rem;
+          height: 1rem;
+          flex: 0 0 1rem;
           border-radius: 50%;
           overflow: hidden;
 
@@ -105,16 +105,16 @@
 
         .inner-content {
           flex: 1;
-          padding-left: 10px;
+          padding-left: 0.2rem;
 
           .top {
             display: flex;
-            margin-bottom: 10px;
+            margin-bottom: 0.2rem;
 
             label {
               flex: 1;
               line-height: 1.1;
-              font-size: 15px;
+              font-size: 0.3rem;
             }
 
             span {
@@ -131,7 +131,7 @@
       }
 
       .find-loading {
-        padding-top: 20px;
+        padding-top: 0.4rem;
       }
     }
 

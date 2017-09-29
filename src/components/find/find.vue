@@ -135,7 +135,7 @@
     left: 0;
     width: 100%;
     bottom: 0;
-    padding: 0 19px;
+    padding: 0 0.38rem;
     background: #fff;
 
     .find-content{
@@ -145,10 +145,10 @@
     }
 
     ul {
-      padding-top: 19px;
+      padding-top: 0.38rem;
 
       li {
-        padding-bottom: 18px;
+        padding-bottom: 0.36rem;
 
         .img {
           width: 100%;
@@ -162,7 +162,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 6px;
+            border-radius: 0.12rem;
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
@@ -170,7 +170,7 @@
         }
 
         h2 {
-          margin-top: 10px;
+          margin-top: 0.2rem;
           line-height: 1.2;
           font-size: $font-size-medium;
         }
@@ -178,7 +178,7 @@
     }
 
     .spilt-div {
-      height: 49px;
+      height: 0.98rem;
     }
 
     .no-result-wrapper {

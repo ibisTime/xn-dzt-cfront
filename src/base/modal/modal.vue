@@ -65,7 +65,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        border-radius: 13px;
+        border-radius: 0.26rem;
         overflow: hidden;
         background: $color-highlight-background;
 
@@ -73,11 +73,11 @@
           position: absolute;
           top: 0;
           right: 0;
-          width: 50px;
-          height: 50px;
+          width: 1rem;
+          height: 1rem;
           background-repeat: no-repeat;
           background-position: center;
-          background-size: 20px;
+          background-size: 0.4rem;
           @include bg-image('close');
         }
       }

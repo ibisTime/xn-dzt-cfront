@@ -132,11 +132,11 @@
       position: absolute;
       top: 0;
       left: 0;
-      bottom: 76px;
+      bottom: 1.52rem;
       width: 100%;
 
       .description {
-        padding: 18px;
+        padding: 0.36rem;
       }
     }
 
@@ -145,19 +145,19 @@
       position: absolute;
       bottom: 0;
       width: 100%;
-      padding: 18px;
+      padding: 0.36rem;
 
       button {
         flex: 1;
-        border-radius: 6px;
-        line-height: 40px;
+        border-radius: 0.12rem;
+        line-height: 0.8rem;
         font-size: $font-size-medium-x;
         color: #fff;
         background: $primary-color;
-        margin-left: 10px;
+        margin-left: 0.2rem;
 
         &:first-child {
-          margin-right: 10px;
+          margin-right: 0.2rem;
           margin-left: 0;
         }
       }

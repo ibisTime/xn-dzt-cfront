@@ -8,9 +8,9 @@
             <div class="bankcode">
               <h2>借记卡</h2>
               <p v-for="bankcard in bankcardList">{{bankcard.bankcardNumber}}</p>
-            </div>            
+            </div>
           </template>
-        </div>        
+        </div>
       </div>
       <div class="form-item">
         <div class="item-label">可用金额</div>
@@ -255,18 +255,19 @@
   };
 </script>
 <style lang="scss" scoped rel="stylesheet/scss">
+  @import "~common/scss/variable";
   @import "~common/scss/mixin";
 
   .form-wrapper {
     .arrow {
       position: absolute;
-      right: 12px;
+      right: 0.24rem;
       background-position: center;
       background-repeat: no-repeat;
       background-size: contain;
       @include bg-image('arrow');
-      width: 15px;
-      height: 15px;
+      width: 0.3rem;
+      height: 0.3rem;
       top: 50%;
       transform: translate(0, -50%);
     }
@@ -274,28 +275,28 @@
   .content {
       display: flex;
       align-items: center;
-      height: 82px;
+      height: 1.64rem;
       width: 100%;
-      padding: 0 26px;
+      padding: 0 0.52rem;
       border: 1px solid #ccc;
-      border-radius: 8px;
+      border-radius: 0.16rem;
       background: #eee;
-      justify-content: center;      
+      justify-content: center;
 
       .bankcode {
         flex: 1;
         text-align: right;
 
         h2 {
-          padding-bottom: 13px;
+          padding-bottom: 0.26rem;
         }
       }
-    }    
+    }
 
     .rules {
-      margin-top: 20px;
+      margin-top: 0.4rem;
       line-height: 1.3;
-      font-size: 14px;
+      font-size: $font-size-medium;
       color: #999;
     }
 

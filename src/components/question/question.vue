@@ -80,7 +80,7 @@
       overflow: hidden;
 
       .description {
-        padding: 18px;
+        padding: 0.36rem;
       }
     }
   }

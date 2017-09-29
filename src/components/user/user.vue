@@ -14,7 +14,7 @@
           </div>
         </div>
         <div class="order-wrapper">
-          <div class="user-main-title">
+          <div class="user-main-title needsclick" @click="goOrder(0)">
             <div class="title border-top-1px border-bottom-1px">
               <h2>我的订单</h2>
             </div>
@@ -22,18 +22,22 @@
           <div class="order-types">
             <div class="order-type needsclick" @click="goOrder(1)">
               <div class="type order-dlt"></div>
+              <div v-show="toMeasureOrder" class="badge-text"><badge :text="toMeasureOrder"></badge></div>
               <p>待量体</p>
             </div>
             <div class="order-type needsclick" @click="goOrder(2)">
               <div class="type order-dzf"></div>
+              <div v-show="toPayOrder" class="badge-text"><badge :text="toPayOrder"></badge></div>
               <p>待支付</p>
             </div>
             <div class="order-type needsclick" @click="goOrder(4)">
               <div class="type order-dsh"></div>
+              <div v-show="toReceiverOrder" class="badge-text"><badge :text="toReceiverOrder"></badge></div>
               <p>待收货</p>
             </div>
             <div class="order-type needsclick" @click="goOrder(5)">
               <div class="type order-dpj"></div>
+              <div v-show="toCommentOrder" class="badge-text"><badge :text="toCommentOrder"></badge></div>
               <p>待评价</p>
             </div>
             <div class="order-type needsclick" @click="goOrder(6)">
@@ -105,7 +109,7 @@
         <loading title=""></loading>
       </div>
     </div>
-    <router-view></router-view>
+    <router-view @updateNum="handleUpdateNum"></router-view>
   </div>
 </template>
 <script>
@@ -115,6 +119,7 @@
   import {getUser, buyVIP} from 'api/user';
   import {getDictList, getBizSystemConfig} from 'api/general';
   import {getAccount} from 'api/account';
+  import {getOrderNum} from 'api/biz';
   import {setTitle, formatAmount, isUnDefined} from 'common/js/util';
   import {commonMixin} from 'common/js/mixin';
   import {initPay} from 'common/js/weixin';
@@ -122,25 +127,41 @@
   import Loading from 'base/loading/loading';
   import Toast from 'base/toast/toast';
   import Confirm from 'base/confirm/confirm';
+  import Badge from 'base/badge/badge';
 
   export default {
     mixins: [commonMixin],
     data() {
       return {
         text: '',
-        loadingFlag: false,
+        loadingFlag: true,
         cnyAccount: null,
         hybAccount: null,
         isAlert: true,
-        isHtml: true
+        isHtml: true,
+        orderNum: null
       };
     },
     created() {
       this.first = true;
+      this.hasLoad = false;
+      this.fetching = false;
       this.levelDict = {};
       this._getUser();
     },
     computed: {
+      toMeasureOrder() {
+        return (this.orderNum && this.orderNum.toMeasureOrder || '') + '';
+      },
+      toPayOrder() {
+        return (this.orderNum && this.orderNum.toPayOrder || '') + '';
+      },
+      toReceiverOrder() {
+        return (this.orderNum && this.orderNum.toReceiverOrder || '') + '';
+      },
+      toCommentOrder() {
+        return (this.orderNum && this.orderNum.toCommentOrder || '') + '';
+      },
       ...mapGetters([
         'user'
       ])
@@ -153,21 +174,41 @@
             getUser(),
             getDictList('user_level')
           ]).then(([userData, levelDict]) => {
+            this.loadingFlag = false;
             let obj = {};
             levelDict.forEach((item) => {
               obj[item.dkey] = item.dvalue;
             });
             this.levelDict = obj;
             this.setUser(userData);
-          }).catch(() => {});
+          }).catch(() => {
+            this.loadingFlag = false;
+          });
         }
       },
       shouldGetData() {
         if (this.$route.path === '/user') {
           setTitle('我的');
+          if (!this.hasLoad && !this.fetching) {
+            this.getOrderNum();
+          }
           return this.first;
         }
+        if (this.hasLoad) {
+          this.hasLoad = false;
+        }
         return false;
+      },
+      getOrderNum() {
+        this.fetching = true;
+        getOrderNum().then((data) => {
+          this.orderNum = data;
+          this.hasLoad = true;
+          this.fetching = false;
+        }).catch(() => {
+          this.hasLoad = true;
+          this.fetching = false;
+        });
       },
       getText(level) {
         if (isUnDefined(level)) {
@@ -266,6 +307,30 @@
           this.$refs.confirm.show();
         });
       },
+      handleUpdateNum(type) {
+        if (this.orderNum) {
+          if (type === 'toPayOrder') {
+            let ori = this.orderNum['toPayOrder'] || 1;
+            ori -= 1;
+            this.orderNum['toPayOrder'] = ori;
+          } else if (type === 'toMeasureOrder') {
+            let ori = this.orderNum['toMeasureOrder'] || 1;
+            ori -= 1;
+            this.orderNum['toMeasureOrder'] = ori;
+          } else if (type === 'toReceiverOrder') {
+            let ori = this.orderNum['toReceiverOrder'] || 1;
+            ori -= 1;
+            this.orderNum['toReceiverOrder'] = ori;
+            ori = this.orderNum['toCommentOrder'] || 0;
+            ori += 1;
+            this.orderNum['toCommentOrder'] = ori;
+          } else if (type === 'toCommentOrder') {
+            let ori = this.orderNum['toCommentOrder'] || 1;
+            ori -= 1;
+            this.orderNum['toCommentOrder'] = ori;
+          }
+        }
+      },
       ...mapMutations({
         setCnyAccount: SET_CNY_ACCOUNT,
         setHybAccount: SET_HYB_ACCOUNT,
@@ -280,7 +345,8 @@
       Loading,
       Chosen,
       Toast,
-      Confirm
+      Confirm,
+      Badge
     }
   };
 </script>
@@ -293,7 +359,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    bottom: 49px;
+    bottom: 0.98rem;
     z-index: 2;
     background: #fff;
 
@@ -304,35 +370,36 @@
 
       .user-main-title {
         position: relative;
-        height: 39px;
-        line-height: 39px;
+        height: 0.78rem;
+        line-height: 0.78rem;
         text-align: center;
         font-size: $font-size-medium;
 
         h2 {
           font-weight: bold;
+          font-size: 0.28rem;
         }
 
         .title {
           position: relative;
           margin: 0 auto;
-          width: 130px;
+          width: 2.6rem;
 
           &:before {
             content: '';
             position: absolute;
-            top: 19px;
+            top: 0.38rem;
             left: 0;
-            width: 26px;
+            width: 0.52rem;
             border-bottom: 1px solid $color-border;
           }
 
           &:after {
             content: '';
             position: absolute;
-            top: 19px;
+            top: 0.38rem;
             right: 0;
-            width: 26px;
+            width: 0.52rem;
             border-bottom: 1px solid $color-border;
           }
         }
@@ -340,9 +407,9 @@
 
       .user-title {
         position: relative;
-        height: 39px;
-        line-height: 39px;
-        padding-left: 12px;
+        height: 0.78rem;
+        line-height: 0.78rem;
+        padding-left: 0.24rem;
         font-size: $font-size-medium;
         @include border-bottom-1px($color-border);
 
@@ -352,28 +419,29 @@
 
         h2 {
           font-weight: bold;
+          font-size: 0.28rem;
         }
 
         .arrow {
           position: absolute;
           right: 0;
           top: 0;
-          width: 34px;
+          width: 0.68rem;
           height: 100%;
           background-repeat: no-repeat;
           background-position: center;
-          background-size: 10px;
+          background-size: 0.2rem;
           @include bg-image('more');
         }
       }
 
       .join-member {
-        height: 38px;
-        margin-top: 10px;
-        line-height: 38px;
-        border-radius: 20px;
+        height: 0.76rem;
+        margin-top: 0.2rem;
+        line-height: 0.76rem;
+        border-radius: 0.4rem;
         text-align: center;
-        font-size: 20px;
+        font-size: 0.4rem;
         color: #fff;
         background: $second-color;
       }
@@ -381,17 +449,17 @@
       .avatar-wrapper {
         display: flex;
         align-items: center;
-        height: 128px;
-        padding: 0 37px;
+        height: 2.56rem;
+        padding: 0 0.74rem;
         background-position: center;
         background-size: cover;
         background-repeat: no-repeat;
         @include bg-image('avatar-bg');
 
         .avatar {
-          width: 75px;
-          height: 75px;
-          flex: 0 0 75px;
+          width: 1.5rem;
+          height: 1.5rem;
+          flex: 0 0 1.5rem;
           border-radius: 50%;
           overflow: hidden;
           border: 2px solid #fff;
@@ -403,7 +471,7 @@
         }
 
         .user-info {
-          margin-left: 24px;
+          margin-left: 0.48rem;
 
           h1 {
             line-height: 1.1;
@@ -412,7 +480,7 @@
           }
 
           p {
-            margin-top: 7px;
+            margin-top: 0.14rem;
             font-size: $font-size-small;
             color: #fff;
           }
@@ -420,23 +488,24 @@
       }
 
       .order-wrapper {
-        padding: 0 18px;
+        padding: 0 0.36rem;
 
         .order-types {
-          height: 68px;
+          height: 1.36rem;
           display: flex;
           align-items: center;
 
           .order-type {
             flex: 1;
             text-align: center;
+            position: relative;
 
             .type {
-              height: 32px;
+              height: 0.64rem;
               font-size: 0;
               background-repeat: no-repeat;
               background-position: 50% 0;
-              background-size: 20px;
+              background-size: 0.4rem;
 
               &.order-dlt {
                 @include bg-image('dlt');
@@ -444,7 +513,7 @@
 
               &.order-dzf {
                 background-position-y: 20%;
-                background-size: 24px;
+                background-size: 0.48rem;
                 @include bg-image('dzf');
               }
 
@@ -461,6 +530,15 @@
               }
             }
 
+            .badge-text {
+              position: absolute;
+              top: -0.1rem;
+              right: 50%;
+              padding-left: 0.4rem;
+              transform: translateX(50%);
+              font-size: 0;
+            }
+
             p {
               font-size: $font-size-small-s;
               color: #333;
@@ -470,15 +548,15 @@
       }
 
       .split {
-        height: 6px;
+        height: 0.12rem;
         background-color: #f2f2f2;
       }
 
       .user-menus {
-        padding: 0 18px;
+        padding: 0 0.36rem;
 
         .service-types {
-          height: 68px;
+          height: 1.36rem;
           display: flex;
           align-items: center;
 
@@ -487,11 +565,11 @@
             text-align: center;
 
             .type {
-              height: 32px;
+              height: 0.64rem;
               font-size: 0;
               background-repeat: no-repeat;
               background-position: 50% 0;
-              background-size: 20px;
+              background-size: 0.4rem;
 
               &.service-zsbg {
                 @include bg-image('zsbg');
@@ -506,7 +584,7 @@
               }
 
               &.service-cjwt {
-                background-size: 24px;
+                background-size: 0.48rem;
                 @include bg-image('cjwt');
               }
             }
@@ -521,8 +599,9 @@
 
     .chose-wrapper {
       .item {
-        padding: 14px 10px;
+        padding: 0.28rem 0.2rem;
         @include border-bottom-1px($color-border);
+        font-size: 0.32rem;
 
         &:last-child {
           @include border-none();

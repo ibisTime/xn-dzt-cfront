@@ -112,34 +112,34 @@
       height: 100%;
 
       ul {
-        padding: 0 18px;
+        padding: 0 0.36rem;
 
         li {
           display: flex;
           align-items: flex-start;
-          padding: 18px 0 18px 18px;
+          padding: 0.36rem 0 0.36rem 0.36rem;
           @include border-bottom-1px($color-border);
 
           .time {
-            font-size: 13px;
+            font-size: 0.26rem;
           }
 
           .info {
-            padding-left: 18px;
+            padding-left: 0.36rem;
 
             .note {
-              font-size: 13px;
+              font-size: 0.26rem;
             }
 
             .trans-amount {
-              padding-top: 7px;
+              padding-top: 0.14rem;
               font-size: $font-size-medium-x;
             }
           }
         }
 
         .loading {
-          padding-top: 20px;
+          padding-top: 0.4rem;
         }
       }
     }

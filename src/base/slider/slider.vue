@@ -163,15 +163,15 @@
       position: absolute;
       right: 0;
       left: 0;
-      bottom: -16px;
+      bottom: -0.32rem;
       text-align: center;
       font-size: 0;
 
       .dot {
         display: inline-block;
-        margin: 0 4px;
-        width: 8px;
-        height: 8px;
+        margin: 0 0.08rem;
+        width: 0.16rem;
+        height: 0.16rem;
         border-radius: 50%;
         background: #cbcbcb;
 

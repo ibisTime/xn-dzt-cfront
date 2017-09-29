@@ -195,11 +195,11 @@
       position: absolute;
       top: 0;
       left: 0;
-      height: 50px;
-      width: 50px;
+      height: 1rem;
+      width: 1rem;
       z-index: 1;
       background-position: center;
-      background-size: 12px;
+      background-size: 0.24rem;
       background-repeat: no-repeat;
       @include bg-image('back');
     }
@@ -223,9 +223,9 @@
           @include bg-image('bb');
 
           .avatar-wrapper {
-            margin: 70px auto 0;
-            width: 88px;
-            height: 88px;
+            margin: 1.4rem auto 0;
+            width: 1.76rem;
+            height: 1.76rem;
             border-radius: 50%;
             overflow: hidden;
             border: 2px solid #fff;
@@ -237,7 +237,7 @@
           }
 
           h1 {
-            margin-top: 17px;
+            margin-top: 0.34rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -247,7 +247,7 @@
           }
 
           h3 {
-            margin-top: 7.5px;
+            margin-top: 0.15rem;
             text-align: center;
             font-size: $font-size-medium;
             color: $second-color;
@@ -258,8 +258,8 @@
       .member-infos {
         display: flex;
         align-items: center;
-        height: 83px;
-        padding: 0 42.5px;
+        height: 1.66rem;
+        padding: 0 0.85rem;
 
         .info {
           flex: 1;
@@ -271,7 +271,7 @@
           }
 
           p {
-            margin-top: 11px;
+            margin-top: 0.22rem;
             font-size: $font-size-large;
           }
         }
@@ -282,12 +282,12 @@
 
         button {
           display: block;
-          margin-left: 40px;
-          width: 100px;
-          height: 30px;
-          line-height: 30px;
+          margin-left: 0.8rem;
+          width: 2rem;
+          height: 0.6rem;
+          line-height: 0.6rem;
           border: 1px solid #d2d2d2;
-          border-radius: 14px;
+          border-radius: 0.28rem;
           font-size: $font-size-medium;
           color: #062745;
           background-color: #fff;
@@ -295,13 +295,13 @@
       }
 
       .menus {
-        padding: 0 18px;
+        padding: 0 0.36rem;
 
         .menu {
           position: relative;
-          height: 59px;
-          line-height: 59px;
-          padding-left: 10px;
+          height: 1.18rem;
+          line-height: 1.18rem;
+          padding-left: 0.2rem;
           font-size: $font-size-medium;
           @include border-bottom-1px(#d8d8d8);
 
@@ -314,11 +314,11 @@
             position: absolute;
             right: 0;
             top: 0;
-            width: 34px;
+            width: 0.68rem;
             height: 100%;
             background-repeat: no-repeat;
             background-position: center;
-            background-size: 10px;
+            background-size: 0.2rem;
             @include bg-image('more');
           }
         }
@@ -327,7 +327,7 @@
 
     .chose-wrapper {
       .item {
-        padding: 14px 10px;
+        padding: 0.28rem 0.2rem;
         border-bottom: 1px solid #a1a1a1;
 
         &:last-child {

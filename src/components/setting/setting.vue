@@ -47,9 +47,9 @@
             </router-link>
           </div>
         </div>
-        <!-- <div class="set-btns">
+        <div class="set-btns">
           <button @click="logout">退出登录</button>
-        </div> -->
+        </div>
       </scroll>
       <router-view></router-view>
     </div>
@@ -153,13 +153,13 @@
       overflow: hidden;
 
       .setting-wrapper {
-        padding: 0 18px;
+        padding: 0 0.36rem;
 
         .setting-item {
           position: relative;
-          height: 58px;
-          line-height: 58px;
-          padding-left: 9.5px;
+          height: 1.16rem;
+          line-height: 1.16rem;
+          padding-left: 0.19rem;
           @include border-bottom-1px($color-border);
 
           h2 {
@@ -170,27 +170,27 @@
             position: absolute;
             right: 0;
             top: 0;
-            width: 34px;
+            width: 0.68rem;
             height: 100%;
             background-repeat: no-repeat;
             background-position: center;
-            background-size: 10px;
+            background-size: 0.2rem;
             @include bg-image('more');
           }
 
           img {
             position: absolute;
-            right: 34px;
-            width: 46px;
-            height: 46px;
-            top: 6px;
+            right: 0.68rem;
+            width: 0.92rem;
+            height: 0.92rem;
+            top: 0.12rem;
             border-radius: 50%;
           }
 
           span {
             position: absolute;
-            right: 34px;
-            left: 100px;
+            right: 0.68rem;
+            left: 2rem;
             top: 50%;
             transform: translate(0, -50%);
             overflow: hidden;
@@ -208,13 +208,13 @@
         bottom: 0;
         left: 0;
         width: 100%;
-        padding: 12px 18px;
+        padding: 0.24rem 0.36rem;
 
         button {
           width: 100%;
-          border-radius: 8px;
-          height: 40px;
-          line-height: 40px;
+          border-radius: 0.16rem;
+          height: 0.8rem;
+          line-height: 0.8rem;
           font-size: $font-size-medium;
           color: #fff;
           background-color: $color-cancel-background;

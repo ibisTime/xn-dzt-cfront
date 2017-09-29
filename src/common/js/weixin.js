@@ -18,7 +18,20 @@ let globalConfig = {};
 export function initShare(config, suc, err) {
   getInitWXSDKConfig().then((data) => {
     suc && suc(data);
-    config.link = config.link + '?userReferee=' + getUserId();
+    if (!/(\?|&)userReferee/.test(config.link)) {
+      let result = /\?([^#]*)$/.exec(config.link);
+      if (result) {
+        if (result[1]) {
+          config.link = config.link + '&userReferee=' + getUserId();
+        } else {
+          config.link = config.link + 'userReferee=' + getUserId();
+        }
+      } else {
+        config.link = config.link + '?userReferee=' + getUserId();
+      }
+    } else {
+      config.link.replace(/((?:\?|$)userReferee=)[^&$]+/, '$1' + getUserId());
+    }
     _initShare(data, config);
   }).catch(() => {
     err && err();

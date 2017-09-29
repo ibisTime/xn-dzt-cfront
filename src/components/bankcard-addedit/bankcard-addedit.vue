@@ -261,13 +261,13 @@
   .form-wrapper {
     .arrow {
       position: absolute;
-      right: 12px;
+      right: 0.24rem;
       background-position: center;
       background-repeat: no-repeat;
       background-size: contain;
       @include bg-image('arrow');
-      width: 15px;
-      height: 15px;
+      width: 0.3rem;
+      height: 0.3rem;
       top: 50%;
       transform: translate(0, -50%);
     }

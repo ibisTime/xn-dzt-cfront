@@ -82,47 +82,48 @@
       height: 100%;
 
       .list-content {
-        padding-left: 18px;
+        padding-left: 0.36rem;
 
         .item {
           display: flex;
           align-items: top;
-          padding: 25px 18px;
+          padding: 0.5rem 0.36rem;
           padding-left: 0;
           @include border-bottom-1px($color-border);
 
           .img {
-            width: 32px;
-            height: 32px;
-            flex: 0 0 32px;
+            width: 0.64rem;
+            height: 0.64rem;
+            flex: 0 0 0.64rem;
+            font-size: 0;
 
             i {
               display: inline-block;
               width: 100%;
               height: 100%;
               background: url(notice.png) no-repeat;
-              background-size: 32px 32px;
+              background-size: 0.64rem 0.64rem;
             }
           }
 
           .content {
             flex: 1;
-            padding-left: 10px;
+            padding-left: 0.2rem;
 
             .title {
               font-size: $font-size-medium;
             }
 
             .date {
-              padding-top: 10px;
+              padding-top: 0.2rem;
               font-size: $font-size-small;
               color: #999;
             }
 
             .desc {
-              margin-top: 15px;
-              padding: 15px;
-              border-radius: 6px;
+              margin-top: 0.3rem;
+              padding: 0.3rem;
+              border-radius: 0.12rem;
               line-height: 1.2;
               font-size: $font-size-small;
               color: #999;

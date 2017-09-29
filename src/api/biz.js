@@ -130,7 +130,9 @@ export function getModel(code) {
 // 列表查询产品
 export function getProductList () {
   return fetch(620012, {
-    status: 1
+    status: 1,
+    orderColumn: 'order_no',
+    orderDir: 'asc'
   });
 }
 
@@ -210,10 +212,10 @@ export function getOrder(code) {
   });
 }
 
-// 详情查询订单(map)
-export function getOrderInMap(code) {
-  return fetch(620234, {
-    code
+// 查询未完成的各种订单数
+export function getOrderNum(code) {
+  return fetch(620223, {
+    userId: getUserId()
   });
 }
 

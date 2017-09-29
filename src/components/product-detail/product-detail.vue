@@ -295,7 +295,7 @@
     }
 
     .split {
-      height: 10px;
+      height: 0.2rem;
       background: #f2f2f2;
     }
 
@@ -304,11 +304,11 @@
         position: fixed;
         left: 0;
         top: 0;
-        width: 62px;
-        height: 62px;
+        width: 1.24rem;
+        height: 1.24rem;
         background-position: center;
         background-repeat: no-repeat;
-        background-size: 12px;
+        background-size: 0.24rem;
         z-index: 102;
         @include bg-image('back');
       }
@@ -317,11 +317,11 @@
         position: fixed;
         right: 0;
         top: 0;
-        width: 62px;
-        height: 62px;
+        width: 1.24rem;
+        height: 1.24rem;
         background-position: center;
         background-repeat: no-repeat;
-        background-size: 20px;
+        background-size: 0.4rem;
         z-index: 102;
         @include bg-image('like');
 
@@ -337,7 +337,7 @@
       overflow: hidden;
 
       .in-slider {
-        min-height: 62px;
+        min-height: 1.24rem;
       }
 
       img {
@@ -358,7 +358,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      bottom: 64px;
+      bottom: 1.28rem;
 
       .scroll-content {
         position: relative;
@@ -366,7 +366,7 @@
       }
 
       .description {
-        padding: 32px 20px;
+        padding: 0.64rem 0.4rem;
 
         img {
           max-width: 100%;
@@ -379,18 +379,18 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 64px;
+      height: 1.28rem;
       display: flex;
       align-items: center;
       background: #fff;
 
       .f-btn {
         flex: 1;
-        margin: 0 19px;
+        margin: 0 0.38rem;
         padding: 0;
-        height: 40px;
-        line-height: 40px;
-        border-radius: 6px;
+        height: 0.8rem;
+        line-height: 0.8rem;
+        border-radius: 0.12rem;
         font-size: $font-size-medium-x;
         color: #fff;
 
@@ -399,7 +399,7 @@
         }
 
         &.btn-fg {
-          background: $second-color;
+          background: $primary-color;
         }
 
         &.btn-cancel {

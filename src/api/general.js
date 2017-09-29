@@ -100,28 +100,6 @@ export function getDictList(parentKey) {
   });
 }
 
-// 列表查寻用户数据字典（map）
-export function getDictMap() {
-  if (getDictMap.cache) {
-    return Promise.resolve(getDictMap.cache);
-  }
-  return fetch(805908, {}).then((data) => {
-    getDictMap.cache = data;
-    return Promise.resolve(data);
-  });
-}
-
-// 列表查寻业务数据字典（map）
-export function getBizDictMap() {
-  if (getBizDictMap.cache) {
-    return Promise.resolve(getBizDictMap.cache);
-  }
-  return fetch(620908, {}).then((data) => {
-    getBizDictMap.cache = data;
-    return Promise.resolve(data);
-  });
-}
-
 // 获取banner
 export function getBannerList() {
   return fetch(805806, {

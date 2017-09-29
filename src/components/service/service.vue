@@ -206,7 +206,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    bottom: 60px;
+    bottom: 1.2rem;
     background: #eee;
 
     .message-content {
@@ -215,17 +215,17 @@
       background: #eee;
 
       .loading-wrapper {
-        padding-top: 30px;
+        padding-top: 0.6rem;
       }
 
       .message-item {
         display: flex;
-        padding: 18px;
+        padding: 0.36rem;
 
         .avatar {
-          width: 50px;
-          flex: 0 0 50px;
-          height: 50px;
+          width: 1rem;
+          flex: 0 0 1rem;
+          height: 1rem;
           border-radius: 50%;
           overflow: hidden;
 
@@ -237,8 +237,8 @@
 
         .item-cont {
           position: relative;
-          border-radius: 6px;
-          padding: 14px 14px 12px;
+          border-radius: 0.12rem;
+          padding: 0.28rem 0.28rem 0.24rem;
           line-height: 1.4;
           word-break: break-word;
           font-size: $font-size-medium;
@@ -248,38 +248,38 @@
           &:before {
             content: '';
             position: absolute;
-            top: 20px;
+            top: 0.4rem;
             width: 0;
             height: 0;
-            border-top: 5px solid transparent;
-            border-bottom: 5px solid transparent;
+            border-top: 0.1rem solid transparent;
+            border-bottom: 0.1rem solid transparent;
           }
         }
 
         &.message-left {
-          padding-right: 110px;
+          padding-right: 2.2rem;
 
           .item-cont {
-            left: 10px;
+            left: 0.2rem;
 
             &:before {
-              left: -10px;
-              border-right: 10px solid #fff;
+              left: -0.2rem;
+              border-right: 0.2rem solid #fff;
             }
           }
         }
 
         &.message-right {
           justify-content: flex-end;
-          padding-left: 110px;
+          padding-left: 2.2rem;
 
           .item-cont {
-            right: 10px;
+            right: 0.2rem;
 
             &:before {
               right: 0;
               transform: translateX(100%);
-              border-left: 10px solid #fff;
+              border-left: 0.2rem solid #fff;
             }
           }
         }
@@ -288,8 +288,8 @@
     .message-foot {
       display: flex;
       align-items: center;
-      padding: 0 18px;
-      height: 60px;
+      padding: 0 0.36rem;
+      height: 1.2rem;
       font-size: $font-size-medium;
       background: #fff;
 
@@ -297,11 +297,11 @@
         flex: 1;
         display: flex;
         align-items: center;
-        margin-right: 10px;
-        padding: 0 6px;
+        margin-right: 0.2rem;
+        padding: 0 0.12rem;
         border: 1px solid #b2b2b2;
-        border-radius: 6px;
-        height: 40px;
+        border-radius: 0.12rem;
+        height: 0.8rem;
         background-color: rgb(238, 238, 238);
 
         input {
@@ -313,9 +313,9 @@
       }
 
       button {
-        width: 60px;
-        border-radius: 6px;
-        line-height: 40px;
+        width: 1.2rem;
+        border-radius: 0.12rem;
+        line-height: 0.8rem;
         font-size: $font-size-medium;
         background: $primary-color;
         color: #fff;

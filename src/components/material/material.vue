@@ -50,10 +50,20 @@
                 <i class="arrow"></i>
               </div>
             </div>
-            <div class="form-item">
-              <div class="item-label">产地</div>
-              <div class="item-input-wrapper"><input type="text" placeholder="请输入面料产地" v-model="area" class="item-input"></div>
+            <div class="cate-info">
+              <div class="cate">
+                <span>产地</span>
+                <select v-model="area">
+                  <option value="all">全部</option>
+                  <option v-for="item in areaList" :value="item.dkey">{{item.dvalue}}</option>
+                </select>
+                <i class="arrow"></i>
+              </div>
             </div>
+            <!--<div class="form-item">-->
+              <!--<div class="item-label">产地</div>-->
+              <!--<div class="item-input-wrapper"><input type="text" placeholder="请输入面料产地" v-model="area" class="item-input"></div>-->
+            <!--</div>-->
           </div>
           <ul class="clearfix">
             <li v-for="(item,index) in currentList" :key="index" class="needsclick" @click="selectItem(item)">
@@ -101,7 +111,8 @@
         divide: 'all',
         yarn: 'all',
         yarnList: [],
-        area: '',
+        area: 'all',
+        areaList: [],
         fetching: false,
         loadingFlag: true
       };
@@ -125,10 +136,7 @@
           let flowersFlag = this.design === 'all' ? true : this.design === item.flowers;
           let formFlag = this.divide === 'all' ? true : this.divide === item.form;
           let yarnFlag = this.yarn === 'all' ? true : this.yarn === item.yarn;
-          let areaFlag = false;
-          if (item.area && ~item.area.indexOf(this.area)) {
-            areaFlag = true;
-          }
+          let areaFlag = this.area === 'all' ? true : this.area === item.area;
           return colorFlag && flowersFlag && formFlag && yarnFlag && areaFlag;
         });
       }
@@ -159,7 +167,8 @@
             this.getFabricColorDict(),
             this.getFabricDesignDict(),
             this.getFabricDivideDict(),
-            this.getFabricYarnDict()
+            this.getFabricYarnDict(),
+            this.getAreaDict()
           ]).then(() => {
             this.getMaterialList();
           }).catch(() => {
@@ -176,7 +185,7 @@
             if (item.kind === '0') {
               _arr.push({
                 key: item.code,
-                value: item.name
+                value: item.name + '面料'
               });
             }
           });
@@ -191,6 +200,7 @@
           this.fetching = false;
         } else {
           this.loadingFlag = true;
+          this.fetching = true;
           this.materialList = [];
           return getMaterialList(modelCode).then((data) => {
             this.fetching = false;
@@ -205,13 +215,7 @@
       // 面料类型数据字典
       getFabricTypeDict() {
         return getDictList('fabric_type').then((data) => {
-          let _arr = data.map((item) => {
-            return {
-              key: item.dkey,
-              value: item.dvalue
-            };
-          });
-          this.fabricTypeList = _arr;
+          this.fabricTypeList = data;
         });
       },
       // 色系数据字典
@@ -236,6 +240,12 @@
       getFabricYarnDict() {
         return getDictList('fabric_yarn').then((data) => {
           this.yarnList = data;
+        });
+      },
+      // 产地数据字典
+      getAreaDict() {
+        return getDictList('produce_area').then((data) => {
+          this.areaList = data;
         });
       },
       formatImg(img) {
@@ -269,9 +279,14 @@
           item._yarn = this.yarnList[index].dvalue;
 
           index = this.fabricTypeList.findIndex((cate) => {
-            return cate.key === item.type;
+            return cate.dkey === item.type;
           });
-          item._type = this.fabricTypeList[index].value;
+          item._type = this.fabricTypeList[index].dvalue;
+
+          index = this.areaList.findIndex((area) => {
+            return area.dkey === item.area;
+          });
+          item._area = this.areaList[index].dvalue;
 
           item._advPic = item.advPic.split('||');
         }
@@ -331,34 +346,34 @@
       width: 100%;
       z-index: 100;
       overflow: hidden;
-      height: 40px;
-      line-height: 40px;
+      height: 0.8rem;
+      line-height: 0.8rem;
       background: $primary-color;
     }
 
     .material-content {
       position: absolute;
-      top: 40px;
+      top: 0.8rem;
       left: 0;
       bottom: 0;
       width: 100%;
-      padding: 0 19px 10px;
+      padding: 0 0.38rem 0.2rem;
 
       .cate-infos {
-        padding: 20px 0;
+        padding: 0.4rem 0;
 
         .cate-info {
           float: left;
           width: 50%;
-          margin-bottom: 10px;
+          margin-bottom: 0.2rem;
 
           &:nth-child(2n+1) {
-            padding-left: 10px;
-            padding-right: 10px;
+            padding-left: 0.2rem;
+            padding-right: 0.2rem;
           }
 
           &:nth-child(2n) {
-            padding-left: 20px;
+            padding-left: 0.4rem;
           }
 
           .cate {
@@ -368,13 +383,13 @@
             font-size: $font-size-medium;
 
             span {
-              padding-right: 14px;
+              padding-right: 0.28rem;
             }
 
             select {
               flex: 1;
-              padding: 6px;
-              border-radius: 6px;
+              padding: 0.12rem;
+              border-radius: 0.12rem;
               border: 1px solid #9d9d9d;
               font-size: $font-size-medium;
               color: #4d4d4d;
@@ -383,13 +398,13 @@
 
             .arrow {
               position: absolute;
-              right: 12px;
+              right: 0.24rem;
               background-position: center;
               background-repeat: no-repeat;
               background-size: contain;
               @include bg-image('arrow');
-              width: 15px;
-              height: 15px;
+              width: 0.3rem;
+              height: 0.3rem;
               top: 50%;
               transform: translate(0, -50%);
             }
@@ -400,11 +415,11 @@
           display: flex;
           align-items: center;
           position: relative;
-          padding-left: 10px;
-          font-size: 14px;
+          padding-left: 0.2rem;
+          font-size: 0.28rem;
 
           .item-label {
-            padding-right: 14px;
+            padding-right: 0.28rem;
           }
 
           .item-input-wrapper {
@@ -412,12 +427,12 @@
             flex: 1;
             display: flex;
             align-items: center;
-            height: 40px;
+            height: 0.8rem;
             border: 1px solid #9d9d9d;
-            border-radius: 8px;
-            padding: 0 8px;
+            border-radius: 0.16rem;
+            padding: 0 0.16rem;
             background: #eee;
-            min-width: 128px;
+            min-width: 2.56rem;
 
             .item-input {
               flex: 1;
@@ -435,17 +450,17 @@
           width: 50%;
           height: 0;
           padding-top: 50%;
-          border-radius: 8px;
+          border-radius: 0.16rem;
 
           &:nth-child(2n+1) {
             .inner {
-              padding-right: 10px;
+              padding-right: 0.2rem;
             }
           }
 
           &:nth-child(2n) {
             .inner {
-              padding-left: 10px;
+              padding-left: 0.2rem;
             }
           }
 
@@ -455,7 +470,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            padding-bottom: 17px;
+            padding-bottom: 0.34rem;
 
             .inner-content {
               width: 100%;
@@ -472,7 +487,7 @@
 
       .material-loading {
         clear: both;
-        padding-top: 20px;
+        padding-top: 0.4rem;
       }
 
       .no-result-wrapper {

@@ -126,7 +126,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 19px 19px 0;
+    padding: 0.38rem 0.38rem 0;
     background: #fff;
 
     &.slide-enter-active, &.slide-leave-active {
@@ -145,7 +145,7 @@
 
     ul {
       li {
-        padding-bottom: 18px;
+        padding-bottom: 0.36rem;
 
         .img {
           width: 100%;
@@ -159,7 +159,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 6px;
+            border-radius: 0.12rem;
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
@@ -167,7 +167,7 @@
         }
 
         h2 {
-          margin-top: 10px;
+          margin-top: 0.2rem;
           line-height: 1.2;
           font-size: $font-size-medium;
         }

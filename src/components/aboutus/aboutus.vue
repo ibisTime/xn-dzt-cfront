@@ -108,7 +108,7 @@
       }
 
       .other-info {
-        padding-top: 30px;
+        padding-top: 0.6rem;
 
         p {
           line-height: 1;

@@ -33,7 +33,11 @@ export default function fetch(code, param) {
       return Promise.reject('timeout');
     }
     if(res.errorCode !== ERR_OK) {
-      message.show(res.errorInfo.toString());
+      if (res.errorInfo) {
+        message.show(res.errorInfo.toString());
+      } else {
+        message.show('操作失败');
+      }
       return Promise.reject(res.errorInfo);
     }
     return Promise.resolve(res.data);

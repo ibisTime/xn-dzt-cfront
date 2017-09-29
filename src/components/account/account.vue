@@ -240,25 +240,25 @@
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 0 19px;
+    padding: 0 0.38rem;
     background: #fff;
     z-index: 101;
 
     .account-content {
       position: absolute;
       top: 0;
-      left: 19px;
-      right: 19px;
-      bottom: 64px;
+      left: 0.38rem;
+      right: 0.38rem;
+      bottom: 1.28rem;
       overflow: hidden;
 
       .top-wrapper {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        width: 195px;
-        height: 195px;
-        margin: 30px auto;
+        width: 3.9rem;
+        height: 3.9rem;
+        margin: 0.6rem auto;
         border-radius: 50%;
         text-align: center;
         background: $primary-color;
@@ -269,17 +269,17 @@
         }
 
         p {
-          padding: 18px 0;
-          font-size: 36px;
+          padding: 0.36rem 0;
+          font-size: 0.72rem;
           color: #a89300;
 
           span {
-            padding-left: 6px;
+            padding-left: 0.12rem;
           }
         }
 
         div {
-          padding-top: 2.5px;
+          padding-top: 0.05rem;
           font-size: $font-size-medium;
           color: #adadad;
         }
@@ -290,9 +290,9 @@
         font-size: $font-size-medium;
 
         .cate-item {
-          height: 58px;
-          line-height: 58px;
-          padding: 0 41px;
+          height: 1.16rem;
+          line-height: 1.16rem;
+          padding: 0 0.82rem;
           border-bottom: 1px solid #a1a1a1;
 
           h1 {
@@ -303,7 +303,7 @@
             float: right;
 
             span {
-              padding-left: 4px;
+              padding-left: 0.08rem;
             }
           }
         }
@@ -315,25 +315,25 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      padding: 12px 18px;
+      padding: 0.24rem 0.36rem;
       display: flex;
       align-items: center;
 
       button {
-        height: 40px;
-        line-height: 40px;
+        height: 0.8rem;
+        line-height: 0.8rem;
         flex: 1;
-        border-radius: 8px;
+        border-radius: 0.16rem;
         font-size: $font-size-medium;
         color: #fff;
         background: $primary-color;
 
         &:nth-child(1) {
-          margin-right: 10px;
+          margin-right: 0.2rem;
         }
 
         &:nth-child(2) {
-          margin-left: 10px;
+          margin-left: 0.2rem;
         }
       }
     }
@@ -361,26 +361,27 @@
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 0 19px;
+    padding: 0 0.38rem;
     background: #fff;
     z-index: 101;
 
     .scroll-content {
       position: absolute;
-      top: 4px;
-      left: 18px;
-      right: 18px;
-      bottom: 64px;
+      top: 0.08rem;
+      left: 0.36rem;
+      right: 0.36rem;
+      bottom: 1.28rem;
       overflow: hidden;
 
       .account-item {
-        padding-top: 24px;
+        padding-top: 0.48rem;
 
         .title {
-          height: 58px;
-          line-height: 58px;
-          border-radius: 30px;
-          padding: 0 41px;
+          height: 1.16rem;
+          line-height: 1.16rem;
+          border-radius: 0.6rem;
+          padding: 0 0.82rem;
+          font-size: 0;
 
           label {
             font-weight: bold;
@@ -420,13 +421,13 @@
         .main {
           display: flex;
           justify-content: space-between;
-          padding: 18px 46px 0;
+          padding: 0.36rem 0.92rem 0;
 
           .item {
             text-align: center;
             h2 {
-              padding-bottom: 13px;
-              font-size: 10.5px;
+              padding-bottom: 0.26rem;
+              font-size: 0.21rem;
             }
 
             p {
@@ -435,14 +436,14 @@
           }
 
           &.jf-main {
-            padding: 18px 17px;
+            padding: 0.36rem 0.34rem;
 
             .jf-item {
               border: 1px solid #797979;
-              border-radius: 20px;
-              padding: 10px 20px;
+              border-radius: 0.4rem;
+              padding: 0.2rem 0.4rem;
               text-align: center;
-              font-size: 10.5px;
+              font-size: 0.21rem;
             }
           }
         }
@@ -454,25 +455,25 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      padding: 12px 18px;
+      padding: 0.24rem 0.36rem;
       display: flex;
       align-items: center;
 
       button {
-        height: 40px;
-        line-height: 40px;
+        height: 0.8rem;
+        line-height: 0.8rem;
         flex: 1;
-        border-radius: 8px;
+        border-radius: 0.16rem;
         font-size: $font-size-medium;
         color: #fff;
         background: $primary-color;
 
         &:nth-child(1) {
-          margin-right: 10px;
+          margin-right: 0.2rem;
         }
 
         &:nth-child(2) {
-          margin-left: 10px;
+          margin-left: 0.2rem;
         }
       }
     }

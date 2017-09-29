@@ -9,12 +9,12 @@
 <style lang="scss" scoped>
   .go-wrapper {
     position: fixed;
-    bottom: 80px;
+    bottom: 1.6rem;
     right: 0;
-    width: 50px;
-    height: 50px;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+    width: 1rem;
+    height: 1rem;
+    border-top-left-radius: 0.08rem;
+    border-bottom-left-radius: 0.08rem;
     background: rgba(0, 0, 0, 0.2);
 
     .icon-home {
@@ -23,7 +23,7 @@
       height: 100%;
       background-repeat: no-repeat;
       background-position: center;
-      background-size: 30px;
+      background-size: 0.6rem;
       background-image: url(./home.png);
     }
   }

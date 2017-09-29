@@ -48,7 +48,7 @@
       </div>
       <confirm ref="confirm" :text="text" @confirm="handleConfirm"></confirm>
       <rating ref="rating" @ratingSuc="ratingSuccess" :orderCode="currentCode"></rating>
-      <router-view></router-view>
+      <router-view @updateNum="handleUpdateNum"></router-view>
     </div>
   </transition>
 </template>
@@ -180,6 +180,7 @@
               this.text = '收货成功，确定立即评价吗？';
               this.$refs.confirm.show();
             });
+            this.$emit('updateNum', 'toReceiverOrder');
           }).catch(() => {
             this.fetching = false;
           });
@@ -193,6 +194,11 @@
               prevStatus: item.status,
               code: item.code
             });
+            if (item.status === '1') {
+              this.$emit('updateNum', 'toMeasureOrder');
+            } else {
+              this.$emit('updateNum', 'toPayOrder');
+            }
           }).catch(() => {
             this.fetching = false;
           });
@@ -243,6 +249,10 @@
       },
       ratingSuccess(code) {
         this.editOrderListByRating({code});
+        this.$emit('updateNum', 'toCommentOrder');
+      },
+      handleUpdateNum(type) {
+        this.$emit('updateNum', type);
       },
       ...mapMutations({
         'setOrderList': SET_ORDER_LIST,
@@ -306,8 +316,8 @@
       width: 100%;
       z-index: 100;
       overflow: hidden;
-      height: 40px;
-      line-height: 40px;
+      height: 0.8rem;
+      line-height: 0.8rem;
       background: #f2f2f2;
     }
 
@@ -329,27 +339,27 @@
 
     .orders-content {
       position: absolute;
-      top: 40px;
+      top: 0.8rem;
       left: 0;
       width: 100%;
       bottom: 0;
       background: #fff;
 
       ul {
-        padding: 0 18px;
+        padding: 0 0.36rem;
         font-size: $font-size-medium;
 
         li {
-          padding: 16px 12px 13px;
+          padding: 0.32rem 0.24rem 0.26rem;
           border-bottom: 1px solid #a1a1a1;
           color: #333;
 
           .time {
-            margin-bottom: 14px;
+            margin-bottom: 0.28rem;
           }
 
           .code {
-            margin-bottom: 11px;
+            margin-bottom: 0.22rem;
           }
 
           .fl {
@@ -362,10 +372,10 @@
 
           .btn {
             display: inline-block;
-            padding: 2.5px 10.5px 3.5px;
-            margin-left: 10px;
+            padding: 0.05rem 0.21rem 0.07rem;
+            margin-left: 0.2rem;
             border: 1px solid #d2d2d2;
-            border-radius: 14px;
+            border-radius: 0.28rem;
             color: $primary-color;
 
             &.cancel {
@@ -375,8 +385,8 @@
 
           .status {
             display: inline-block;
-            padding: 2.5px 10.5px 3.5px;
-            border-radius: 14px;
+            padding: 0.05rem 0.21rem 0.07rem;
+            border-radius: 0.28rem;
             background: $primary-color;
             color: #fff;
           }
@@ -384,7 +394,7 @@
       }
 
       .orders-loading {
-        padding-top: 20px;
+        padding-top: 0.4rem;
       }
 
       .no-result-wrapper {

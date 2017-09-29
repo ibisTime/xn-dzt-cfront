@@ -78,6 +78,7 @@
             <loading title=""></loading>
           </div>
         </div>
+        <confirm text="确定取消预约吗" ref='confirm' @confirm="handleConfirm"></confirm>
       </div>
     </div>
   </transition>
@@ -87,6 +88,7 @@
   import CityPicker from 'base/city-picker/city-picker';
   import Loading from 'base/loading/loading';
   import Toast from 'base/toast/toast';
+  import Confirm from 'base/confirm/confirm';
   import {book, cancelBook, reBook, getLatestOrder} from 'api/biz';
   import {realNameValid, mobileValid, emptyValid, formatDate} from 'common/js/util';
 
@@ -206,6 +208,9 @@
         }
       },
       _cancel() {
+        this.$refs.confirm.show();
+      },
+      handleConfirm () {
         this.btnDisabled = true;
         this.isLoading = true;
         cancelBook(this.orderCode).then(() => {
@@ -316,7 +321,8 @@
       Toast,
       Loading,
       DatePicker,
-      CityPicker
+      CityPicker,
+      Confirm
     }
   };
 </script>
@@ -335,19 +341,19 @@
 
     .content {
       height: 100%;
-      padding: 15px 19px;
+      padding: 0.3rem 0.38rem;
 
       .close {
         position: absolute;
-        width: 40px;
-        height: 40px;
+        width: 0.8rem;
+        height: 0.8rem;
 
         .close-icon {
           position: absolute;
-          width: 3px;
-          height: 30px;
+          width: 0.06rem;
+          height: 0.6rem;
           background: #666;
-          left: 18px;
+          left: 0.36rem;
 
           &.close-icon0 {
             transform: rotateZ(45deg);
@@ -360,13 +366,13 @@
       }
 
       .book-form {
-        margin-top: 50px;
+        margin-top: 1rem;
 
         .form-item {
-          border-radius: 8px;
-          height: 40px;
-          padding: 0 13px;
-          margin-bottom: 10px;
+          border-radius: 0.16rem;
+          height: 0.8rem;
+          padding: 0 0.26rem;
+          margin-bottom: 0.2rem;
           border: 1px solid #9d9d9d;
           display: flex;
           align-items: center;
@@ -375,8 +381,8 @@
           label {
             font-size: $font-size-medium;
             display: inline-block;
-            width: 80px;
-            flex: 0 0 80px;
+            width: 1.6rem;
+            flex: 0 0 1.6rem;
           }
 
           .input-item {
@@ -392,10 +398,11 @@
           }
 
           span {
-            padding-left: 8px;
+            padding-left: 0.16rem;
+            font-size: $font-size-medium;
           }
           .error {
-            font-size: 14px;
+            font-size: $font-size-medium;
             color: #ff0000;
           }
         }
@@ -414,30 +421,30 @@
           width: 50%;
 
           &.pr {
-            padding-right: 10px;
+            padding-right: 0.2rem;
           }
 
           &.pl {
-            padding-left: 10px;
+            padding-left: 0.2rem;
           }
 
           .form-item {
             label {
-              width: 45px;
-              flex: 0 0 45px;
+              width: 0.9rem;
+              flex: 0 0 0.9rem;
             }
           }
         }
       }
 
       .book-btns {
-        padding: 25px 0;
+        padding: 0.5rem 0;
 
         button {
           width: 100%;
-          height: 40px;
-          line-height: 40px;
-          border-radius: 6px;
+          height: 0.8rem;
+          line-height: 0.8rem;
+          border-radius: 0.12rem;
           color: #fff;
           font-size: $font-size-medium;
 
@@ -446,7 +453,7 @@
           }
 
           &.btn-fg {
-            background: $second-color;
+            background: $primary-color;
           }
 
           &.btn-cancel {

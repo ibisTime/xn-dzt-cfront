@@ -139,15 +139,15 @@
       height: 100%;
 
       .top {
-        height: 178px;
-        padding-top: 23px;
+        height: 3.56rem;
+        padding-top: 0.46rem;
         background-repeat: no-repeat;
         background-size: cover;
         @include bg-image('bg');
 
         .avatar {
-          width: 75px;
-          height: 75px;
+          width: 1.5rem;
+          height: 1.5rem;
           margin: 0 auto;
           border-radius: 50%;
           overflow: hidden;
@@ -159,7 +159,7 @@
         }
 
         h2 {
-          margin-top: 14px;
+          margin-top: 0.28rem;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -169,7 +169,7 @@
         }
 
         p {
-          margin-top: 8px;
+          margin-top: 0.16rem;
           text-align: center;
           font-size: $font-size-small;
           color: #a99400;
@@ -178,30 +178,30 @@
 
       .info {
         .title {
-          padding-left: 34px;
-          line-height: 50px;
+          padding-left: 0.68rem;
+          line-height: 1rem;
           border-bottom: 1px solid #a1a1a1;
           font-size: $font-size-medium;
           color: $primary-color;
         }
 
         .content {
-          padding: 18px 30px;
+          padding: 0.36rem 0.6rem;
 
           .detail {
             .item {
               display: flex;
               float: left;
-              margin-bottom: 7.5px;
-              padding-right: 7.5px;
+              margin-bottom: 0.15rem;
+              padding-right: 0.15rem;
               width: 50%;
               line-height: 1.5;
               font-size: $font-size-small;
 
               label {
                 display: inline-block;
-                padding-right: 15px;
-                width: 82px;
+                padding-right: 0.3rem;
+                width: 1.64rem;
                 text-align: right;
                 color: $primary-color;
               }
@@ -209,7 +209,7 @@
               .text {
                 display: inline-block;
                 flex: 1;
-                padding-left: 7.5px;
+                padding-left: 0.15rem;
                 border-bottom: 1px solid #d5d5d5;
                 color: #333;
               }

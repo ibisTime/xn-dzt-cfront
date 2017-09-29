@@ -210,14 +210,15 @@
       position: absolute;
       bottom: 0;
       width: 100%;
-      height: 40px;
-      line-height: 40px;
-      font-weight: bold;
-      background: rgba(0,0,0,0.4);
+      height: 0.8rem;
+      line-height: 0.8rem;
+      background: rgba(0, 0, 0, 0.4);
       z-index: 4;
+      font-size: 0;
+      font-weight: bold;
 
       span {
-        padding: 0 30px;
+        padding: 0 0.6rem;
         font-size: $font-size-medium;
         color: #fff;
 

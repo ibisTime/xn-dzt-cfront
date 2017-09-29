@@ -40,7 +40,7 @@
               </tr>
               <tr>
                 <th>产地</th>
-                <td>{{currentMaterial && currentMaterial.area || '--'}}</td>
+                <td>{{currentMaterial && currentMaterial._area || '--'}}</td>
               </tr>
               </tbody>
             </table>
@@ -127,8 +127,9 @@
           this.getFabricColorDict(),
           this.getFabricDesignDict(),
           this.getFabricDivideDict(),
-          this.getFabricYarnDict()
-        ]).then(([material, typeList, colorList, designList, divideList, yarnList]) => {
+          this.getFabricYarnDict(),
+          this.getAreaDict()
+        ]).then(([material, typeList, colorList, designList, divideList, yarnList, areaList]) => {
           let index = typeList.findIndex((item) => {
             return item.dkey === material.type;
           });
@@ -153,6 +154,11 @@
             return yarn.dkey === material.yarn;
           });
           material._yarn = yarnList[index].dvalue;
+
+          index = areaList.findIndex((area) => {
+            return area.dkey === material.area;
+          });
+          material._area = areaList[index].dvalue;
 
           material._advPic = material.advPic.split('||');
 
@@ -205,6 +211,10 @@
       // 纱支数据字典
       getFabricYarnDict() {
         return getDictList('fabric_yarn');
+      },
+      // 产地数据字典
+      getAreaDict() {
+        return getDictList('produce_area');
       },
       handleCollect(event) {
         if (!event._constructed) {
@@ -290,20 +300,20 @@
       top: 0;
       left: 0;
       width: 100%;
-      bottom: 64px;
+      bottom: 1.28rem;
     }
 
     .table-wrapper {
-      padding: 9.5px 0 13.5px;
+      padding: 0.19rem 0 0.27rem;
 
       table {
         margin: 0 auto;
 
         tr {
-          line-height: 25px;
+          line-height: 0.5rem;
 
           th {
-            padding-right: 16px;
+            padding-right: 0.32rem;
             color: $primary-color;
             font-size: $font-size-medium;
           }
@@ -319,11 +329,11 @@
         position: absolute;
         right: 0;
         top: 0;
-        width: 40px;
-        height: 40px;
+        width: 0.8rem;
+        height: 0.8rem;
         background-position: center;
         background-repeat: no-repeat;
-        background-size: 20px;
+        background-size: 0.4rem;
         @include bg-image('like');
 
         &.active {
@@ -333,7 +343,7 @@
     }
 
     .description {
-      padding: 20px;
+      padding: 0.4rem;
 
       img {
         max-width: 100%;
@@ -345,18 +355,18 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 64px;
+      height: 1.28rem;
       display: flex;
       align-items: center;
       background: #fff;
 
       .f-btn {
         flex: 1;
-        margin: 0 19px;
+        margin: 0 0.38rem;
         padding: 0;
-        height: 40px;
-        line-height: 40px;
-        border-radius: 6px;
+        height: 0.8rem;
+        line-height: 0.8rem;
+        border-radius: 0.12rem;
         font-size: $font-size-medium-x;
         color: #fff;
 
@@ -365,7 +375,7 @@
         }
 
         &.btn-fg {
-          background: rgb(167, 149, 47);
+          background: $primary-color;
         }
 
         &.btn-cancel {

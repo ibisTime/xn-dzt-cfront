@@ -120,7 +120,7 @@
       height: 100%;
 
       .tech-content {
-        padding: 10px 14px 10px 19px;
+        padding: 0.2rem 0.28rem 0.2rem 0.38rem;
 
         li {
           position: relative;
@@ -128,7 +128,7 @@
           width: 25%;
           height: 0;
           padding-top: 25%;
-          border-radius: 6px;
+          border-radius: 0.12rem;
 
           .inner {
             position: absolute;
@@ -136,15 +136,15 @@
             left: 0;
             width: 100%;
             height: 100%;
-            padding-right: 5px;
-            padding-top: 5px;
+            padding-right: 0.1rem;
+            padding-top: 0.1rem;
 
             .inner-content {
               position: relative;
               width: 100%;
               height: 100%;
               border: 1px solid #e5e5e5;
-              border-radius: 6px;
+              border-radius: 0.12rem;
               box-shadow: 1px 1px 1px #e5e5e5;
 
               img {
@@ -156,13 +156,13 @@
                 position: absolute;
                 bottom: 0;
                 right: 0;
-                border-bottom-right-radius: 6px;
-                border-top-left-radius: 6px;
+                border-bottom-right-radius: 0.12rem;
+                border-top-left-radius: 0.12rem;
                 max-width: 100%;
                 text-align: right;
                 font-size: $font-size-small-s;
                 color: #fff;
-                padding: 4px;
+                padding: 0.08rem;
                 background-color: $primary-color;
                 @include no-wrap;
               }
@@ -172,7 +172,7 @@
       }
 
       .tech-loading {
-        padding-top: 20px;
+        padding-top: 0.4rem;
       }
 
       .no-result-wrapper {
@@ -195,13 +195,13 @@
         position: absolute;
         bottom: 0;
         right: 0;
-        border-bottom-right-radius: 13px;
-        border-top-left-radius: 13px;
+        border-bottom-right-radius: 0.26rem;
+        border-top-left-radius: 0.26rem;
         max-width: 100%;
         text-align: right;
         font-size: $font-size-large-x;
         color: #fff;
-        padding: 10px;
+        padding: 0.2rem;
         background-color: $primary-color;
         @include no-wrap;
       }
@@ -210,11 +210,11 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 50px;
-        height: 50px;
+        width: 1rem;
+        height: 1rem;
         background-position: center;
         background-repeat: no-repeat;
-        background-size: 20px;
+        background-size: 0.4rem;
         @include bg-image('like');
 
         &.active {

@@ -256,6 +256,7 @@
             }
             this.text = '收货成功，确定立即评价吗？';
             this.$refs.confirm.show();
+            this.$emit('updateNum', 'toReceiverOrder');
           }).catch(() => {
             this.loadingFlag = false;
           });
@@ -276,6 +277,11 @@
                 prevStatus,
                 code: this.code
               });
+            }
+            if (prevStatus === '1') {
+              this.$emit('updateNum', 'toMeasureOrder');
+            } else {
+              this.$emit('updateNum', 'toPayOrder');
             }
           }).catch(() => {
             this.loadingFlag = false;
@@ -307,6 +313,7 @@
         if (this.orderList) {
           this.editOrderListByRating({code});
         }
+        this.$emit('updateNum', 'toCommentOrder');
       },
       ...mapMutations({
         'setCurrentOrder': SET_CURRENT_ORDER
@@ -350,42 +357,42 @@
       height: 100%;
       position: relative;
       overflow: hidden;
-      padding: 0 18px;
+      padding: 0 0.36rem;
 
       h1 {
-        padding: 12px 16px 10px;
+        padding: 0.24rem 0.32rem 0.2rem;
         font-size: $font-size-medium-x;
         color: $primary-color;
       }
 
       .order-info {
-        padding-left: 30px;
-        padding-bottom: 14px;
+        padding-left: 0.6rem;
+        padding-bottom: 0.28rem;
         font-size: $font-size-medium;
         @include border-top-1px(#a1a1a1);
 
         p {
-          padding-top: 16px;
-          padding-bottom: 2px;
+          padding-top: 0.32rem;
+          padding-bottom: 0.04rem;
           color: #333;
 
           label {
-            padding-right: 16px;
+            padding-right: 0.32rem;
             color: $primary-color;
           }
 
           .ori-amount {
             text-decoration: line-through;
             color: #999;
-            padding-right: 4px;
+            padding-right: 0.08rem;
           }
 
           .btn {
             display: inline-block;
-            padding: 2.5px 10.5px 3.5px;
-            margin-right: 10px;
+            padding: 0.05rem 0.21rem 0.07rem;
+            margin-right: 0.2rem;
             border: 1px solid #d2d2d2;
-            border-radius: 14px;
+            border-radius: 0.28rem;
             color: $primary-color;
 
             &.cancel {
@@ -398,9 +405,9 @@
       .order-head {
         display: flex;
         width: 100%;
-        height: 30px;
-        line-height: 30px;
-        border-radius: 8px;
+        height: 0.6rem;
+        line-height: 0.6rem;
+        border-radius: 0.16rem;
         text-align: center;
         font-size: $font-size-medium-x;
         color: #fff;
@@ -416,30 +423,30 @@
       }
 
       .order-info1 {
-        padding-bottom: 15px;
+        padding-bottom: 0.3rem;
         font-size: $font-size-medium;
         color: #333;
 
         p {
-          padding: 16px 0 14px 16px;
+          padding: 0.32rem 0 0.28rem 0.32rem;
           @include border-bottom-1px(#d2d2d2);
 
           label {
             display: inline-block;
-            padding-right: 19px;
-            min-width: 110px;
+            padding-right: 0.38rem;
+            min-width: 2.2rem;
             color: $primary-color;
           }
         }
       }
 
       .remark {
-        padding: 21.5px 16px;
+        padding: 0.43rem 0.32rem;
         font-size: $font-size-medium;
         @include border-top-1px(#d2d2d2);
 
         p {
-          padding-bottom: 2px;
+          padding-bottom: 0.04rem;
           line-height: 1.2;
           @include border-bottom-1px(#d6d6d6);
         }

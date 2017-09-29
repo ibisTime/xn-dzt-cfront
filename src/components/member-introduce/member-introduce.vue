@@ -77,7 +77,7 @@
     }
 
     .description {
-      padding: 18px;
+      padding: 0.36rem;
 
       img {
         max-width: 100%;

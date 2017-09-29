@@ -94,19 +94,19 @@
       transform: translate(-50%, -50%);
       z-index: 999;
       .confirm-content {
-        width: 270px;
-        border-radius: 13px;
+        width: 5.4rem;
+        border-radius: 0.26rem;
         background: $color-highlight-background;
 
         .text {
-          padding: 19px 15px;
-          line-height: 22px;
+          padding: 0.38rem 0.3rem;
+          line-height: 0.44rem;
           text-align: center;
           font-size: $font-size-large;
           color: $color-text-l;
 
           &.alert {
-            font-size: 15px;
+            font-size: 0.3rem;
           }
         }
 
@@ -118,8 +118,8 @@
 
           .operate-btn {
             flex: 1;
-            line-height: 22px;
-            padding: 10px 0;
+            line-height: 0.44rem;
+            padding: 0.2rem 0;
             border-top: 1px solid $color-background-d;
             color: $color-text-d;
 

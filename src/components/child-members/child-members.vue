@@ -93,8 +93,8 @@
         li {
           display: flex;
           align-items: center;
-          height: 75px;
-          padding: 0 15px;
+          height: 1.5rem;
+          padding: 0 0.3rem;
           border-bottom: 1px solid #a1a1a1;
 
           &:last-child {
@@ -102,9 +102,9 @@
           }
 
           .avatar {
-            width: 45px;
-            height: 45px;
-            flex: 0 0 45px;
+            width: 0.9rem;
+            height: 0.9rem;
+            flex: 0 0 0.9rem;
             border-radius: 50%;
             overflow: hidden;
 
@@ -115,14 +115,14 @@
           }
 
           .info {
-            padding-left: 10px;
+            padding-left: 0.2rem;
 
             h2 {
               font-size: $font-size-medium;
             }
 
             p {
-              margin-top: 10px;
+              margin-top: 0.2rem;
               font-size: $font-size-small;
               color: #999;
             }
@@ -131,7 +131,7 @@
       }
 
       .loading {
-        padding-top: 20px;
+        padding-top: 0.4rem;
       }
     }
     .no-result-wrapper {

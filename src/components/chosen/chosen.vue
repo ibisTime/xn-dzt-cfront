@@ -57,7 +57,7 @@
       z-index: 999;
 
       .chosen-content {
-        border-radius: 6px;
+        border-radius: 0.12rem;
         background: $color-highlight-background;
       }
     }
