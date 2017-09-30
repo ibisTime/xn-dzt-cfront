@@ -261,6 +261,7 @@
             this.loadingFlag = false;
           });
         } else if (this.currentOrder.status === '8') {
+          this.loadingFlag = false;
           this.$refs.rating.show();
         } else {
           this.loadingText = '取消中';
