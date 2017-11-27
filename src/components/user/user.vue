@@ -30,6 +30,11 @@
               <div v-show="toPayOrder" class="badge-text"><badge :text="toPayOrder"></badge></div>
               <p>待支付</p>
             </div>
+            <div class="order-type needsclick" @click="goOrder(3)">
+              <div class="type order-dfh"></div>
+              <div v-show="toSendOrder" class="badge-text"><badge :text="toSendOrder"></badge></div>
+              <p>待发货</p>
+            </div>
             <div class="order-type needsclick" @click="goOrder(4)">
               <div class="type order-dsh"></div>
               <div v-show="toReceiverOrder" class="badge-text"><badge :text="toReceiverOrder"></badge></div>
@@ -40,10 +45,10 @@
               <div v-show="toCommentOrder" class="badge-text"><badge :text="toCommentOrder"></badge></div>
               <p>待评价</p>
             </div>
-            <div class="order-type needsclick" @click="goOrder(6)">
-              <div class="type order-shz"></div>
-              <p>售后中</p>
-            </div>
+            <!--<div class="order-type needsclick" @click="goOrder(6)">-->
+              <!--<div class="type order-shz"></div>-->
+              <!--<p>售后中</p>-->
+            <!--</div>-->
           </div>
         </div>
         <div class="split"></div>
@@ -156,6 +161,9 @@
       toPayOrder() {
         return (this.orderNum && this.orderNum.toPayOrder || '') + '';
       },
+      toSendOrder() {
+        return (this.orderNum && this.orderNum.toSendOrder || '') + '';
+      },
       toReceiverOrder() {
         return (this.orderNum && this.orderNum.toReceiverOrder || '') + '';
       },
@@ -237,7 +245,7 @@
             } else if (item.currency === 'HYB') {
               this.hybAccount = item;
               this.setHybAccount(item);
-            };
+            }
           });
           this.$refs.chosen.show();
         }).catch(() => {
@@ -516,7 +524,9 @@
                 background-size: 0.48rem;
                 @include bg-image('dzf');
               }
-
+              &.order-dfh {
+                @include bg-image('dfh');
+              }
               &.order-dsh {
                 @include bg-image('dsh');
               }

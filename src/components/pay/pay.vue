@@ -24,7 +24,7 @@
         <div class="amount-wrap">
           <span>金额</span><span class="amount">¥{{(order && order.amount) | formatAmount}}</span>
         </div>
-        <button @click="payOrder">立即支付</button>
+        <button @click="confirm">立即支付</button>
       </div>
       <div v-show="loadingFlag" class="loading-container">
         <div class="loading-wrapper">
@@ -32,7 +32,10 @@
         </div>
       </div>
       <toast ref="toast" :text="text"></toast>
+      <confirm ref="confirm" :text="text" :isAlert="!isAlert" :isHtml="isHtml" @confirm="payOrder()" confirmBtnText="确认"></confirm>
     </div>
+
+
   </transition>
 </template>
 <script>
@@ -40,6 +43,7 @@
   import {getAccount} from 'api/account';
   import Loading from 'base/loading/loading';
   import Toast from 'base/toast/toast';
+  import Confirm from 'base/confirm/confirm';
   import {mapGetters, mapMutations, mapActions} from 'vuex';
   import {SET_CNY_ACCOUNT, SET_HYB_ACCOUNT} from 'store/mutation-types';
   import {commonMixin} from 'common/js/mixin';
@@ -56,7 +60,9 @@
         loadingFlag: true,
         currentIndex: 0,
         order: null,
-        text: ''
+        text: '',
+        isAlert: true,
+        isHtml: true
       };
     },
     created() {
@@ -99,6 +105,10 @@
       choseType(type) {
         this.currentIndex = type;
       },
+      confirm() {
+        this.text = '确定要支付订单吗';
+        this.$refs.confirm.show();
+      },
       payOrder() {
         this.loadingFlag = true;
         let code = this.$route.query.code;
@@ -123,6 +133,7 @@
           });
         }
       },
+
       wxPay(data, code) {
         if (data && data.signType) {
           initPay(data, () => {
@@ -157,7 +168,8 @@
     },
     components: {
       Loading,
-      Toast
+      Toast,
+      Confirm
     }
   };
 </script>
