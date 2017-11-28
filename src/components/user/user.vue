@@ -98,15 +98,19 @@
     </scroll>
     <toast ref="toast" :text="text"></toast>
     <confirm :isAlert="!isAlert" :isHtml="isHtml" :text="text" confirmBtnText="确认" ref='confirm' @confirm="showChosen()"></confirm>
+    <confirm :isAlert="!isAlert" :isHtml="isHtml" :text="text" confirmBtnText="确认" ref='confirmPay' @confirm="pay()"></confirm>
     <chosen class="chose-wrapper" ref="chosen">
-      <div class="item border-bottom-1px" @click="weixinPay">
+      <div class="item border-bottom-1px" @click="confirmPay(1)">
         微信支付
       </div>
-      <div class="item border-bottom-1px" @click="yePay">
+      <!--<div class="item border-bottom-1px" @click="yePay">-->
+        <div class="item border-bottom-1px" @click="confirmPay(2)">
         余额支付（¥{{getAmount('cnyAccount')}}）
       </div>
-      <div class="item border-bottom-1px" @click="hybPay">
-        合衣币支付（{{getAmount('hybAccount')}}）
+      <!--<div class="item border-bottom-1px" @click="hybPay">-->
+      <div class="item border-bottom-1px" @click="confirmPay(3)">
+
+      合衣币支付（{{getAmount('hybAccount')}}）
       </div>
     </chosen>
     <div v-show="loadingFlag" class="loading-container">
@@ -144,7 +148,8 @@
         hybAccount: null,
         isAlert: true,
         isHtml: true,
-        orderNum: null
+        orderNum: null,
+        type: null
       };
     },
     created() {
@@ -308,6 +313,20 @@
         } else {
           return '--';
         }
+      },
+      pay() {
+        if(this.type === 1) {
+          this.weixinPay();
+        }else if(this.type === 2) {
+          this.yePay();
+        }else {
+          this.hybPay();
+        }
+      },
+      confirmPay(n) {
+        this.text = '确定要支付订单吗';
+        this.$refs.confirmPay.show(n);
+        this.type = n;
       },
       getVIPMoney() {
         getBizSystemConfig('HYF').then((data) => {
