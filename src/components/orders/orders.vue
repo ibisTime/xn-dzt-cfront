@@ -31,7 +31,7 @@
                 <span class="btn cancel fr needsclick" v-show="showCancelBtn(item.status)" @click.stop="cancelOrder(item)">取消订单</span>
                 <span class="btn fr needsclick" v-show="showRatingBtn(item.status)" @click.stop="ratingOrder(item)">立即评价</span>
                 <span class="btn fr needsclick" v-show="showReceiveBtn(item.status)" @click.stop="receiveOrder(item)">确认收货</span>
-                <span class="btn fr needsclick" v-show="item.status==='10'" @click.stop="goAdviser">联系顾问</span>
+                <span class="btn fr needsclick" v-show="item.status==='9'||item.status==='10'" @click.stop="goAdviser">联系顾问</span>
               </p>
             </li>
             <loading class="orders-loading" v-show="currentList.hasMore" title=""></loading>
